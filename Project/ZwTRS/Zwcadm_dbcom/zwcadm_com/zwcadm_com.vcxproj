@@ -86,7 +86,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\ZRXSDK\ZRXSDK_2014\arxport;E:\SVN\201406\ZwForTRS\ZwForTRS;E:\SVN\201406\ZwForTRS\ZwForTRS\base\listctrl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\ZRXSDK\ZRXSDK_2014\arxport;E:\GitHub\SVN\Project\ZwTRS\ZWTRS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -96,8 +96,8 @@
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <RegisterOutput>true</RegisterOutput>
-      <AdditionalLibraryDirectories>E:\SVN\201406\ZWTRS;D:\ZRXSDK\ZRXSDK_2014\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <OutputFile>E:\SVN\201406\ZWTRS\zwcadm_com.dll</OutputFile>
+      <AdditionalLibraryDirectories>E:\GitHub\SVN\Project\ZwTRS\ZWTRS;D:\ZRXSDK\ZRXSDK_2014\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OutputFile>E:\GitHub\SVN\Project\ZwTRS\ZWTRS\zwcadm_com.dll</OutputFile>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

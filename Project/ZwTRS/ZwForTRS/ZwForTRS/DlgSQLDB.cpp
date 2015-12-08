@@ -37,6 +37,7 @@ BEGIN_MESSAGE_MAP(CDlgSQLDB, CAcUiDialog)
 	ON_NOTIFY(LVN_ODFINDITEM, IDC_LIST1, &CDlgSQLDB::OnOdfinditemList)
 	ON_NOTIFY(LVN_ODCACHEHINT, IDC_LIST1, &CDlgSQLDB::OnOdcachehintList)
 	ON_EN_CHANGE(IDC_EDIT_MARK, &CDlgSQLDB::OnEnChangeEditMark)
+	ON_BN_CLICKED(IDC_CHECK_DEFAULT, &CDlgSQLDB::OnBnClickedCheckDefault)
 END_MESSAGE_MAP()
 
 //static extern int _List_Type( int col );
@@ -84,6 +85,7 @@ void CDlgSQLDB::DoDataExchange (CDataExchange *pDX) {
 	DDX_CBString(pDX, IDC_COMBO_MATERIAL, m_strMaterial);
 	DDX_Check(pDX, IDC_CHECK_UPDATE, m_bUpdate);
 	DDX_Check(pDX, IDC_CHECK_NOTIFYUPDATE, m_bNoticeUpdate);
+	DDX_Check(pDX, IDC_CHECK_DEFAULT, m_bIsDeFault);
 	DDX_Text(pDX, IDC_EDIT_COUNT, m_nCount);
 	DDV_MinMaxInt(pDX, m_nCount, 0, 1000000000);
 	DDX_Text(pDX, IDC_EDIT_JILIANG, m_strJiliang);
@@ -107,13 +109,13 @@ BOOL CDlgSQLDB::OnInitDialog()
 	ListView_SetExtendedListViewStyle(m_ListCtrl.m_hWnd, LVS_EX_INFOTIP | LVS_EX_FULLROWSELECT);
 
 	m_ListCtrl.InsertColumn( 0, _T("物料代码"), LVCFMT_LEFT, 150);
-	m_ListCtrl.InsertColumn( 1, _T("名称"), LVCFMT_LEFT, 200);
-	m_ListCtrl.InsertColumn( 2, _T("执行标准"), LVCFMT_LEFT, 100);
-	m_ListCtrl.InsertColumn( 3, _T("材料"), LVCFMT_LEFT, 60);
-	m_ListCtrl.InsertColumn( 4, _T("零件类型"), LVCFMT_LEFT, 60);
-	m_ListCtrl.InsertColumn( 5, _T("单重"), LVCFMT_LEFT, 80);
-	m_ListCtrl.InsertColumn( 6, _T("单位"), LVCFMT_LEFT, 50);
-	m_ListCtrl.InsertColumn( 7, _T("代号"), LVCFMT_LEFT, 50);
+	m_ListCtrl.InsertColumn( 1, _T("名称"), LVCFMT_LEFT, 250);
+	m_ListCtrl.InsertColumn( 2, _T("执行标准"), LVCFMT_LEFT, 150);
+	m_ListCtrl.InsertColumn( 3, _T("材料"), LVCFMT_LEFT, 100);
+	//m_ListCtrl.InsertColumn( 4, _T("零件类型"), LVCFMT_LEFT, 60);
+	m_ListCtrl.InsertColumn( 4, _T("单重"), LVCFMT_LEFT, 100);
+	//m_ListCtrl.InsertColumn( 6, _T("单位"), LVCFMT_LEFT, 50);
+	//m_ListCtrl.InsertColumn( 7, _T("代号"), LVCFMT_LEFT, 50);
 
 
 	//m_ListCtrl.SetColumnWidth( 0, 150);
@@ -537,14 +539,14 @@ void CDlgSQLDB::InsertEmpty(CDataCell pCell)
 	int nItem = m_ListCtrl.GetItemCount();
 
 	nItem = m_ListCtrl.InsertItem( nItem+1, _T("") );
-	m_ListCtrl.SetItemText(nItem, 7, strMark);
+	//m_ListCtrl.SetItemText(nItem, 7, strMark);
 	m_ListCtrl.SetItemText(nItem, 1, strName);
 	m_ListCtrl.SetItemText(nItem, 2, strStandard);
 	m_ListCtrl.SetItemText(nItem, 3, strMaterial);
-	m_ListCtrl.SetItemText(nItem, 4, strLingjianType);
+	//m_ListCtrl.SetItemText(nItem, 4, strLingjianType);
 	m_ListCtrl.SetItemText(nItem, 0, strFNumber);
-	m_ListCtrl.SetItemText(nItem, 5, strF107);
-	m_ListCtrl.SetItemText(nItem, 6, strFMaund);
+	m_ListCtrl.SetItemText(nItem, 4, strF107);
+	//m_ListCtrl.SetItemText(nItem, 6, strFMaund);
 }
 
 CDataBaseInfo CDlgSQLDB::GetData()
@@ -567,6 +569,7 @@ void CDlgSQLDB::SaveInfoToReg()
 	//Reg.SetRegister(HKEY_CURRENT_USER, strRootKey, _T("LINGJIAN"), m_strLingjianType);
 	Reg.SetRegister(HKEY_CURRENT_USER, strRootKey, _T("UPDATE"), (DWORD)m_bUpdate);
 	Reg.SetRegister(HKEY_CURRENT_USER, strRootKey, _T("NOTICEUPDATE"), (DWORD)m_bNoticeUpdate);
+	Reg.SetRegister(HKEY_CURRENT_USER, strRootKey, _T("DEFAULT"), (DWORD)m_bIsDeFault);
 	CTime tm(1990, 1, 1, 0, 0, 0);
 	tm = CTime::GetCurrentTime();
 	int nYear,nMonth,nDay;
@@ -576,6 +579,7 @@ void CDlgSQLDB::SaveInfoToReg()
 	Reg.SetRegister(HKEY_CURRENT_USER, strRootKey, _T("YEAR"), (DWORD)nYear);
 	Reg.SetRegister(HKEY_CURRENT_USER, strRootKey, _T("MONTH"), (DWORD)nMonth);
 	Reg.SetRegister(HKEY_CURRENT_USER, strRootKey, _T("DAY"), (DWORD)nDay);
+	
 }
 
 void CDlgSQLDB::GetInfoFromReg()
@@ -583,15 +587,17 @@ void CDlgSQLDB::GetInfoFromReg()
 	m_strAddress = GetStringFromReg(_T("ADDRESS"));
 	m_strUserName = GetStringFromReg(_T("USERNAME"));
 	m_strPassWord = GetStringFromReg(_T("PASSWORD"));
-
-	m_strName = GetStringFromReg(_T("NAME"));
-	m_strMark = GetStringFromReg(_T("MARK"));
-	m_strStandard = GetStringFromReg(_T("STANDARD"));
-	m_strMaterial = GetStringFromReg(_T("MATERIAL"));
-	m_strLingjianType = GetStringFromReg(_T("LINGJIAN"));
-	m_bUpdate = (BOOL)GetDwordFromReg(_T("UPDATE"));
-	m_bNoticeUpdate = (BOOL)GetDwordFromReg(_T("NOTICEUPDATE"));
-
+	m_bIsDeFault = (BOOL)GetDwordFromReg(_T("DEFAULT"));
+	if (m_bIsDeFault)
+	{
+		m_strName = GetStringFromReg(_T("NAME"));
+		m_strMark = GetStringFromReg(_T("MARK"));
+		m_strStandard = GetStringFromReg(_T("STANDARD"));
+		m_strMaterial = GetStringFromReg(_T("MATERIAL"));
+		m_strLingjianType = GetStringFromReg(_T("LINGJIAN"));
+		m_bUpdate = (BOOL)GetDwordFromReg(_T("UPDATE"));
+		m_bNoticeUpdate = (BOOL)GetDwordFromReg(_T("NOTICEUPDATE"));
+	}
 }
 
 CString CDlgSQLDB::GetStringFromReg(LPCTSTR strKey)
@@ -1560,25 +1566,25 @@ void CDlgSQLDB::OnGetdispinfoList(NMHDR *pNMHDR, LRESULT *pResult)
 			//Text is slogan
 			text = strMaterial;
 		}
+		//else if (pItem->iSubItem == 4)
+		//{
+		//	//Text is slogan
+		//	text = strLingjianType;
+		//}
 		else if (pItem->iSubItem == 4)
-		{
-			//Text is slogan
-			text = strLingjianType;
-		}
-		else if (pItem->iSubItem == 5)
 		{
 			//Text is slogan
 			text = strF107;
 		}
-		else if (pItem->iSubItem == 6)
-		{
-			//Text is slogan
-			text = strFMaund;
-		}
-		else if (pItem->iSubItem == 7)
-		{
-			text = strMark;
-		}
+		//else if (pItem->iSubItem == 6)
+		//{
+		//	//Text is slogan
+		//	text = strFMaund;
+		//}
+		//else if (pItem->iSubItem == 7)
+		//{
+		//	text = strMark;
+		//}
 		//Copy the text to the LV_ITEM structure
 		//Maximum number of characters is in pItem->cchTextMax
 		lstrcpyn(pItem->pszText, text, pItem->cchTextMax);
@@ -1709,4 +1715,13 @@ void CDlgSQLDB::OnEnChangeEditMark()
 	}
 
 	return ;
+}
+
+
+void CDlgSQLDB::OnBnClickedCheckDefault()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	int nCursel = m_ListCtrl.GetItemCount();
+	CButton* pBtn = (CButton*)GetDlgItem(IDC_CHECK_DEFAULT);
+	m_bIsDeFault = (BOOL)pBtn->GetCheck();
 }

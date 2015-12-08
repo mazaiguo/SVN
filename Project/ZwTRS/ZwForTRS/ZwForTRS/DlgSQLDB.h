@@ -105,4 +105,6 @@ public:
 	afx_msg void OnOdfinditemList(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnOdcachehintList(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnEnChangeEditMark();
+	afx_msg void OnBnClickedCheckDefault();
+	BOOL m_bIsDeFault;
 } ;

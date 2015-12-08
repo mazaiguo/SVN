@@ -588,9 +588,6 @@
     <ClInclude Include="ObjectToNotify.h">
       <Filter>Source Files\基本功能\反应器</Filter>
     </ClInclude>
-    <ClInclude Include="CheckDB.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="MakeBlkFile.h">
       <Filter>Source Files\基本功能\插入图块</Filter>
     </ClInclude>
