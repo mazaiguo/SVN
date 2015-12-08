@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Style xmlns="http://www.zwcad.com/zwcadm/Style" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.zwcad.com/zwcadm/Style
+../Zwmstyle.xsd">
+  <FrameworkAddins>
+    <FrameworkAddin  Name="特瑞斯集成" ProgId="ZwcadmPlugins.DbCom" Load = "1">
+			<MenuStyles>
+					<MenuStyle Name="数据导入" Function="Function1" IconPath="" Type="bom"/>
+			</MenuStyles>
+	</FrameworkAddin>
+  </FrameworkAddins>
+</Style>

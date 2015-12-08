@@ -1,0 +1,34 @@
+// zwcadm_com.idl : zwcadm_com 的 IDL 源
+//
+
+// 此文件将由 MIDL 工具处理以
+// 产生类型库(zwcadm_com.tlb)和封送处理代码。
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(DCCEF66A-ACC1-4ED1-851F-FDDC5E70BA86),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface ICZwcadmCom : IDispatch{
+};
+[
+	uuid(CAA3786F-A518-48F3-A265-EB6927CF74B1),
+	version(1.0)	
+]
+library zwcadm_comLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(CE33CDA5-6D9E-442D-9372-D84D49EF6467)		
+	]
+	coclass CZwcadmCom
+	{
+		[default] interface ICZwcadmCom;
+	};
+};
+import "shobjidl.idl";
