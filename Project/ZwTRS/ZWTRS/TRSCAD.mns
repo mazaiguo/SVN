@@ -1,0 +1,36 @@
+//
+//      ZWCAD 菜单文件
+//
+
+***MENUGROUP=TRSCAD
+
+***POP13
+**TRSCAD
+               [定制工具]
+               [--]
+               [绘制管道]^C^CHZGD 
+               [--]
+               [图块查找]^C^CTKCZ 
+               [--]
+               [生成图例]^C^CSCTL 
+               [--]
+               [插入设备   CS]^C^CCRSB 
+               [--]
+               [插入仪表   CB]^C^CCRYB 
+               [--]
+               [数据库测试]^C^CIMDB 
+               [--]
+               [修改数据]^C^CXGSB 
+               [--]
+               [插入其它图例]^C^CCRQT 
+               [--]
+               [创建新块]^C^CCJXK 
+               [--]
+               [设备统计]^C^CSBTJ 
+
+***TOOLBARS
+
+//
+//
+//
+

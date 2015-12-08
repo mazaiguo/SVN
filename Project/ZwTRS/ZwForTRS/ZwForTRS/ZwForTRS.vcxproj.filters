@@ -1,0 +1,650 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{c307c758-a93a-4052-8148-c6c0f64e6437}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;idl;odl</Extensions>
+    </Filter>
+    <Filter Include="Source Files\BASE">
+      <UniqueIdentifier>{8393b55d-70fa-4eb5-8e00-c1f4f296a048}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BASE\GraphCtrl">
+      <UniqueIdentifier>{21c6d2be-9945-4d19-971e-514bfc64cd11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BASE\AcadUtils">
+      <UniqueIdentifier>{2cdaa925-af41-4499-b1f0-abd2513e92d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BASE\INC">
+      <UniqueIdentifier>{41b87b07-9957-4ece-9ef3-acec2ac6addb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BASE\MyFunc">
+      <UniqueIdentifier>{34416757-3ae2-47e8-9c3f-94099d8ec4f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BASE\文件目录控件">
+      <UniqueIdentifier>{a636e208-b2e1-45f8-987a-3121075c536f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BASE\listctrl">
+      <UniqueIdentifier>{4c68b806-a681-4e5f-9b28-fa958899e7e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能">
+      <UniqueIdentifier>{f4676c92-157b-4d33-a8f0-bc32a20f538e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能\绘制管道">
+      <UniqueIdentifier>{86c0d8b4-4d7c-4edd-9f6d-94b50c9b9915}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能\基础数据">
+      <UniqueIdentifier>{3fbb4a3b-6825-4015-831b-c4182ce10bbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能\基础管道数据">
+      <UniqueIdentifier>{398bd719-4d5e-4eb3-9b77-72ef0360972f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能\设备查找">
+      <UniqueIdentifier>{b8f83571-8a9b-4ae7-8cfa-d37ae9b50f0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能\插入设备">
+      <UniqueIdentifier>{7191266a-0b86-49cb-ac8a-6f896c8e5c97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能\插入仪表">
+      <UniqueIdentifier>{7709e8e1-92db-4750-9883-6363e84733ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能\插入图块">
+      <UniqueIdentifier>{70e60fcb-905b-48a9-a8e9-e436e1e761ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能\插入图块\剪切实体">
+      <UniqueIdentifier>{51435bf9-5159-481f-bbcf-83175e1feeb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能\数据库相关">
+      <UniqueIdentifier>{619f9950-6cc5-41b4-9d5a-3875c3d30262}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能\数据库相关\服务器设置">
+      <UniqueIdentifier>{b0d70ab7-2bdb-44da-a911-a64dae7979a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能\数据库相关\ADO操作">
+      <UniqueIdentifier>{b33f0e9d-29d4-4871-a6ad-410dca1901fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能\数据库相关\数据导入">
+      <UniqueIdentifier>{67d3fb9f-8318-44e7-9458-5fb10582732d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能\插入其它图例">
+      <UniqueIdentifier>{ceacb53d-d3d3-48fe-ab63-0059d0950eed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能\创建新块">
+      <UniqueIdentifier>{50cf7ed7-f134-4cbd-9af7-e389729f096c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include Files">
+      <UniqueIdentifier>{2c4de318-9820-45c2-b79e-b34354faa45f}</UniqueIdentifier>
+      <Extensions>h;hh;hxx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{5a8f5d03-374f-428f-990a-dea8153f3f3a}</UniqueIdentifier>
+      <Extensions>rc;ico;bmp;cur;jpg;gif</Extensions>
+    </Filter>
+    <Filter Include="Miscellaneous Files">
+      <UniqueIdentifier>{3568fef4-2e80-4c18-bc03-a0e366ffa64b}</UniqueIdentifier>
+      <Extensions>reg;rgs;mak;clw;vsdir;vsz;css;inf;vcproj;csproj</Extensions>
+    </Filter>
+    <Filter Include="Source Files\基本功能\生成图例">
+      <UniqueIdentifier>{f2d3dae8-1b9a-476d-8f68-8bcd0f29967f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能\设备统计">
+      <UniqueIdentifier>{a76238e5-9066-47dd-850b-9e0dbe5cca26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能\数据库相关\数据存储及读写csv">
+      <UniqueIdentifier>{9883abf8-6b29-4337-857d-902e2cdfe2a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能\反应器">
+      <UniqueIdentifier>{3ea590bf-3f5d-4af0-b383-e9cfcc8eab18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能\导出函数">
+      <UniqueIdentifier>{5de6da32-91e4-4b91-b81f-b9677c3c32a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BASE\Excel">
+      <UniqueIdentifier>{87096caf-5199-4e9c-b6ea-948c7d5b8ab4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基本功能\BOM表操作">
+      <UniqueIdentifier>{0bfb6a20-fdfe-4ce0-bdf6-9564518090ad}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="acrxEntryPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgTKManage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DocData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ZwForTRS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\GraphCtrl\GraphBlockViewWnd.cpp">
+      <Filter>Source Files\BASE\GraphCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="base\GraphCtrl\GraphListCtrl.cpp">
+      <Filter>Source Files\BASE\GraphCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="base\GraphCtrl\GraphTitleTip.cpp">
+      <Filter>Source Files\BASE\GraphCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="base\GraphCtrl\GsMPCtrl.cpp">
+      <Filter>Source Files\BASE\GraphCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\AcadStr.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgDocLockWrite.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgDwgFiler.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgKeywordArray.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgRbList.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgReferenceFiler.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgSelSet.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgUiPrAngle.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgUiPrAngleDef.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgUiPrBase.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgUiPrCorner.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgUiPrDist.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgUiPrDistDef.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgUiPrDouble.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgUiPrEntity.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgUiPrInt.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgUiPrKeyWord.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgUiPrKeyWordDef.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgUiPrPoint.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgUiPrString.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgUtilsAcadUi.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgUtilsDb.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgUtilsDict.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgUtilsGe.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgUtilsSymTbl.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\ArxDbgXdata.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\Global.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\IniFile.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\MyFunc.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\SdStrList.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\SdStrObjId.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\SdSysVar.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\AcadUtils\UiUtils.cpp">
+      <Filter>Source Files\BASE\AcadUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="base\MyFunc\AcDbBlockReferenceJig.cpp">
+      <Filter>Source Files\BASE\MyFunc</Filter>
+    </ClCompile>
+    <ClCompile Include="base\MyFunc\MyCalculateFunc.cpp">
+      <Filter>Source Files\BASE\MyFunc</Filter>
+    </ClCompile>
+    <ClCompile Include="base\MyFunc\MyCommand.cpp">
+      <Filter>Source Files\BASE\MyFunc</Filter>
+    </ClCompile>
+    <ClCompile Include="base\MyFunc\MyDrag.cpp">
+      <Filter>Source Files\BASE\MyFunc</Filter>
+    </ClCompile>
+    <ClCompile Include="base\MyFunc\MyDrawEntity.cpp">
+      <Filter>Source Files\BASE\MyFunc</Filter>
+    </ClCompile>
+    <ClCompile Include="base\MyFunc\MyEditEntity.cpp">
+      <Filter>Source Files\BASE\MyFunc</Filter>
+    </ClCompile>
+    <ClCompile Include="MyOperateFile.cpp">
+      <Filter>Source Files\BASE\MyFunc</Filter>
+    </ClCompile>
+    <ClCompile Include="base\MyFunc\MyTransFunc.cpp">
+      <Filter>Source Files\BASE\MyFunc</Filter>
+    </ClCompile>
+    <ClCompile Include="base\MyFunc\OperateReg.cpp">
+      <Filter>Source Files\BASE\MyFunc</Filter>
+    </ClCompile>
+    <ClCompile Include="DirTreeCtrl.cpp">
+      <Filter>Source Files\BASE\文件目录控件</Filter>
+    </ClCompile>
+    <ClCompile Include="SortStringArray.cpp">
+      <Filter>Source Files\BASE\文件目录控件</Filter>
+    </ClCompile>
+    <ClCompile Include="base\listctrl\ComboItem.cpp">
+      <Filter>Source Files\BASE\listctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="base\listctrl\EditItem.cpp">
+      <Filter>Source Files\BASE\listctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="base\listctrl\EditList.cpp">
+      <Filter>Source Files\BASE\listctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgDrawGD.cpp">
+      <Filter>Source Files\基本功能\绘制管道</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseDataInDwg.cpp">
+      <Filter>Source Files\基本功能\基础数据</Filter>
+    </ClCompile>
+    <ClCompile Include="GDDataInDWG.cpp">
+      <Filter>Source Files\基本功能\基础管道数据</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgFindBlock.cpp">
+      <Filter>Source Files\基本功能\设备查找</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgDrawEquipment.cpp">
+      <Filter>Source Files\基本功能\插入设备</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgDrawInstrument.cpp">
+      <Filter>Source Files\基本功能\插入仪表</Filter>
+    </ClCompile>
+    <ClCompile Include="BlkInfo.cpp">
+      <Filter>Source Files\基本功能\插入图块</Filter>
+    </ClCompile>
+    <ClCompile Include="CutEntity.cpp">
+      <Filter>Source Files\基本功能\插入图块\剪切实体</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgSQLDbSet.cpp">
+      <Filter>Source Files\基本功能\数据库相关\服务器设置</Filter>
+    </ClCompile>
+    <ClCompile Include="DBAdo.cpp">
+      <Filter>Source Files\基本功能\数据库相关\ADO操作</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgSQLDB.cpp">
+      <Filter>Source Files\基本功能\数据库相关\数据导入</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgInsertOther.cpp">
+      <Filter>Source Files\基本功能\插入其它图例</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgCreateNewBlk.cpp">
+      <Filter>Source Files\基本功能\创建新块</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateTuli.cpp">
+      <Filter>Source Files\基本功能\生成图例</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgEquipmentStats.cpp">
+      <Filter>Source Files\基本功能\设备统计</Filter>
+    </ClCompile>
+    <ClCompile Include="BlkJig.cpp">
+      <Filter>Source Files\基本功能\插入图块</Filter>
+    </ClCompile>
+    <ClCompile Include="DataStore.cpp">
+      <Filter>Source Files\基本功能\数据库相关\数据存储及读写csv</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectToNotify.cpp">
+      <Filter>Source Files\基本功能\反应器</Filter>
+    </ClCompile>
+    <ClCompile Include="MakeBlkFile.cpp">
+      <Filter>Source Files\基本功能\插入图块</Filter>
+    </ClCompile>
+    <ClCompile Include="DataBaseInfo.cpp">
+      <Filter>Source Files\基本功能\插入图块</Filter>
+    </ClCompile>
+    <ClCompile Include="BlkRefCsv.cpp">
+      <Filter>Source Files\基本功能\数据库相关\数据存储及读写csv</Filter>
+    </ClCompile>
+    <ClCompile Include="CObjectAppendToDb.cpp">
+      <Filter>Source Files\基本功能\反应器</Filter>
+    </ClCompile>
+    <ClCompile Include="ExternalCall.cpp">
+      <Filter>Source Files\基本功能\导出函数</Filter>
+    </ClCompile>
+    <ClCompile Include="CAppEditorReactor.cpp">
+      <Filter>Source Files\基本功能\反应器</Filter>
+    </ClCompile>
+    <ClCompile Include="base\ExcelOperate\CEBExcelOperate.cpp">
+      <Filter>Source Files\BASE\Excel</Filter>
+    </ClCompile>
+    <ClCompile Include="base\ExcelOperate\excel9.cpp">
+      <Filter>Source Files\BASE\Excel</Filter>
+    </ClCompile>
+    <ClCompile Include="DoEntColor.cpp">
+      <Filter>Source Files\基本功能\设备查找</Filter>
+    </ClCompile>
+    <ClCompile Include="DataSort.cpp">
+      <Filter>Source Files\基本功能\设备统计</Filter>
+    </ClCompile>
+    <ClCompile Include="FileFormat.cpp">
+      <Filter>Source Files\基本功能\设备统计</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorList.cpp">
+      <Filter>Source Files\基本功能\数据库相关\数据导入</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DlgTKManage.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="base\GraphCtrl\GraphBlockViewWnd.h">
+      <Filter>Source Files\BASE\GraphCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="base\GraphCtrl\GraphListCtrl.h">
+      <Filter>Source Files\BASE\GraphCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="base\GraphCtrl\GraphTitleTip.h">
+      <Filter>Source Files\BASE\GraphCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="base\GraphCtrl\GsMPCtrl.h">
+      <Filter>Source Files\BASE\GraphCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="base\GraphCtrl\rxdebug.h">
+      <Filter>Source Files\BASE\GraphCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\AcadStdafx.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\AcadStr.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\AcDbBlockReferenceJig.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgDocLockWrite.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgDwgFiler.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgKeywordArray.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgRbList.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgReferenceFiler.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgSelSet.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgUiPrAngle.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgUiPrAngleDef.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgUiPrBase.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgUiPrCorner.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgUiPrDist.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgUiPrDistDef.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgUiPrDouble.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgUiPrDoubleDef.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgUiPrEntity.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgUiPrInt.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgUiPrIntDef.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgUiPrKeyWord.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgUiPrKeyWordDef.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgUiPrompts.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgUiPrPoint.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgUiPrString.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgUiPrStringDef.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgUtils.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgUtilsGe.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\ArxDbgXdata.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\Global.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\IniFile.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\OperateReg.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\SdStrList.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\SdStrObjId.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\SdSysVar.h">
+      <Filter>Source Files\BASE\INC</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\MyCalculateFunc.h">
+      <Filter>Source Files\BASE\MyFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\MyCommand.h">
+      <Filter>Source Files\BASE\MyFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\MyDrag.h">
+      <Filter>Source Files\BASE\MyFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\MyDrawEntity.h">
+      <Filter>Source Files\BASE\MyFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\MyEditEntity.h">
+      <Filter>Source Files\BASE\MyFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="MyOperateFile.h">
+      <Filter>Source Files\BASE\MyFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Inc\MyTransFunc.h">
+      <Filter>Source Files\BASE\MyFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirTreeCtrl.h">
+      <Filter>Source Files\BASE\文件目录控件</Filter>
+    </ClInclude>
+    <ClInclude Include="SortStringArray.h">
+      <Filter>Source Files\BASE\文件目录控件</Filter>
+    </ClInclude>
+    <ClInclude Include="base\listctrl\ComboItem.h">
+      <Filter>Source Files\BASE\listctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="base\listctrl\EditItem.h">
+      <Filter>Source Files\BASE\listctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="base\listctrl\EditList.h">
+      <Filter>Source Files\BASE\listctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgDrawGD.h">
+      <Filter>Source Files\基本功能\绘制管道</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseDataInDwg.h">
+      <Filter>Source Files\基本功能\基础数据</Filter>
+    </ClInclude>
+    <ClInclude Include="GDDataInDWG.h">
+      <Filter>Source Files\基本功能\基础管道数据</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgFindBlock.h">
+      <Filter>Source Files\基本功能\设备查找</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgDrawEquipment.h">
+      <Filter>Source Files\基本功能\插入设备</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgDrawInstrument.h">
+      <Filter>Source Files\基本功能\插入仪表</Filter>
+    </ClInclude>
+    <ClInclude Include="BlkInfo.h">
+      <Filter>Source Files\基本功能\插入图块</Filter>
+    </ClInclude>
+    <ClInclude Include="CutEntity.h">
+      <Filter>Source Files\基本功能\插入图块\剪切实体</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgSQLDbSet.h">
+      <Filter>Source Files\基本功能\数据库相关\服务器设置</Filter>
+    </ClInclude>
+    <ClInclude Include="DBAdo.h">
+      <Filter>Source Files\基本功能\数据库相关\ADO操作</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgSQLDB.h">
+      <Filter>Source Files\基本功能\数据库相关\数据导入</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgInsertOther.h">
+      <Filter>Source Files\基本功能\插入其它图例</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgCreateNewBlk.h">
+      <Filter>Source Files\基本功能\创建新块</Filter>
+    </ClInclude>
+    <ClInclude Include="DocData.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateTuli.h">
+      <Filter>Source Files\基本功能\生成图例</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgEquipmentStats.h">
+      <Filter>Source Files\基本功能\设备统计</Filter>
+    </ClInclude>
+    <ClInclude Include="BlkJig.h">
+      <Filter>Source Files\基本功能\插入图块</Filter>
+    </ClInclude>
+    <ClInclude Include="DataStore.h">
+      <Filter>Source Files\基本功能\数据库相关\数据存储及读写csv</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectToNotify.h">
+      <Filter>Source Files\基本功能\反应器</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckDB.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MakeBlkFile.h">
+      <Filter>Source Files\基本功能\插入图块</Filter>
+    </ClInclude>
+    <ClInclude Include="DataBaseInfo.h">
+      <Filter>Source Files\基本功能\插入图块</Filter>
+    </ClInclude>
+    <ClInclude Include="BlkRefCsv.h">
+      <Filter>Source Files\基本功能\数据库相关\数据存储及读写csv</Filter>
+    </ClInclude>
+    <ClInclude Include="CObjectAppendToDb.h">
+      <Filter>Source Files\基本功能\反应器</Filter>
+    </ClInclude>
+    <ClInclude Include="ExternalCall.h">
+      <Filter>Source Files\基本功能\导出函数</Filter>
+    </ClInclude>
+    <ClInclude Include="CAppEditorReactor.h">
+      <Filter>Source Files\基本功能\反应器</Filter>
+    </ClInclude>
+    <ClInclude Include="base\ExcelOperate\CEBExcelOperate.h">
+      <Filter>Source Files\BASE\Excel</Filter>
+    </ClInclude>
+    <ClInclude Include="base\ExcelOperate\excel9.h">
+      <Filter>Source Files\BASE\Excel</Filter>
+    </ClInclude>
+    <ClInclude Include="DoEntColor.h">
+      <Filter>Source Files\基本功能\设备查找</Filter>
+    </ClInclude>
+    <ClInclude Include="DataSort.h">
+      <Filter>Source Files\基本功能\设备统计</Filter>
+    </ClInclude>
+    <ClInclude Include="FileFormat.h">
+      <Filter>Source Files\基本功能\设备统计</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorList.h">
+      <Filter>Source Files\基本功能\数据库相关\数据导入</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="base\GraphCtrl\idi_cros.cur">
+      <Filter>Source Files\BASE\GraphCtrl</Filter>
+    </None>
+    <None Include="base\GraphCtrl\idi_orbi.cur">
+      <Filter>Source Files\BASE\GraphCtrl</Filter>
+    </None>
+    <None Include="base\GraphCtrl\idi_pan.cur">
+      <Filter>Source Files\BASE\GraphCtrl</Filter>
+    </None>
+    <None Include="base\GraphCtrl\idi_zoom.cur">
+      <Filter>Source Files\BASE\GraphCtrl</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ZwForTRS.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
