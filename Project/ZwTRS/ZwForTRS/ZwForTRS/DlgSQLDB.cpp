@@ -109,11 +109,11 @@ BOOL CDlgSQLDB::OnInitDialog()
 	ListView_SetExtendedListViewStyle(m_ListCtrl.m_hWnd, LVS_EX_INFOTIP | LVS_EX_FULLROWSELECT);
 
 	m_ListCtrl.InsertColumn( 0, _T("物料代码"), LVCFMT_LEFT, 150);
-	m_ListCtrl.InsertColumn( 1, _T("名称"), LVCFMT_LEFT, 250);
-	m_ListCtrl.InsertColumn( 2, _T("执行标准"), LVCFMT_LEFT, 150);
-	m_ListCtrl.InsertColumn( 3, _T("材料"), LVCFMT_LEFT, 100);
+	m_ListCtrl.InsertColumn( 1, _T("名称"), LVCFMT_LEFT, 200);
+	m_ListCtrl.InsertColumn( 2, _T("执行标准"), LVCFMT_LEFT, 120);
+	m_ListCtrl.InsertColumn( 3, _T("材料"), LVCFMT_LEFT, 80);
 	//m_ListCtrl.InsertColumn( 4, _T("零件类型"), LVCFMT_LEFT, 60);
-	m_ListCtrl.InsertColumn( 4, _T("单重"), LVCFMT_LEFT, 100);
+	m_ListCtrl.InsertColumn( 4, _T("单重"), LVCFMT_LEFT, 80);
 	//m_ListCtrl.InsertColumn( 6, _T("单位"), LVCFMT_LEFT, 50);
 	//m_ListCtrl.InsertColumn( 7, _T("代号"), LVCFMT_LEFT, 50);
 
@@ -189,6 +189,11 @@ BOOL CDlgSQLDB::OnInitDialog()
 	m_BlkInfo.SetBeizhu(pCell.GetF106());
 	m_BlkInfo.SetDanwei(pCell.GetFMaund());
 	m_BlkInfo.SetFNumber(pCell.GetFNumber());
+
+	int nLen = m_CombMaterial.GetDroppedWidth();
+	m_CombMaterial.SetDroppedWidth(1.2*nLen);
+
+	m_CombStandard.SetDroppedWidth(1.2*nLen);
 	return FALSE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
 }
