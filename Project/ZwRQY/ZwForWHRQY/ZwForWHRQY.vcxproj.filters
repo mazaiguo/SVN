@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{6b17af0d-c921-49a9-b3b8-c91352692e1f}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;idl;odl</Extensions>
+    </Filter>
+    <Filter Include="Source Files\图框设置">
+      <UniqueIdentifier>{ca9a9382-7be8-4985-b6a2-91f69f695809}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基础函数">
+      <UniqueIdentifier>{930031e6-1a4d-4ea9-9d42-6b5653da6690}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基础数据">
+      <UniqueIdentifier>{22466393-3d0e-4459-8e26-43eb70d64f2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基础数据\标尺基础数据">
+      <UniqueIdentifier>{11456897-6a50-49cd-9ac3-b74b1e6fc801}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\基础数据\操作标尺数据">
+      <UniqueIdentifier>{ed9ea983-0536-4680-89b4-2852894347d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\标尺">
+      <UniqueIdentifier>{eb78dbb9-b324-4501-a2f6-1d0fba16d96a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\反应器">
+      <UniqueIdentifier>{05a87eaf-d627-433e-a76d-7c84aa13faee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\反应器\双击编辑">
+      <UniqueIdentifier>{b42ed51f-8b41-4bee-9c2f-9a559fcdb8d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\实体">
+      <UniqueIdentifier>{cb706130-387d-4665-b440-cd944375ca13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\实体\自定义文字">
+      <UniqueIdentifier>{063bde9a-04a8-45b8-a5b2-4889768cc3d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include Files">
+      <UniqueIdentifier>{97929bad-4247-429f-8b68-7dcd1eb5c1a5}</UniqueIdentifier>
+      <Extensions>h;hh;hxx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{392436c9-1b2b-4efc-a7cd-8357f13182f3}</UniqueIdentifier>
+      <Extensions>rc;ico;bmp;cur;jpg;gif</Extensions>
+    </Filter>
+    <Filter Include="Miscellaneous Files">
+      <UniqueIdentifier>{2b445f40-2b3d-4655-918f-abe4ad6458a3}</UniqueIdentifier>
+      <Extensions>reg;rgs;mak;clw;vsdir;vsz;css;inf;vcproj;csproj</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="acrxEntryPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DocData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ZwForWHRQY.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgTKSZ.cpp">
+      <Filter>Source Files\图框设置</Filter>
+    </ClCompile>
+    <ClCompile Include="Global.cpp">
+      <Filter>Source Files\基础函数</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Source Files\基础函数</Filter>
+    </ClCompile>
+    <ClCompile Include="CBaseDataFORZDDwg.cpp">
+      <Filter>Source Files\基础数据</Filter>
+    </ClCompile>
+    <ClCompile Include="CBiaochiForRQY.cpp">
+      <Filter>Source Files\基础数据\标尺基础数据</Filter>
+    </ClCompile>
+    <ClCompile Include="BcUtils.cpp">
+      <Filter>Source Files\基础数据\操作标尺数据</Filter>
+    </ClCompile>
+    <ClCompile Include="BiaochiInfo.cpp">
+      <Filter>Source Files\标尺</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawBiaochi.cpp">
+      <Filter>Source Files\标尺</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawDMXProcess.cpp">
+      <Filter>Source Files\标尺</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawZDM.cpp">
+      <Filter>Source Files\标尺</Filter>
+    </ClCompile>
+    <ClCompile Include="ZdmDataInfo.cpp">
+      <Filter>Source Files\标尺</Filter>
+    </ClCompile>
+    <ClCompile Include="CDbClick.cpp">
+      <Filter>Source Files\反应器\双击编辑</Filter>
+    </ClCompile>
+    <ClCompile Include="SpecialText.cpp">
+      <Filter>Source Files\实体\自定义文字</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DlgTKSZ.h">
+      <Filter>Source Files\图框设置</Filter>
+    </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>Source Files\基础函数</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Source Files\基础函数</Filter>
+    </ClInclude>
+    <ClInclude Include="CBaseDataFORZDDwg.h">
+      <Filter>Source Files\基础数据</Filter>
+    </ClInclude>
+    <ClInclude Include="CBiaochiForRQY.h">
+      <Filter>Source Files\基础数据\标尺基础数据</Filter>
+    </ClInclude>
+    <ClInclude Include="BcUtils.h">
+      <Filter>Source Files\基础数据\操作标尺数据</Filter>
+    </ClInclude>
+    <ClInclude Include="BiaochiInfo.h">
+      <Filter>Source Files\标尺</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawBiaochi.h">
+      <Filter>Source Files\标尺</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawDMXProcess.h">
+      <Filter>Source Files\标尺</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawZDM.h">
+      <Filter>Source Files\标尺</Filter>
+    </ClInclude>
+    <ClInclude Include="ZdmDataInfo.h">
+      <Filter>Source Files\标尺</Filter>
+    </ClInclude>
+    <ClInclude Include="CDbClick.h">
+      <Filter>Source Files\反应器\双击编辑</Filter>
+    </ClInclude>
+    <ClInclude Include="SpecialText.h">
+      <Filter>Source Files\实体\自定义文字</Filter>
+    </ClInclude>
+    <ClInclude Include="DocData.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ZwForWHRQY.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
