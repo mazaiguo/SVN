@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="acrxEntryPoint.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="BatchPlot.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgPlotConfig.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="DocData.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgBlockName.cpp">
+      <Filter>source\oprate</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgListLayerName.cpp">
+      <Filter>source\oprate</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameInfo.cpp">
+      <Filter>source\oprate</Filter>
+    </ClCompile>
+    <ClCompile Include="JudgeFrame.cpp">
+      <Filter>source\oprate</Filter>
+    </ClCompile>
+    <ClCompile Include="Line.cpp">
+      <Filter>source\oprate</Filter>
+    </ClCompile>
+    <ClCompile Include="OperateReg.cpp">
+      <Filter>source\oprate</Filter>
+    </ClCompile>
+    <ClCompile Include="SearchLines.cpp">
+      <Filter>source\oprate</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility.cpp">
+      <Filter>source\oprate</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgListLayerout.cpp">
+      <Filter>source\oprate</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseFunc.cpp">
+      <Filter>source\oprate</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgMPlotConfig.cpp">
+      <Filter>source\oprate</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DlgPlotConfig.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="DocData.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgBlockName.h">
+      <Filter>source\oprate</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgListLayerName.h">
+      <Filter>source\oprate</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameInfo.h">
+      <Filter>source\oprate</Filter>
+    </ClInclude>
+    <ClInclude Include="JudgeFrame.h">
+      <Filter>source\oprate</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.h">
+      <Filter>source\oprate</Filter>
+    </ClInclude>
+    <ClInclude Include="OperateReg.h">
+      <Filter>source\oprate</Filter>
+    </ClInclude>
+    <ClInclude Include="SearchLines.h">
+      <Filter>source\oprate</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility.h">
+      <Filter>source\oprate</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgListLayerout.h">
+      <Filter>source\oprate</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseFunc.h">
+      <Filter>source\oprate</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgMPlotConfig.h">
+      <Filter>source\oprate</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="source">
+      <UniqueIdentifier>{0bdf07da-4b06-49e7-8d0f-1f1f8636ef3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="header">
+      <UniqueIdentifier>{20e766e2-d638-4f87-a896-5875abcc2ae4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource files">
+      <UniqueIdentifier>{97fb494d-0f04-46bd-88c1-55d6a98effc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\oprate">
+      <UniqueIdentifier>{d0f2223c-4c69-444c-bdb1-719adf33dad9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="BatchPlot.rc">
+      <Filter>Resource files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
