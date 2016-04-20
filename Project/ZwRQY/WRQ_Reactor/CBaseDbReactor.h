@@ -1,9 +1,9 @@
 //-----------------------------------------------------------------------------
-//----- CDbClick.h : Declaration of the CDbClick
+//----- CBaseDbReactor.h : Declaration of the CBaseDbReactor
 //-----------------------------------------------------------------------------
 #pragma once
 
-#ifdef ZWFORWHRQY_MODULE
+#ifdef WRQ_REACTOR_MOUDLE
 #define DLLIMPEXP __declspec(dllexport)
 #else
 //----- Note: we don't use __declspec(dllimport) here, because of the
@@ -24,50 +24,53 @@
 #endif
 
 //-----------------------------------------------------------------------------
-#include "aced.h"
+#include "dbmain.h"
 
 //-----------------------------------------------------------------------------
 //----- Note: Uncomment the DLLIMPEXP symbol below if you wish exporting
 //----- your class to other ARX/DBX modules
-class /*DLLIMPEXP*/ CDbClick : public AcEditorReactor {
-
-protected:
-	//----- Auto initialization and release flag.
-	bool mbAutoInitAndRelease ;
+class /*DLLIMPEXP*/ CBaseDbReactor : public AcDbDatabaseReactor {
 
 public:
-	CDbClick (const bool autoInitAndRelease =true) ;
-	virtual ~CDbClick () ;
+	ACRX_DECLARE_MEMBERS(CBaseDbReactor) ;
 
-	virtual void Attach () ;
+protected:
+	//----- Pointer to the document this reactor instance belongs to.
+	AcDbDatabase *mpDatabase ;
+
+public:
+	CBaseDbReactor (AcDbDatabase *pDb =NULL) ;
+	virtual ~CBaseDbReactor () ;
+
+	virtual void Attach (AcDbDatabase *pDb) ;
 	virtual void Detach () ;
-	virtual AcEditor *Subject () const ;
+	virtual AcDbDatabase *Subject () const ;
 	virtual bool IsAttached () const ;
 
 	// -----------------------------------------------------------------------------
-	virtual void beginDwgOpen(ACHAR * filename);
+	virtual void proxyResurrectionCompleted(const AcDbDatabase * dwg, const ACHAR * appname, AcDbObjectIdArray & objects);
 	// -----------------------------------------------------------------------------
-	virtual void endDwgOpen(const ACHAR * filename, AcDbDatabase * pDb);
+	virtual void goodbye(const AcDbDatabase * dwg);
 	// -----------------------------------------------------------------------------
-	virtual void dwgFileOpened(AcDbDatabase * param2, ACHAR * fileName);
+	virtual void headerSysVarWillChange(const AcDbDatabase * dwg, const ACHAR * name);
 	// -----------------------------------------------------------------------------
-	virtual void databaseConstructed(AcDbDatabase * param2);
+	virtual void headerSysVarChanged(const AcDbDatabase * dwg, const ACHAR * name, Adesk::Boolean bSuccess);
 	// -----------------------------------------------------------------------------
-	virtual void databaseToBeDestroyed(AcDbDatabase * param2);
+	virtual void objectAppended(const AcDbDatabase * dwg, const AcDbObject * dbObj);
 	// -----------------------------------------------------------------------------
-	virtual void beginSave(AcDbDatabase * param2, const ACHAR * pIntendedName);
+	virtual void objectUnAppended(const AcDbDatabase * dwg, const AcDbObject * dbObj);
 	// -----------------------------------------------------------------------------
-	virtual void saveComplete(AcDbDatabase * param2, const ACHAR * pActualName);
+	virtual void objectReAppended(const AcDbDatabase * dwg, const AcDbObject * dbObj);
 	// -----------------------------------------------------------------------------
-	virtual void abortSave(AcDbDatabase * param2);
+	virtual void objectOpenedForModify(const AcDbDatabase * dwg, const AcDbObject * dbObj);
 	// -----------------------------------------------------------------------------
-	virtual void lispWillStart(const ACHAR * firstLine);
+	virtual void objectModified(const AcDbDatabase * dwg, const AcDbObject * dbObj);
 	// -----------------------------------------------------------------------------
-	virtual void lispEnded(void);
+	virtual void objectErased(const AcDbDatabase * dwg, const AcDbObject * dbObj, Adesk::Boolean pErased);
 	// -----------------------------------------------------------------------------
-	virtual void lispCancelled(void);
-	// -----------------------------------------------------------------------------
-	virtual void beginDoubleClick(const AcGePoint3d & clickPoint);
-	// -----------------------------------------------------------------------------
-	virtual void beginRightClick(const AcGePoint3d & clickPoint);
+	static AcDbDatabaseReactor * cast(void);
 } ;
+
+#ifdef WRQ_REACTOR_MOUDLE
+ACDB_REGISTER_OBJECT_ENTRY_AUTO(CBaseDbReactor)
+#endif

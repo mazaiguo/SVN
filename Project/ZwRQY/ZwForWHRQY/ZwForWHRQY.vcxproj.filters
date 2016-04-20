@@ -64,9 +64,6 @@
     <ClCompile Include="DlgTKSZ.cpp">
       <Filter>Source Files\图框设置</Filter>
     </ClCompile>
-    <ClCompile Include="Global.cpp">
-      <Filter>Source Files\基础函数</Filter>
-    </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>Source Files\基础函数</Filter>
     </ClCompile>
@@ -104,9 +101,6 @@
   <ItemGroup>
     <ClInclude Include="DlgTKSZ.h">
       <Filter>Source Files\图框设置</Filter>
-    </ClInclude>
-    <ClInclude Include="Global.h">
-      <Filter>Source Files\基础函数</Filter>
     </ClInclude>
     <ClInclude Include="Utils.h">
       <Filter>Source Files\基础函数</Filter>

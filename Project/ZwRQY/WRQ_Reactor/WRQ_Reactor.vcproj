@@ -2,9 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="ZwForWHRQY"
-	ProjectGUID="{698C732B-8F7C-4762-9DA3-D5A51F6265BB}"
-	RootNamespace="ZwForWHRQY"
+	Name="WRQ_Reactor"
+	ProjectGUID="{4BDD4B9F-E17D-482E-8C17-3B7D80D2EF39}"
 	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
@@ -47,7 +46,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalUsingDirectories="C:\Program Files\AutoCAD 2010\"
-				PreprocessorDefinitions="WIN32;_WINDOWS;ZWFORWHRQY_MODULE;_AFXEXT;_ACRXAPP"
+				PreprocessorDefinitions="WIN32;_WINDOWS;WRQ_REACTOR_MODULE;_AFXEXT;_ACRXAPP"
 				StringPooling="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -71,13 +70,97 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(outdir)/ZwForWHRQY.arx"
+				OutputFile="$(outdir)/WRQ_Reactor.arx"
 				LinkIncremental="2"
 				LinkDLL="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/ZwForWHRQY.pdb"
+				ProgramDatabaseFile="$(OutDir)/WRQ_Reactor.pdb"
 				SubSystem="2"
-				ImportLibrary="$(OutDir)/ZwForWHRQY.lib"
+				ImportLibrary="$(OutDir)/WRQ_Reactor.lib"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfMFC="2"
+			UseOfATL="0"
+			CharacterSet="1"
+			ManagedExtensions="0"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				AdditionalUsingDirectories="C:\Program Files\AutoCAD 2010\"
+				PreprocessorDefinitions="WIN32;_WINDOWS;WRQ_REACTOR_MODULE;NDEBUG;_AFXEXT;_ACRXAPP"
+				StringPooling="true"
+				MinimalRebuild="false"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="2"
+				BufferSecurityCheck="true"
+				TreatWChar_tAsBuiltInType="true"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				WarningLevel="1"
+				DebugInformationFormat="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile="$(outdir)/WRQ_Reactor.arx"
+				LinkIncremental="2"
+				LinkDLL="true"
+				GenerateDebugInformation="false"
+				ProgramDatabaseFile=""
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/WRQ_Reactor.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -132,7 +215,7 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="E:\GitHub\SVN\MyBaseDLL\MyBaseDLL\code;E:\GitHub\SVN\Project\ZwRQY\WRQ_Entity"
 				AdditionalUsingDirectories="C:\Program Files\AutoCAD 2010\"
-				PreprocessorDefinitions="_WIN64;_WINDOWS;ZWFORWHRQY_MODULE;_AFXEXT;_ACRXAPP;ARX"
+				PreprocessorDefinitions="_WIN64;_WINDOWS;WRQ_REACTOR_MODULE;_AFXEXT;_ACRXAPP;ARX"
 				StringPooling="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -157,99 +240,15 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="MyBaseDLL.lib WRQ_Entity.lib"
-				OutputFile="E:\GitHub\SVN\Project\ZwRQY\ZWRQY\ZwForWHRQY.arx"
+				OutputFile="E:\GitHub\SVN\Project\ZwRQY\ZWRQY\WRQ_Reactor.arx"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="E:\GitHub\SVN\Project\ZwRQY\lib\acad"
 				LinkDLL="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/ZwForWHRQY.pdb"
+				ProgramDatabaseFile="$(OutDir)/WRQ_Reactor.pdb"
 				SubSystem="2"
-				ImportLibrary="E:\GitHub\SVN\Project\ZwRQY\lib\acad\ZwForWHRQY.lib"
+				ImportLibrary="E:\GitHub\SVN\Project\ZwRQY\lib\acad\WRQ_Reactor.lib"
 				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="2"
-			UseOfMFC="2"
-			UseOfATL="0"
-			CharacterSet="1"
-			ManagedExtensions="0"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				AdditionalUsingDirectories="C:\Program Files\AutoCAD 2010\"
-				PreprocessorDefinitions="WIN32;_WINDOWS;ZWFORWHRQY_MODULE;NDEBUG;_AFXEXT;_ACRXAPP"
-				StringPooling="true"
-				MinimalRebuild="false"
-				BasicRuntimeChecks="0"
-				RuntimeLibrary="2"
-				BufferSecurityCheck="true"
-				TreatWChar_tAsBuiltInType="true"
-				ForceConformanceInForLoopScope="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="2"
-				WarningLevel="1"
-				DebugInformationFormat="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				OutputFile="$(outdir)/ZwForWHRQY.arx"
-				LinkIncremental="2"
-				LinkDLL="true"
-				GenerateDebugInformation="false"
-				ProgramDatabaseFile=""
-				SubSystem="2"
-				ImportLibrary="$(OutDir)/ZwForWHRQY.lib"
-				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -302,7 +301,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				AdditionalUsingDirectories="C:\Program Files\AutoCAD 2010\"
-				PreprocessorDefinitions="_WIN64;_WINDOWS;ZWFORWHRQY_MODULE;NDEBUG;_AFXEXT;_ACRXAPP"
+				PreprocessorDefinitions="_WIN64;_WINDOWS;WRQ_REACTOR_MODULE;NDEBUG;_AFXEXT;_ACRXAPP"
 				StringPooling="true"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
@@ -326,13 +325,13 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(outdir)/ZwForWHRQY.arx"
+				OutputFile="$(outdir)/WRQ_Reactor.arx"
 				LinkIncremental="2"
 				LinkDLL="true"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile=""
 				SubSystem="2"
-				ImportLibrary="$(OutDir)/ZwForWHRQY.lib"
+				ImportLibrary="$(OutDir)/WRQ_Reactor.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -370,6 +369,46 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CBaseDbReactor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CBaseDbReactor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CBaseDocReactor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CBaseDocReactor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CBaseEdReactor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CBaseEdReactor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CBaseEntDoubleClick.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CBaseEntDoubleClick.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CBaseEventReactor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CBaseEventReactor.h"
+				>
+			</File>
+			<File
 				RelativePath=".\DocData.cpp"
 				>
 			</File>
@@ -385,7 +424,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -393,7 +432,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
+					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -410,105 +449,9 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\ZwForWHRQY.cpp"
+				RelativePath=".\WRQ_Reactor.cpp"
 				>
 			</File>
-			<Filter
-				Name="图框设置"
-				>
-				<File
-					RelativePath=".\DlgTKSZ.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\DlgTKSZ.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="基础函数"
-				>
-			</Filter>
-			<Filter
-				Name="基础数据"
-				>
-				<Filter
-					Name="标尺基础数据"
-					>
-				</Filter>
-				<Filter
-					Name="操作标尺数据"
-					>
-					<File
-						RelativePath=".\BcUtils.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\BcUtils.h"
-						>
-					</File>
-				</Filter>
-			</Filter>
-			<Filter
-				Name="标尺"
-				>
-				<File
-					RelativePath=".\BiaochiInfo.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\BiaochiInfo.h"
-					>
-				</File>
-				<File
-					RelativePath=".\DrawBiaochi.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\DrawBiaochi.h"
-					>
-				</File>
-				<File
-					RelativePath=".\DrawDMXProcess.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\DrawDMXProcess.h"
-					>
-				</File>
-				<File
-					RelativePath=".\DrawZDM.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\DrawZDM.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ZdmDataInfo.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ZdmDataInfo.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="实体"
-				>
-				<Filter
-					Name="自定义文字"
-					>
-					<File
-						RelativePath=".\SpecialText.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\SpecialText.h"
-						>
-					</File>
-				</Filter>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Include Files"
@@ -532,7 +475,7 @@
 			Filter="rc;ico;bmp;cur;jpg;gif"
 			>
 			<File
-				RelativePath=".\ZwForWHRQY.rc"
+				RelativePath=".\WRQ_Reactor.rc"
 				>
 			</File>
 		</Filter>
@@ -543,9 +486,5 @@
 		</Filter>
 	</Files>
 	<Globals>
-		<Global
-			Name="RESOURCE_FILE"
-			Value="ZwForWHRQY.rc"
-		/>
 	</Globals>
 </VisualStudioProject>

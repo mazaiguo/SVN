@@ -9,7 +9,7 @@
 
      // MDI safe statics
 Adesk::Int16    CBaseDataForZdDwg::m_version = 0;
-LPCTSTR			CBaseDataForZdDwg::m_dictName = _T("ZW_BASE_DATA_IN_DWG");
+LPCTSTR			CBaseDataForZdDwg::m_dictName = _T("ZW_BASE_DATA_FOR_ZDM");
 
 ACRX_DXF_DEFINE_MEMBERS(CBaseDataForZdDwg, AcDbObject,
                         AcDb::kDHL_CURRENT, AcDb::kMReleaseCurrent,
@@ -24,6 +24,7 @@ CBaseDataForZdDwg::CBaseDataForZdDwg()
 	m_bDrawJiedian = true;
 	m_strCurNum = _T("1");
 	m_strNumCount = _T("1");
+	m_strJdNum = _T("1");
 }
 
 
@@ -99,6 +100,20 @@ Acad::ErrorStatus CBaseDataForZdDwg::setCurNum(CString nCount)
 {
 	assertWriteEnabled();
 	m_strCurNum = nCount;
+
+	return Acad::eOk;
+}
+
+CString CBaseDataForZdDwg::JdNum()
+{
+	assertReadEnabled();
+	return m_strJdNum;
+}
+
+Acad::ErrorStatus CBaseDataForZdDwg::setJdNum(CString nCount)
+{
+	assertWriteEnabled();
+	m_strJdNum = nCount;
 
 	return Acad::eOk;
 }
@@ -227,6 +242,9 @@ CBaseDataForZdDwg::dwgInFields(AcDbDwgFiler* filer)
 	filer->readItem(&tmpStr);
 	m_strCurNum = tmpStr;
 	acutDelString(tmpStr);
+	filer->readItem(&tmpStr);
+	m_strJdNum = tmpStr;
+	acutDelString(tmpStr);
 
 	filer->readItem(&m_dXScale);
 	filer->readItem(&m_dYScale);
@@ -262,6 +280,7 @@ CBaseDataForZdDwg::dwgOutFields(AcDbDwgFiler* filer) const
     filer->writeItem(static_cast<const TCHAR*>(m_label));
 	filer->writeItem(static_cast<const TCHAR*>(m_strNumCount));
 	filer->writeItem(static_cast<const TCHAR*>(m_strCurNum));
+	filer->writeItem(static_cast<const TCHAR*>(m_strJdNum));
 	filer->writeItem(m_dXScale);
 	filer->writeItem(m_dYScale);
 	filer->writeItem(m_dminElavation);
@@ -306,6 +325,10 @@ CBaseDataForZdDwg::dxfInFields(AcDbDxfFiler* filer)
 		else if (rb.restype == kDxfCurNum)
 		{
 			setCurNum(rb.resval.rstring);
+		}
+		else if (rb.restype == kDxfJdNum)
+		{
+			setJdNum(rb.resval.rstring);
 		}
 		else if (rb.restype == kDxfXScale)
 		{
@@ -379,6 +402,7 @@ CBaseDataForZdDwg::dxfOutFields(AcDbDxfFiler* filer) const
     filer->writeItem(kDxfLabel, static_cast<const TCHAR*>(m_label));
 	filer->writeItem(kDxfNumCount, m_strNumCount);
 	filer->writeItem(kDxfCurNum, m_strCurNum);
+	filer->writeItem(kDxfJdNum, m_strJdNum);
 	filer->writeItem(kDxfXScale, m_dXScale);
 	filer->writeItem(kDxfYScale, m_dYScale);
 	filer->writeItem(kDxfminElavation, m_dminElavation);

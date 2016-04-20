@@ -10,10 +10,13 @@
 //#pragma warning(disable: 4098)
 
 //-----------------------------------------------------------------------------
+#define STRICT
+
+#ifndef VC_EXTRALEAN
+#define VC_EXTRALEAN			//- Exclude rarely-used stuff from Windows headers
+#endif
 
 
-
-//- ObjectARX and OMF headers needs this
 #include <map>
 
 //-----------------------------------------------------------------------------
@@ -53,10 +56,7 @@
 
 //-----------------------------------------------------------------------------
 #include "DocData.h" //- Your document specific data class holder
-
 #include "MyBase.h"
-#include "Global.h"
-#define BC_DICT _T("ZW_FOR_WHRQY_")
 
 //- Declare it as an extern here so that it becomes available in all modules
 extern AcApDataManager<CDocData> DocVars ;

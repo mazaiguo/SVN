@@ -4,9 +4,9 @@
 
 DrawDMXProcess::DrawDMXProcess(void)
 {
-	CString strCount = CUtils::getNumCount();
+	CString strCount = CDMXUtils::getNumCount();
 	m_nCout = MyTransFunc::StringToInt(strCount);
-	m_bDrawJiedian = CUtils::getcreateJiedian();
+	m_bDrawJiedian = CDMXUtils::getcreateJiedian();
 	m_pZdmInfo = new CZdmDataInfo();
 	m_pZdmInfo->setCount(strCount);
 	CString strLabel = BC_DICT + strCount;
@@ -28,8 +28,8 @@ DrawDMXProcess::DrawDMXProcess(void)
 		m_dZhuanghao = pBiaoChi.getcurData();
 		m_dSJDmHeight = pBiaoChi.getDesignDmx();
 	}
-	m_dminElavation = CUtils::getMinElavation();
-	m_dmaxElavation = CUtils::getMaxElavation();
+	m_dminElavation = CDMXUtils::getMinElavation();
+	m_dmaxElavation = CDMXUtils::getMaxElavation();
 }
 
 DrawDMXProcess::~DrawDMXProcess(void)
@@ -97,10 +97,10 @@ bool DrawDMXProcess::Insert()
 	{
 		//return true;
 	}
-	else if (nRet == RTNONE)
+	/*else if (nRet == RTNONE)
 	{
 		m_dZhuanghao = m_dZhuanghao;
-	}
+	}*/
 	else
 	{
 		return false;
@@ -186,7 +186,8 @@ int DrawDMXProcess::GetZhuanghao()
 	}
 	else if (nRet == RTNONE)
 	{
-		m_dZhuanghao = m_dZhuanghao;
+		//m_dZhuanghao = m_dZhuanghao;
+		return RTERROR;
 	}
 	else if (nRet == RTKWORD)
 	{
@@ -222,7 +223,7 @@ bool DrawDMXProcess::GetIsJiedian()
 		m_bDrawJiedian = false;
 	}
 	
-	CUtils::SetcreateJiedian(m_bDrawJiedian);
+	CDMXUtils::SetcreateJiedian(m_bDrawJiedian);
 	return m_bDrawJiedian;
 }
 //
@@ -324,7 +325,7 @@ bool DrawDMXProcess::doUndo()
 	CBcUtils utils;
 	utils.del(strTmpLabel);
 
-	CUtils::setNumCount(strCount);
+	CDMXUtils::setNumCount(strCount);
 	return true;
 }
 

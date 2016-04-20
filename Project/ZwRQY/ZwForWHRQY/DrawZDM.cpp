@@ -44,7 +44,6 @@ AcDbObjectId CDrawZDM::Draw()
 {
 	AcDbObjectId groupId = AcDbObjectId::kNull;
 	initdata();
-
 	DrawLine();
 
 	DrawDMText();
@@ -62,8 +61,9 @@ AcDbObjectId CDrawZDM::Draw()
 	
 	nCount++;
 	strCount.Format(_T("%d"), nCount);
-	CUtils::setNumCount(strCount);
-	CUtils::SetCurNum(strCount);
+	CDMXUtils::setNumCount(strCount);
+	CDMXUtils::SetCurNum(strCount);
+	CDMXUtils::SetJdNum(strCount);
 	
 	//////////////////////////////////////////////////////////////////////////
 	//将数据添加到图纸中
@@ -96,7 +96,10 @@ void CDrawZDM::setData( CZdmDataInfo* pData )
 AcDbObjectId CDrawZDM::insert()
 {	
 	AcDbObjectId groupId = AcDbObjectId::kNull;
+	
 	initdata();
+
+	
 
 	DrawLine();
 
@@ -116,8 +119,9 @@ AcDbObjectId CDrawZDM::insert()
 
 	nCount++;
 	strCount.Format(_T("%d"), nCount);
-	CUtils::setNumCount(strCount);
-	CUtils::SetCurNum(strCount);
+	CDMXUtils::setNumCount(strCount);
+	CDMXUtils::SetCurNum(strCount);
+	CDMXUtils::SetJdNum(strCount);
 
 	//////////////////////////////////////////////////////////////////////////
 	//将数据添加到图纸中
@@ -128,8 +132,8 @@ AcDbObjectId CDrawZDM::insert()
 
 bool CDrawZDM::initdata()
 {
-	m_dXScale = 1000/(CUtils::getXScale());
-	m_dYScale = 1000/(CUtils::getYScale());
+	m_dXScale = 1000/(CDMXUtils::getXScale());
+	m_dYScale = 1000/(CDMXUtils::getYScale());
 	CString strCount = m_pZDM.getCount();
 	int nCount = MyTransFunc::StringToInt(strCount);
 	//if (nCount == 1)
@@ -137,23 +141,44 @@ bool CDrawZDM::initdata()
 		m_dLen = m_dXScale*10;
 	}
 
+#if 0
 	m_dWidth = m_dYScale*15.2;
+#else
+	m_dWidth = m_dYScale*16.7;
+#endif
+	
 	return true;
 }
 
 bool CDrawZDM::DrawLine()
 {
-	//AcGePoint3d basePt = 
-	AcGePoint3d basePt = CUtils::getbasePt();
+	AcGePoint3d basePt = CDMXUtils::getbasePt();
 	AcGePoint3d endPt;
 
 	AcDbObjectId lineId = AcDbObjectId::kNull;
+	CString strCount = m_pZDM.getCount();	
+	int nCount = MyTransFunc::StringToInt(strCount);	
 
+	if (nCount > 1)
+	{	
+		CString strPreCount;
+
+		strPreCount.Format(_T("%d"), nCount - 1);
+		CString strLabel = BC_DICT + strPreCount;
+
+		CBcUtils utls;
+		m_preData = utls.get(strLabel);
+	}
+	
 	//绘制横着的线
-	for (int i=0; i<10; i++)
+	for (int i=0; i<11; i++)
 	{
 		AcGePoint3d tmpPt;
+#if 0
 		if (i >= 5)
+#else
+		if (i >= 6)
+#endif
 		{
 			acutPolar(asDblArray(basePt), 3*PI/2, (1.5*i + 1.7)*m_dYScale, asDblArray(tmpPt));
 		}
@@ -162,17 +187,28 @@ bool CDrawZDM::DrawLine()
 			acutPolar(asDblArray(basePt), 3*PI/2, i*1.5*m_dYScale, asDblArray(tmpPt));
 		}
 		acutPolar(asDblArray(tmpPt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(endPt));
+		if (nCount > 1)
+		{
+			acutPolar(asDblArray(tmpPt), 0, m_dLen + m_preData.getcurData()*m_dXScale, asDblArray(tmpPt));
+		}
 		lineId = MyDrawEntity::DrawLine(tmpPt, endPt);
 		m_idArrs.append(lineId);
 	}
 	//先使用设计水面高来绘制图形，后续不对再修改
-	CString strCount = m_pZDM.getCount();	
-	int nCount = MyTransFunc::StringToInt(strCount);
+	
 	acutPolar(asDblArray(basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(basePt));
-	double dDesignDmx = (m_pZDM.getDesignDmx() - CUtils::getMinElavation())*m_dYScale;
+	double dDesignDmx = (m_pZDM.getDesignDmx() - CDMXUtils::getMinElavation())*m_dYScale;
+	double dRealDmx = (m_pZDM.getRealDmx() - CDMXUtils::getMinElavation())*m_dYScale;
+	
 	AcGePoint3d tmpPt;
-	acutPolar(asDblArray(basePt), PI/2, dDesignDmx, asDblArray(tmpPt));
-
+	if (dDesignDmx < dRealDmx)
+	{
+		acutPolar(asDblArray(basePt), PI/2, dRealDmx, asDblArray(tmpPt));
+	}
+	else
+	{
+		acutPolar(asDblArray(basePt), PI/2, dDesignDmx, asDblArray(tmpPt));
+	}
 	if (nCount == 0)
 	{
 		acutPolar(asDblArray(basePt), 3*PI/2, m_dWidth, asDblArray(endPt));
@@ -181,8 +217,17 @@ bool CDrawZDM::DrawLine()
 	{
 		acutPolar(asDblArray(basePt), 3*PI/2, m_dWidth-1.5*m_dYScale, asDblArray(endPt));
 	}
-	lineId = MyDrawEntity::DrawLine(tmpPt, endPt);
-	m_idArrs.append(lineId);
+	bool bJd = CDMXUtils::getcreateJiedian();
+	if (!bJd)
+	{		
+		lineId = MyDrawEntity::DrawLine(tmpPt, endPt);
+		m_idArrs.append(lineId);
+	}
+	else
+	{
+		DrawJdText(basePt, tmpPt, endPt);
+	}
+	
 
 	return true;
 }
@@ -190,11 +235,11 @@ bool CDrawZDM::DrawLine()
 bool CDrawZDM::DrawDMText()
 {
 	AcDbObjectId textId = AcDbObjectId::kNull;
-	AcGePoint3d basePt = CUtils::getbasePt();
+	AcGePoint3d basePt = CDMXUtils::getbasePt();
 	double dSJDmx = m_pZDM.getDesignDmx();
 	double dXZDmx = m_pZDM.getRealDmx();
 	double dCurData = m_pZDM.getcurData();
-	bool bDrawBc = CUtils::getcreateBc();
+	bool bDrawBc = CDMXUtils::getcreateBc();
 	AcGePoint3d textPt;
 	CString strTmp;
 	CString strSJDmx = MyTransFunc::doubleToStr(dSJDmx, strTmp);
@@ -204,13 +249,14 @@ bool CDrawZDM::DrawDMText()
 	//绘制设计地面高文字
 	acutPolar(asDblArray(basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(textPt));
 	acutPolar(asDblArray(textPt), 3*PI/2, 0.75*m_dYScale, asDblArray(textPt));
-	textId = MyDrawEntity::DrawText(textPt, strSJDmx, 3*m_dYScale/10, AcDbObjectId::kNull, AcDb::kTextCenter);
+	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 6.0);
+	textId = MyDrawEntity::DrawText(textPt, strSJDmx, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
 	textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 	m_idArrs.append(textId);
 	
 	//绘制现状地面高
 	acutPolar(asDblArray(textPt), 3*PI/2, 1.5*m_dYScale, asDblArray(textPt));
-	textId = MyDrawEntity::DrawText(textPt, strXZDmx, 3*m_dYScale/10, AcDbObjectId::kNull, AcDb::kTextCenter);
+	textId = MyDrawEntity::DrawText(textPt, strXZDmx, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
 	textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 	m_idArrs.append(textId);
 
@@ -220,13 +266,13 @@ bool CDrawZDM::DrawDMText()
 		CString strJiedian = m_pZDM.getJiedian();
 		AcGePoint3d tmpPt;
 		acutPolar(asDblArray(textPt), 3*PI/2, 1.5*m_dYScale, asDblArray(tmpPt));
-		textId = MyDrawEntity::DrawText(tmpPt, strJiedian, 3*m_dYScale/10, AcDbObjectId::kNull, AcDb::kTextCenter);
+		textId = MyDrawEntity::DrawText(tmpPt, strJiedian, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
 		textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 		m_idArrs.append(textId);
 	}
 	//绘制桩号
 	acutPolar(asDblArray(textPt), 3*PI/2, 3*m_dYScale, asDblArray(textPt));
-	textId = MyDrawEntity::DrawText(textPt, strZhuanghao, 3*m_dYScale/10, AcDbObjectId::kNull, AcDb::kTextCenter);
+	textId = MyDrawEntity::DrawText(textPt, strZhuanghao, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
 	textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 	m_idArrs.append(textId);
 
@@ -244,35 +290,54 @@ bool CDrawZDM::DrawXMText()
 	return true;
 }
 
+
+bool CDrawZDM::DrawJdText(AcGePoint3d basePt, AcGePoint3d TopPt, AcGePoint3d endPt)
+{
+	AcGePoint3d line1Pt,line2Pt,cenPt;
+	double dRadius = 0.3*m_dYScale;
+	acutPolar(asDblArray(basePt), 3*PI/2, 3.75*m_dYScale, asDblArray(cenPt));
+	acutPolar(asDblArray(cenPt), PI/2, dRadius, asDblArray(line1Pt));
+	acutPolar(asDblArray(cenPt), 3*PI/2, dRadius, asDblArray(line2Pt));
+	AcDbObjectId line1Id,line2Id,cirId,textId;
+	line1Id = MyDrawEntity::DrawLine(TopPt, line1Pt);
+	line2Id = MyDrawEntity::DrawLine(line2Pt, endPt);
+
+	cirId = MyDrawEntity::DrawCircle(cenPt, dRadius);
+	CString strText;
+	strText = _T("T") + CDMXUtils::getJdNum();
+	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 6.0);
+	textId = MyDrawEntity::DrawText(cenPt, strText, 0.3*m_dYScale, textStyleId, AcDb::kTextMid, AcDb::kTextBase);
+	m_idArrs.append(line1Id);
+	m_idArrs.append(line2Id);
+	m_idArrs.append(cirId);
+	m_idArrs.append(textId);
+	return true;
+}
+
 bool CDrawZDM::DrawSMXLine(bool bIsDeFault)
 {
 	//先使用设计水面高来绘制图形，后续不对再修改
-	AcGePoint3d basePt = CUtils::getbasePt();
+	AcGePoint3d basePt = CDMXUtils::getbasePt();
 	CString strCount = m_pZDM.getCount();	
 	int nCount = MyTransFunc::StringToInt(strCount);
-	CString strPreCount;
-	strPreCount.Format(_T("%d"), nCount - 1);
-	CString strLabel = BC_DICT + strPreCount;
+	
 	CBcUtils utls;
-	CZdmDataInfo preData;
-	preData = utls.get(strLabel);
-
 	//////////////////////////////////////////////////////////////////////////
 	//设计地面线
 	AcDbObjectId xdmLayerId = MySymble::CreateNewLayer(_T("MQ-XDM"), 3);
 	AcDbObjectId sdmLayerId = MySymble::CreateNewLayer(_T("MQ-SDM"), 4);
-	double dDesignDmx = (m_pZDM.getDesignDmx() - CUtils::getMinElavation())*m_dYScale;
-	double dPreDesignDmx = (preData.getDesignDmx() - CUtils::getMinElavation())*m_dYScale;
+	double dDesignDmx = (m_pZDM.getDesignDmx() - CDMXUtils::getMinElavation())*m_dYScale;
+	double dPreDesignDmx = (m_preData.getDesignDmx() - CDMXUtils::getMinElavation())*m_dYScale;
 	
-	double dRealDmx = (m_pZDM.getRealDmx() - CUtils::getMinElavation())*m_dYScale;
-	double dPreRealDmx = (preData.getRealDmx() - CUtils::getMinElavation())*m_dYScale;
+	double dRealDmx = (m_pZDM.getRealDmx() - CDMXUtils::getMinElavation())*m_dYScale;
+	double dPreRealDmx = (m_preData.getRealDmx() - CDMXUtils::getMinElavation())*m_dYScale;
 
 	AcGePoint3d startPt, endPt, tmpPt, preStartPt, preEndPt;	
 	acutPolar(asDblArray(basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(tmpPt));
 	acutPolar(asDblArray(tmpPt), PI/2, dDesignDmx, asDblArray(endPt));
 	acutPolar(asDblArray(tmpPt), PI/2, dRealDmx, asDblArray(preEndPt));
 
-	acutPolar(asDblArray(basePt), 0, m_dLen + preData.getcurData()*m_dXScale, asDblArray(tmpPt));
+	acutPolar(asDblArray(basePt), 0, m_dLen + m_preData.getcurData()*m_dXScale, asDblArray(tmpPt));
 	acutPolar(asDblArray(tmpPt), PI/2, dPreDesignDmx, asDblArray(startPt));
 	acutPolar(asDblArray(tmpPt), PI/2, dPreRealDmx, asDblArray(preStartPt));
 
@@ -290,8 +355,8 @@ bool CDrawZDM::DrawSMXLine(bool bIsDeFault)
 		CString strNextLabel = BC_DICT + strNext;
 		CZdmDataInfo NextData;
 		NextData = utls.get(strNextLabel);
-		double dNextDesignDmx = (NextData.getDesignDmx() - CUtils::getMinElavation())*m_dYScale;
-		double dNextRealDmx = (NextData.getRealDmx() - CUtils::getMinElavation())*m_dYScale;
+		double dNextDesignDmx = (NextData.getDesignDmx() - CDMXUtils::getMinElavation())*m_dYScale;
+		double dNextRealDmx = (NextData.getRealDmx() - CDMXUtils::getMinElavation())*m_dYScale;
 
 		acutPolar(asDblArray(basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(tmpPt));
 		acutPolar(asDblArray(tmpPt), PI/2, dNextDesignDmx, asDblArray(startPt));
@@ -325,7 +390,7 @@ bool CDrawZDM::AddObjToDict( CString strGroupName, AcDbObjectId objId )
 bool CDrawZDM::ModifyDictbyInt( int nCur )
 {	
 	int nCount = 1; 
-	CString strCount = CUtils::getNumCount();
+	CString strCount = CDMXUtils::getNumCount();
 	nCount = MyTransFunc::StringToInt(strCount);
 	CString strGroupName,strPreGroupNam, strTmp;
 	for (int i=nCount; i>=nCur; i--)

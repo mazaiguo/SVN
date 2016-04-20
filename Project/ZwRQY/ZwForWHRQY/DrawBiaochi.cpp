@@ -44,7 +44,7 @@ bool CDrawBiaochi::DrawNext()
 			bContinued = false;
 		}	
 	}
-	return true;
+	return bContinued;
 }
 
 //绘制标尺
@@ -121,7 +121,11 @@ bool CDrawBiaochi::startDraw()
 //绘制图框
 AcDbObjectId CDrawBiaochi::DrawBiaoge()
 {
-	CString strFileName = gGlobal.GetAppPath() + _T("bc\\zdmmq.dwg");
+#if 0
+	CString strFileName = MyBaseUtils::GetAppPath() + _T("bc\\zdmmq.dwg");
+#else
+	CString strFileName = MyBaseUtils::GetAppPath() + _T("bc\\zdmmq1.dwg");
+#endif
 	AcDbObjectId blkRecId = MyDrawEntity::GetBlkRef(strFileName);
 	AcDbBlockReference* pBlkRef = new AcDbBlockReference(m_basePt, blkRecId);
 	pBlkRef->setScaleFactors(AcGeScale3d(m_dXRatio/2, m_dYRatio/10, 1.0));
@@ -188,7 +192,7 @@ bool CDrawBiaochi::GetStartBG()
 	{
 		return false;
 	}
-	CUtils::SetMinElavation(m_nStartBG);
+	CDMXUtils::SetMinElavation(m_nStartBG);
 	return true;
 }
 //获取终止标高数据
@@ -236,7 +240,7 @@ bool CDrawBiaochi::GetEndBG()
 	{
 		return false;
 	}
-	CUtils::SetMaxElavation(m_nEndBG);
+	CDMXUtils::SetMaxElavation(m_nEndBG);
 	return true;
 }
 
@@ -266,7 +270,8 @@ AcDbObjectId CDrawBiaochi::DrawTextAndBC(AcGePoint3d pt, CString strText, bool b
 	AcGePoint3d textPt;
 	acutPolar(asDblArray(pt), PI, m_dXRatio*1.5, asDblArray(textPt));
 
-	textId = MyDrawEntity::DrawText(textPt, strText, 3.0*m_dYRatio/10, AcDbObjectId::kNull, AcDb::kTextRight);
+	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 6.0);
+	textId = MyDrawEntity::DrawText(textPt, strText, 3.0*m_dYRatio/10, textStyleId, AcDb::kTextRight);
 	objIds.append(textId);
 
 	acdbGetAdsName(textName, textId);
@@ -275,11 +280,11 @@ AcDbObjectId CDrawBiaochi::DrawTextAndBC(AcGePoint3d pt, CString strText, bool b
 	CString strFileName;
 	if (bFull)
 	{
-		strFileName = gGlobal.GetAppPath() + _T("bc\\ZDMB1.dwg");
+		strFileName = MyBaseUtils::GetAppPath() + _T("bc\\ZDMB1.dwg");
 	}
 	else
 	{
-		strFileName = gGlobal.GetAppPath() + _T("bc\\ZDMB2.dwg");
+		strFileName = MyBaseUtils::GetAppPath() + _T("bc\\ZDMB2.dwg");
 	}
 
 	AcDbObjectId blkRecId = MyDrawEntity::GetBlkRef(strFileName);
@@ -311,8 +316,8 @@ void CDrawBiaochi::AppendIdToSS(AcDbObjectId objId)
 
 void CDrawBiaochi::SaveDataToDwg()
 {
-	CUtils::SetXScale(m_dXScale);
-	CUtils::SetYScale(m_dYScale);
-	CUtils::SetbasePt(m_basePt);
-	CUtils::SetcreateBc(true);
+	CDMXUtils::SetXScale(m_dXScale);
+	CDMXUtils::SetYScale(m_dYScale);
+	CDMXUtils::SetbasePt(m_basePt);
+	CDMXUtils::SetcreateBc(true);
 }

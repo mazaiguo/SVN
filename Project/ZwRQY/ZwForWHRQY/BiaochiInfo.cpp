@@ -48,7 +48,7 @@ bool CBiaochiInfo::newLine()
 //在原有的数据上继续
 bool CBiaochiInfo::oldLine()
 {
-	bool bDrawBc = CUtils::getcreateBc();
+	bool bDrawBc = CDMXUtils::getcreateBc();
 	bool bRet = false;
 	CDrawBiaochi drawBc;
 	if (!bDrawBc)
@@ -64,10 +64,11 @@ bool CBiaochiInfo::oldLine()
 
 void CBiaochiInfo::initData()
 {
-	CUtils::setNumCount(_T("1"));
-	CUtils::SetCurNum(_T("1"));
-	CUtils::SetcreateJiedian(true);
-	CUtils::SetcreateBc(true);
-	CUtils::SetXScale(500);
-	CUtils::SetYScale(100);
+	CDMXUtils::setNumCount(_T("1"));
+	CDMXUtils::SetCurNum(_T("1"));
+	CDMXUtils::SetJdNum(_T("1"));
+	CDMXUtils::SetcreateJiedian(true);
+	CDMXUtils::SetcreateBc(true);
+	CDMXUtils::SetXScale(500);
+	CDMXUtils::SetYScale(100);
 }

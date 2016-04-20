@@ -2,7 +2,13 @@
 #define CBASEDATAFORZDDWG_H
 #include "MyBase.h"
 
-class CBaseDataForZdDwg : public AcDbObject 
+#ifdef MYBASEDLL_EXPORTS //在创建产生DLL的工程中先把 MYBASEDLL_EXPORTS 预定义上
+#define SERVERDLL_API __declspec(dllexport)
+#else
+#define SERVERDLL_API __declspec(dllimport)
+#endif
+
+class SERVERDLL_API CBaseDataForZdDwg : public AcDbObject 
 {
 
 public:
@@ -21,6 +27,9 @@ public:
 
 	CString					CurNum();
 	Acad::ErrorStatus	setCurNum(CString nCount);
+
+	CString					JdNum();
+	Acad::ErrorStatus	setJdNum(CString nCount);
 
 	double				XScale() const;
 	Acad::ErrorStatus	setXScale(double dHx);
@@ -44,15 +53,7 @@ public:
 	Acad::ErrorStatus	setbasePt(AcGePoint3d startPt);
 
 
-	/*AcGePoint3d			endPt() const;
-	Acad::ErrorStatus	setEndPt(AcGePoint3d endPt);*/
-
-	/*double				hengxiang() const;
-	Acad::ErrorStatus	setHengxiang(double dHx);
-
-	double				zongxiang() const;
-	Acad::ErrorStatus	setZongxiang(double dZx);*/
-        // overridden from AcDbObject
+	// overridden from AcDbObject
     virtual Acad::ErrorStatus   dwgInFields(AcDbDwgFiler* filer);
     virtual Acad::ErrorStatus   dwgOutFields(AcDbDwgFiler* filer) const;
     virtual Acad::ErrorStatus   dxfInFields(AcDbDxfFiler* filer);
@@ -63,6 +64,7 @@ private:
     CString             m_label;
 	CString				m_strNumCount;//图纸中数字的总数
 	CString				m_strCurNum;//当前图纸的数据
+	CString             m_strJdNum;//当前图纸的节点数
 
 	double				m_dXScale;//x比例
 	double				m_dYScale;//y比例
@@ -88,6 +90,7 @@ private:
         kDxfLabel       	= 1,
 		kDxfNumCount		= 300,//90~99 32位整数值
 		kDxfCurNum			= 301,
+		kDxfJdNum			= 302,
 		kDxfXScale			= 40,//4~59
 		kDxfYScale			= 41,
 		kDxfminElavation 	= 42,

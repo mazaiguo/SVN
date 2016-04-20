@@ -1,6 +1,6 @@
 #pragma once
 //绘制纵断面图形
-#include "Utils.h"
+#include "ZDMUtils.h"
 #include "BcUtils.h"
 #include "ZdmDataInfo.h"
 #include "CBiaochiForRQY.h"
@@ -28,6 +28,8 @@ private:
 	bool DrawDMText();
 	//绘制管道相关的文字
 	bool DrawXMText();
+	//绘制节点文字
+	bool DrawJdText(AcGePoint3d basePt, AcGePoint3d TopPt, AcGePoint3d endPt);
 
 	//************************************
 	// Method:    DrawSMXLine
@@ -64,6 +66,7 @@ private:
 
 private:
 	CZdmDataInfo m_pZDM;
+	CZdmDataInfo m_preData;
 	AcDbObjectIdArray m_idArrs;
 	double m_dLen;
 	double m_dWidth;

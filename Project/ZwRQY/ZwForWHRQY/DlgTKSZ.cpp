@@ -99,7 +99,7 @@ void CDlgTKSZ::OnBnClickedOk()
 		return;
 	}
 	BeginEditorCommand();
-	CString strFile = gGlobal.GetAppPath() + _T("Í¼¿ò\\") + m_strFrameType + _T(".dwg");
+	CString strFile = MyBaseUtils::GetAppPath() + _T("Í¼¿ò\\") + m_strFrameType + _T(".dwg");
 	
 	AcDbObjectId objId = MyDrawEntity::GetBlkRef(strFile);
 	AcGePoint3d basePt;

@@ -1,16 +1,16 @@
 #include "StdAfx.h"
-#include "Utils.h"
+#include "ZDMUtils.h"
 #include "CBaseDataForZdDwg.h"
 
-CUtils::CUtils(void)
+CDMXUtils::CDMXUtils(void)
 {
 }
 
-CUtils::~CUtils(void)
+CDMXUtils::~CDMXUtils(void)
 {
 }
 
-void CUtils::setNumCount(CString nValue)
+void CDMXUtils::setNumCount(CString nValue)
 {
 	AcDbObjectId StyleId;
 
@@ -55,7 +55,7 @@ void CUtils::setNumCount(CString nValue)
 	}
 }
 
-CString CUtils::getNumCount()
+CString CDMXUtils::getNumCount()
 {
 	CString nBlkRefCount = _T("1");
 	AcDbObjectId StyleId;
@@ -101,7 +101,7 @@ CString CUtils::getNumCount()
 	return nBlkRefCount;
 }
 
-void CUtils::SetCurNum(CString nValue)
+void CDMXUtils::SetCurNum(CString nValue)
 {
 	AcDbObjectId StyleId;
 
@@ -146,7 +146,7 @@ void CUtils::SetCurNum(CString nValue)
 	}
 }
 
-CString CUtils::getCurNum()
+CString CDMXUtils::getCurNum()
 {
 	CString nBlkRefCount = _T("1");
 	AcDbObjectId StyleId;
@@ -195,7 +195,98 @@ CString CUtils::getCurNum()
 
 
 
-void CUtils::SetXScale(double dValue)
+void CDMXUtils::SetJdNum(CString nValue)
+{
+	AcDbObjectId StyleId;
+
+	AcDbDictionary* testDict = MyBaseUtils::openDictionaryForWrite(
+		CBaseDataForZdDwg::dictName(), true,
+		acdbHostApplicationServices()->workingDatabase());
+	if (testDict) 
+	{
+		Acad::ErrorStatus es;
+		if (testDict->getAt(_T("BASE"), StyleId) != Acad::eOk)
+		{
+			CBaseDataForZdDwg* newRec = new CBaseDataForZdDwg;
+			newRec->setJdNum(nValue);
+			es = testDict->setAt(_T("BASE"), newRec, StyleId);
+			if (es == Acad::eOk)
+			{
+				newRec->close();
+			}
+			else
+			{
+				//MyBaseUtils::rxErrorAlert(es);
+				delete newRec;
+				StyleId = AcDbObjectId::kNull;
+			}
+		}
+		else
+		{
+			CBaseDataForZdDwg* newRec = NULL;
+			if (acdbOpenAcDbObject((AcDbObject*&)newRec, StyleId, AcDb::kForWrite) != Acad::eOk)
+			{
+				testDict->close();
+				return;
+			}
+			newRec->setJdNum(nValue);
+			newRec->close();
+		}
+		testDict->close();
+	}
+	else 
+	{
+		return;
+	}
+}
+
+CString CDMXUtils::getJdNum()
+{
+	CString nBlkRefCount = _T("1");
+	AcDbObjectId StyleId;
+	AcDbDictionary* testDict = MyBaseUtils::openDictionaryForRead(CBaseDataForZdDwg::dictName(), acdbHostApplicationServices()->workingDatabase());
+	if (testDict)
+	{
+		Acad::ErrorStatus es;
+
+		if (testDict->getAt(_T("BASE"), StyleId) != Acad::eOk)
+		{
+			CBaseDataForZdDwg* newRec = NULL;
+
+			es = testDict->getAt(_T("BASE"), (AcDbObject *&)newRec, AcDb::kForRead);
+			if (es == Acad::eOk) 
+			{
+				nBlkRefCount = newRec->JdNum();
+				newRec->close();
+			}
+			else 
+			{
+				//ArxDbgUtils::rxErrorAlert(es);
+				delete newRec;
+				StyleId = AcDbObjectId::kNull;
+			}
+		}
+		else
+		{
+			CBaseDataForZdDwg* newRec = NULL;
+			if (acdbOpenAcDbObject((AcDbObject*&)newRec, StyleId, AcDb::kForRead) != Acad::eOk)
+			{
+				testDict->close();
+				return nBlkRefCount;
+			}
+			nBlkRefCount = newRec->JdNum();
+			newRec->close();
+		}
+		testDict->close();
+	}
+	else
+	{
+		SetJdNum(_T("1"));
+	}
+	return nBlkRefCount;
+}
+
+void CDMXUtils::SetXScale(double dValue)
 {
 	AcDbObjectId StyleId;
 
@@ -240,7 +331,7 @@ void CUtils::SetXScale(double dValue)
 	}
 }
 
-double CUtils::getXScale()
+double CDMXUtils::getXScale()
 {
 	double nBlkRefCount = 500;
 	AcDbObjectId StyleId;
@@ -286,7 +377,7 @@ double CUtils::getXScale()
 	return nBlkRefCount;
 }
 
-void CUtils::SetYScale(double dValue)
+void CDMXUtils::SetYScale(double dValue)
 {
 	AcDbObjectId StyleId;
 
@@ -331,7 +422,7 @@ void CUtils::SetYScale(double dValue)
 	}
 }
 
-double CUtils::getYScale()
+double CDMXUtils::getYScale()
 {
 	double nBlkRefCount = 100;
 	AcDbObjectId StyleId;
@@ -378,7 +469,7 @@ double CUtils::getYScale()
 }
 
 
-void CUtils::SetcreateBc(bool bValue)
+void CDMXUtils::SetcreateBc(bool bValue)
 {
 	AcDbObjectId StyleId;
 
@@ -423,7 +514,7 @@ void CUtils::SetcreateBc(bool bValue)
 	}
 }
 
-bool CUtils::getcreateBc()
+bool CDMXUtils::getcreateBc()
 {
 	bool nBlkRefCount = false;
 	AcDbObjectId StyleId;
@@ -470,7 +561,7 @@ bool CUtils::getcreateBc()
 }
 
 
-void CUtils::SetcreateJiedian( bool bValue )
+void CDMXUtils::SetcreateJiedian( bool bValue )
 {
 	AcDbObjectId StyleId;
 
@@ -515,7 +606,7 @@ void CUtils::SetcreateJiedian( bool bValue )
 	}
 }
 
-bool CUtils::getcreateJiedian()
+bool CDMXUtils::getcreateJiedian()
 {
 	bool nBlkRefCount = false;
 	AcDbObjectId StyleId;
@@ -561,7 +652,7 @@ bool CUtils::getcreateJiedian()
 	return nBlkRefCount;
 }
 
-void CUtils::SetbasePt(AcGePoint3d bValue)
+void CDMXUtils::SetbasePt(AcGePoint3d bValue)
 {
 	AcDbObjectId StyleId;
 
@@ -606,7 +697,7 @@ void CUtils::SetbasePt(AcGePoint3d bValue)
 	}
 }
 
-AcGePoint3d CUtils::getbasePt()
+AcGePoint3d CDMXUtils::getbasePt()
 {
 	AcGePoint3d nBlkRefCount;
 	AcDbObjectId StyleId;
@@ -652,7 +743,7 @@ AcGePoint3d CUtils::getbasePt()
 	return nBlkRefCount;
 }
 
-void CUtils::SetMinElavation(double dValue)
+void CDMXUtils::SetMinElavation(double dValue)
 {
 	AcDbObjectId StyleId;
 
@@ -697,7 +788,7 @@ void CUtils::SetMinElavation(double dValue)
 	}
 }
 
-double CUtils::getMinElavation()
+double CDMXUtils::getMinElavation()
 {
 	double nBlkRefCount = 0;
 	AcDbObjectId StyleId;
@@ -744,7 +835,7 @@ double CUtils::getMinElavation()
 }
 
 
-void CUtils::SetMaxElavation(double dValue)
+void CDMXUtils::SetMaxElavation(double dValue)
 {
 	AcDbObjectId StyleId;
 
@@ -789,7 +880,7 @@ void CUtils::SetMaxElavation(double dValue)
 	}
 }
 
-double CUtils::getMaxElavation()
+double CDMXUtils::getMaxElavation()
 {
 	double nBlkRefCount = 0;
 	AcDbObjectId StyleId;

@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZwForWHRQY", "ZwForWHRQY\ZwForWHRQY.vcxproj", "{698C732B-8F7C-4762-9DA3-D5A51F6265BB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GwDesign", "GwDesign\GwDesign.vcxproj", "{AE07A69F-1B57-4F2E-BF1A-34484F40AD63}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -19,6 +21,14 @@ Global
 		{698C732B-8F7C-4762-9DA3-D5A51F6265BB}.Release|Win32.Build.0 = Release|Win32
 		{698C732B-8F7C-4762-9DA3-D5A51F6265BB}.Release|x64.ActiveCfg = Release|x64
 		{698C732B-8F7C-4762-9DA3-D5A51F6265BB}.Release|x64.Build.0 = Release|x64
+		{AE07A69F-1B57-4F2E-BF1A-34484F40AD63}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AE07A69F-1B57-4F2E-BF1A-34484F40AD63}.Debug|Win32.Build.0 = Debug|Win32
+		{AE07A69F-1B57-4F2E-BF1A-34484F40AD63}.Debug|x64.ActiveCfg = Debug|x64
+		{AE07A69F-1B57-4F2E-BF1A-34484F40AD63}.Debug|x64.Build.0 = Debug|x64
+		{AE07A69F-1B57-4F2E-BF1A-34484F40AD63}.Release|Win32.ActiveCfg = Release|Win32
+		{AE07A69F-1B57-4F2E-BF1A-34484F40AD63}.Release|Win32.Build.0 = Release|Win32
+		{AE07A69F-1B57-4F2E-BF1A-34484F40AD63}.Release|x64.ActiveCfg = Release|x64
+		{AE07A69F-1B57-4F2E-BF1A-34484F40AD63}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

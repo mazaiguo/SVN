@@ -1,8 +1,4 @@
-//-----------------------------------------------------------------------------
-//- StdAfx.h : include file for standard system include files,
-//-      or project specific include files that are used frequently,
-//-      but are changed infrequently
-//-----------------------------------------------------------------------------
+
 #pragma once
 
 #pragma pack (push, 8)
@@ -10,8 +6,11 @@
 //#pragma warning(disable: 4098)
 
 //-----------------------------------------------------------------------------
+#define STRICT
 
-
+#ifndef VC_EXTRALEAN
+#define VC_EXTRALEAN			//- Exclude rarely-used stuff from Windows headers
+#endif
 
 //- ObjectARX and OMF headers needs this
 #include <map>
@@ -50,13 +49,9 @@
 //#define _ARX_CUSTOM_DRAG_N_DROP_	//- Support for the ObjectARX Drag'n Drop API
 //#define _INC_LEAGACY_HEADERS_		//- Include legacy headers in this project
 #include "arxHeaders.h"
-
+#include "MyBase.h"
 //-----------------------------------------------------------------------------
 #include "DocData.h" //- Your document specific data class holder
-
-#include "MyBase.h"
-#include "Global.h"
-#define BC_DICT _T("ZW_FOR_WHRQY_")
 
 //- Declare it as an extern here so that it becomes available in all modules
 extern AcApDataManager<CDocData> DocVars ;

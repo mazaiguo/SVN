@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="ZwForWHRQY"
-	ProjectGUID="{698C732B-8F7C-4762-9DA3-D5A51F6265BB}"
-	RootNamespace="ZwForWHRQY"
+	Name="GwDesign"
+	ProjectGUID="{AE07A69F-1B57-4F2E-BF1A-34484F40AD63}"
+	RootNamespace="GwDesign"
 	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
@@ -47,7 +47,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalUsingDirectories="C:\Program Files\AutoCAD 2010\"
-				PreprocessorDefinitions="WIN32;_WINDOWS;ZWFORWHRQY_MODULE;_AFXEXT;_ACRXAPP"
+				PreprocessorDefinitions="WIN32;_WINDOWS;GWDESIGN_MODULE;_AFXEXT;_ACRXAPP"
 				StringPooling="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -71,14 +71,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(outdir)/ZwForWHRQY.arx"
+				OutputFile="$(outdir)/GwDesign.arx"
 				LinkIncremental="2"
 				LinkDLL="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/ZwForWHRQY.pdb"
+				ProgramDatabaseFile="$(OutDir)/GwDesign.pdb"
 				SubSystem="2"
-				ImportLibrary="$(OutDir)/ZwForWHRQY.lib"
-				TargetMachine="1"
+				ImportLibrary="$(OutDir)/GwDesign.lib"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -130,9 +130,9 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="E:\GitHub\SVN\MyBaseDLL\MyBaseDLL\code;E:\GitHub\SVN\Project\ZwRQY\WRQ_Entity"
+				AdditionalIncludeDirectories="E:\GitHub\SVN\MyBaseDLL\MyBaseDLL\code"
 				AdditionalUsingDirectories="C:\Program Files\AutoCAD 2010\"
-				PreprocessorDefinitions="_WIN64;_WINDOWS;ZWFORWHRQY_MODULE;_AFXEXT;_ACRXAPP;ARX"
+				PreprocessorDefinitions="_WIN64;_WINDOWS;GWDESIGN_MODULE;_AFXEXT;_ACRXAPP;ARX"
 				StringPooling="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -156,15 +156,15 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MyBaseDLL.lib WRQ_Entity.lib"
-				OutputFile="E:\GitHub\SVN\Project\ZwRQY\ZWRQY\ZwForWHRQY.arx"
+				AdditionalDependencies="MyBaseDll.lib"
+				OutputFile="E:\GitHub\SVN\Project\ZwRQY\ZWRQY\GwDesign.arx"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="E:\GitHub\SVN\Project\ZwRQY\lib\acad"
 				LinkDLL="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/ZwForWHRQY.pdb"
+				ProgramDatabaseFile="$(OutDir)/GwDesign.pdb"
 				SubSystem="2"
-				ImportLibrary="E:\GitHub\SVN\Project\ZwRQY\lib\acad\ZwForWHRQY.lib"
+				ImportLibrary="E:\GitHub\SVN\Project\ZwRQY\lib\acad\GwDesign.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -218,7 +218,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				AdditionalUsingDirectories="C:\Program Files\AutoCAD 2010\"
-				PreprocessorDefinitions="WIN32;_WINDOWS;ZWFORWHRQY_MODULE;NDEBUG;_AFXEXT;_ACRXAPP"
+				PreprocessorDefinitions="WIN32;_WINDOWS;GWDESIGN_MODULE;NDEBUG;_AFXEXT;_ACRXAPP"
 				StringPooling="true"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
@@ -242,13 +242,13 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(outdir)/ZwForWHRQY.arx"
+				OutputFile="$(outdir)/GwDesign.arx"
 				LinkIncremental="2"
 				LinkDLL="true"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile=""
 				SubSystem="2"
-				ImportLibrary="$(OutDir)/ZwForWHRQY.lib"
+				ImportLibrary="$(OutDir)/GwDesign.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -302,7 +302,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				AdditionalUsingDirectories="C:\Program Files\AutoCAD 2010\"
-				PreprocessorDefinitions="_WIN64;_WINDOWS;ZWFORWHRQY_MODULE;NDEBUG;_AFXEXT;_ACRXAPP"
+				PreprocessorDefinitions="_WIN64;_WINDOWS;GWDESIGN_MODULE;NDEBUG;_AFXEXT;_ACRXAPP"
 				StringPooling="true"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
@@ -326,13 +326,13 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(outdir)/ZwForWHRQY.arx"
+				OutputFile="$(outdir)/GwDesign.arx"
 				LinkIncremental="2"
 				LinkDLL="true"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile=""
 				SubSystem="2"
-				ImportLibrary="$(OutDir)/ZwForWHRQY.lib"
+				ImportLibrary="$(OutDir)/GwDesign.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -374,6 +374,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\GwDesign.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\StdAfx.cpp"
 				>
 				<FileConfiguration
@@ -409,105 +413,41 @@
 					/>
 				</FileConfiguration>
 			</File>
-			<File
-				RelativePath=".\ZwForWHRQY.cpp"
-				>
-			</File>
 			<Filter
-				Name="图框设置"
+				Name="识别直线"
 				>
 				<File
-					RelativePath=".\DlgTKSZ.cpp"
+					RelativePath=".\Arc.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\DlgTKSZ.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="基础函数"
-				>
-			</Filter>
-			<Filter
-				Name="基础数据"
-				>
-				<Filter
-					Name="标尺基础数据"
-					>
-				</Filter>
-				<Filter
-					Name="操作标尺数据"
-					>
-					<File
-						RelativePath=".\BcUtils.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\BcUtils.h"
-						>
-					</File>
-				</Filter>
-			</Filter>
-			<Filter
-				Name="标尺"
-				>
-				<File
-					RelativePath=".\BiaochiInfo.cpp"
+					RelativePath=".\Arc.h"
 					>
 				</File>
 				<File
-					RelativePath=".\BiaochiInfo.h"
+					RelativePath=".\DistinguishData.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\DrawBiaochi.cpp"
+					RelativePath=".\DistinguishData.h"
 					>
 				</File>
 				<File
-					RelativePath=".\DrawBiaochi.h"
+					RelativePath=".\GDDataStore.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\DrawDMXProcess.cpp"
+					RelativePath=".\GDDataStore.h"
 					>
 				</File>
 				<File
-					RelativePath=".\DrawDMXProcess.h"
+					RelativePath=".\Line.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\DrawZDM.cpp"
+					RelativePath=".\Line.h"
 					>
 				</File>
-				<File
-					RelativePath=".\DrawZDM.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ZdmDataInfo.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ZdmDataInfo.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="实体"
-				>
-				<Filter
-					Name="自定义文字"
-					>
-					<File
-						RelativePath=".\SpecialText.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\SpecialText.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
@@ -532,7 +472,7 @@
 			Filter="rc;ico;bmp;cur;jpg;gif"
 			>
 			<File
-				RelativePath=".\ZwForWHRQY.rc"
+				RelativePath=".\GwDesign.rc"
 				>
 			</File>
 		</Filter>
@@ -543,9 +483,5 @@
 		</Filter>
 	</Files>
 	<Globals>
-		<Global
-			Name="RESOURCE_FILE"
-			Value="ZwForWHRQY.rc"
-		/>
 	</Globals>
 </VisualStudioProject>

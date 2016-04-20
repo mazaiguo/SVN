@@ -6,12 +6,9 @@
 #include "resource.h"
 #include "Global.h"
 #include "DlgTKSZ.h"
-#include "CBaseDataForZdDwg.h"
 #include "BiaochiInfo.h"
-#include "CBiaochiForRQY.h"
 #include "BcUtils.h"
 #include "DrawDMXProcess.h"
-#include "CDbClick.h"
 #include "SpecialText.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("")
@@ -50,7 +47,6 @@ Acad::ErrorStatus AddtoModelSpace(AcDbEntity*pEnt, AcDbObjectId&retId, AcDbDatab
 
 //-----------------------------------------------------------------------------
 //----- ObjectARX EntryPoint
-CDbClick* g_dbClick = NULL;
 class CZwForWHRQYApp : public AcRxArxApp 
 {
 
@@ -67,14 +63,10 @@ public:
 		// TODO: Add your initialization code here
 		gGlobal.SetIni(gGlobal.GetIniPath());
 
-		CBaseDataForZdDwg::rxInit();
-		CBiaochiForRQY::rxInit();
 		CSpecialText::rxInit();
 		acrxBuildClassHierarchy();	
 		
-		//编辑反应器
-		g_dbClick = new CDbClick;
-		g_dbClick->Attach();
+		
 
 		return (retCode) ;
 	}
@@ -87,17 +79,9 @@ public:
 		AcRx::AppRetCode retCode =AcRxArxApp::On_kUnloadAppMsg (pkt) ;
 
 		// TODO: Unload dependencies here
-		deleteAcRxClass(CBaseDataForZdDwg::desc());
-		deleteAcRxClass(CBiaochiForRQY::desc());
 		
 		deleteAcRxClass(CSpecialText::desc());
-		//编辑反应器
-		g_dbClick->Detach();
-		if (g_dbClick != NULL)
-		{
-			delete g_dbClick;
-			g_dbClick = NULL;
-		}
+		
 
 		return (retCode) ;
 	}
