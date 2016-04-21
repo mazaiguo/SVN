@@ -58,11 +58,13 @@ private:
 	// FullName:  CDrawZDM::ChangeDictName
 	// Access:    private 
 	// Returns:   bool
-	// Qualifier: 将原始strPreGroupName改为strGroupName
+	// Qualifier:将原始strPreGroupName改为strGroupName
 	// Parameter: CString strGroupName
 	// Parameter: CString strPreGroupName
+	// Parameter: int nCount
+	// Parameter: bool bIsDeFault
 	//************************************
-	bool ChangeDictName(CString strGroupName, CString strPreGroupName, bool bIsDeFault = true);
+	bool ChangeDictName(CString strGroupName, CString strPreGroupName, int nCount, bool bIsDeFault = true);
 
 private:
 	CZdmDataInfo m_pZDM;

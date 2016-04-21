@@ -78,24 +78,51 @@ bool CBcUtils::insert( LPCTSTR strLabel, CZdmDataInfo data)
 	else
 	{
 		//倒序查找
+		vector<pair<CString, CZdmDataInfo> > tmpVec;
+		bool bIsCreased = true;
 		for (map<CString, CZdmDataInfo>::reverse_iterator iRevers = m_Data.rbegin();
 			iRevers != m_Data.rend(); ++iRevers)
 		{
-			//CZdmDataInfo data = iRevers->second;
+			CZdmDataInfo tmpData = iRevers->second;
 			CString strName = iRevers->first;
+			CString strTmpName;
+
 			if (strName.CompareNoCase(strLabel) == 0)
 			{
-				break;
+				CString strCount = iRevers->second.getCount();
+				int nCount = MyTransFunc::StringToInt(strCount);
+				nCount++;
+				strCount.Format(_T("%d"), nCount);
+				strTmpName = BC_DICT + strCount;
+				tmpData.setCount(strCount);
+				tmpData.setJiedian(strCount);
+				tmpData.setLabel(strTmpName);
+				tmpVec.push_back(make_pair(strTmpName, tmpData));
+				bIsCreased = false;
+				continue;
 			}
 			CString strCount = iRevers->second.getCount();
 			int nCount = MyTransFunc::StringToInt(strCount);
-			nCount++;
-			strName = BC_DICT + strCount;
-			iRevers->second.setCount(strCount);
-			iRevers->second.setLabel(strName);
+			if (bIsCreased)
+			{
+				nCount++;
+			}
+			strCount.Format(_T("%d"), nCount);
+			strTmpName = BC_DICT + strCount;
+			tmpData.setCount(strCount);
+			tmpData.setJiedian(strCount);
+			tmpData.setLabel(strTmpName);
+			tmpVec.push_back(make_pair(strTmpName, tmpData));
 		}
 
-		m_Data.insert(make_pair(strLabel, data));
+		//m_Data.insert(make_pair(strLabel, data));
+		tmpVec.push_back(make_pair(strLabel, data));
+		m_Data.clear();
+		for (vector<pair<CString, CZdmDataInfo> >::iterator iter = tmpVec.begin();
+			iter != tmpVec.end(); ++iter)
+		{
+			m_Data.insert(make_pair(iter->first, iter->second));
+		}
 		//删除所有，然后添加
 		delAll();
 		addAll();
@@ -117,6 +144,7 @@ bool CBcUtils::modify( LPCTSTR strLabel, CZdmDataInfo pData )
 		//CZdmDataInfo tmpData = iter->second;
 		iter->second.setLabel(pData.label());
 		iter->second.setCount(pData.getCount());
+		iter->second.setJiedian(pData.getJiedian());
 		iter->second.setDesignDmx(pData.getDesignDmx());
 		iter->second.setRealDmx(pData.getRealDmx());
 		iter->second.setJiedian(pData.getJiedian());
@@ -165,6 +193,7 @@ bool CBcUtils::del( LPCTSTR strLabel )
 					nCount--;
 					strName = _T("ZW_FOR_WHRQY_") + strCount;
 					data.setCount(strCount);
+					data.setJiedian(strCount);
 				}	
 				++iTr;
 			}	
@@ -225,6 +254,7 @@ map<CString, CZdmDataInfo> CBcUtils::getAllData()
 			CBiaochiForRQY* pEnt = CBiaochiForRQY::cast(pObj);
 			data.setLabel(pEnt->label());
 			data.setCount(pEnt->getCount());
+			data.setJiedian(pEnt->getJiedian());
 			data.setDesignDmx(pEnt->getDesignDmx());
 			data.setRealDmx(pEnt->getRealDmx());
 			data.setJiedian(pEnt->getJiedian());

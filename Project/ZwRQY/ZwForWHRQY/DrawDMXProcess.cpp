@@ -9,6 +9,7 @@ DrawDMXProcess::DrawDMXProcess(void)
 	m_bDrawJiedian = CDMXUtils::getcreateJiedian();
 	m_pZdmInfo = new CZdmDataInfo();
 	m_pZdmInfo->setCount(strCount);
+	m_pZdmInfo->setJiedian(strCount);
 	CString strLabel = BC_DICT + strCount;
 	m_pZdmInfo->setLabel(strLabel);
 	if (m_nCout == 1)
@@ -113,6 +114,7 @@ bool DrawDMXProcess::Insert()
 	CString strLabel = BC_DICT + strCur;
 	m_pZdmInfo->setLabel(strLabel);
 	m_pZdmInfo->setCount(strCur);
+	m_pZdmInfo->setJiedian(strCur);
 	m_pZdmInfo->setcurData(m_dZhuanghao);
 
 	if (nRet == RTNORM)

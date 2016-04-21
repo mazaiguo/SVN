@@ -272,14 +272,14 @@
     <ClInclude Include="StdAfx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="ZwForWHRQY.rc" />
+    <ResourceCompile Include="WRQ_ZDM.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="ZwForWHRQY.rc" />
+      <UserProperties RESOURCE_FILE="WRQ_ZDM.rc" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

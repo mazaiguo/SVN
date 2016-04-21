@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="ZwForWHRQY"
+	Name="WRQ_ZDM"
 	ProjectGUID="{698C732B-8F7C-4762-9DA3-D5A51F6265BB}"
 	RootNamespace="ZwForWHRQY"
 	TargetFrameworkVersion="196613"
@@ -157,14 +157,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="MyBaseDLL.lib WRQ_Entity.lib"
-				OutputFile="E:\GitHub\SVN\Project\ZwRQY\ZWRQY\ZwForWHRQY.arx"
+				OutputFile="E:\GitHub\SVN\Project\ZwRQY\ZWRQY_ACAD\WRQ_ZDM.arx"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="E:\GitHub\SVN\Project\ZwRQY\lib\acad"
 				LinkDLL="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/ZwForWHRQY.pdb"
 				SubSystem="2"
-				ImportLibrary="E:\GitHub\SVN\Project\ZwRQY\lib\acad\ZwForWHRQY.lib"
+				ImportLibrary="E:\GitHub\SVN\Project\ZwRQY\lib\acad\WRQ_ZDM.lib"
 				TargetMachine="17"
 			/>
 			<Tool
