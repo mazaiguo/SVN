@@ -19,11 +19,15 @@ public:
 	void setData(CZdmDataInfo* pZDM);
 	
 	AcDbObjectId insert();
+	//删除桩号
+	bool del(CString strGroupName);
+	//编辑数据
+	bool mod(CString strGroupName);
 private:
 	//初始数据获取
 	bool initdata();
 	//
-	bool DrawLine();
+	bool DrawLine(bool bIsDeFault = true);
 	//绘制地面线相关的文字
 	bool DrawDMText();
 	//绘制管道相关的文字
@@ -51,7 +55,7 @@ private:
 	//************************************
 	bool AddObjToDict(CString strLabel, AcDbObjectId objId);
 
-	bool ModifyDictbyInt(int nCur);
+	bool ModifyDictbyInt(int nCur, bool bIsAdded = true);
 
 	//************************************
 	// Method:    ChangeDictName

@@ -106,7 +106,7 @@ bool DrawDMXProcess::Insert()
 	{
 		return false;
 	}
-	CString strCur = CurNumPositon(m_dZhuanghao);
+	CString strCur = CurNumPosition(m_dZhuanghao);
 	if (strCur.CompareNoCase(_T("0")) == 0)
 	{
 		return false;
@@ -148,6 +148,113 @@ bool DrawDMXProcess::Insert()
 	{
 		return false;
 	}
+}
+
+bool DrawDMXProcess::Del()
+{
+	ads_name ename;
+	AcGePoint3d pt;
+	int nRet = acedEntSel(_T("\n选择要删除的桩号"), ename, asDblArray(pt));
+	if (nRet != RTNORM)
+	{
+		return false;
+	}
+	AcDbObjectId objId = AcDbObjectId::kNull;
+	acdbGetObjectId(objId, ename);
+	AcDbObjectIdArray objIdArrs;
+	objIdArrs.removeAll();
+	objIdArrs = MyEditEntity::openObjAndGetGroupIds(objId);
+	if ((objIdArrs.length() <=0) || (objIdArrs.length() > 1))
+	{
+		AfxMessageBox(_T("没有选中桩号"));
+		return false;
+	}
+	AcDbObjectId groupId;
+	groupId = objIdArrs.at(0);
+	AcDbGroup* pGroup = NULL;
+	if (acdbOpenAcDbObject((AcDbObject*&)pGroup, groupId, AcDb::kForRead) != Acad::eOk)
+	{
+		return false;
+	}
+	CString strGroupName;
+	strGroupName = pGroup->name();
+	pGroup->close();
+	
+	CString strCur = CurNumPosition(strGroupName);
+	int nCount = MyTransFunc::StringToInt(strCur);
+	if (nCount == 1)
+	{
+		AfxMessageBox(_T("不能删除第一个桩号"));
+		return false;
+	}
+	else if (nCount == 0)
+	{
+		AfxMessageBox(_T("没有选中桩号"));
+		return false;
+	}
+	
+	//删除dictionary
+	CBcUtils utils;
+	CString strNextGroupName;
+	nCount++;
+	CString strTmpCur;
+	strTmpCur.Format(_T("%d"), nCount);
+	strNextGroupName = BC_DICT + strTmpCur;
+	CZdmDataInfo data = utils.get(strNextGroupName);
+	data.setLabel(strGroupName);
+	data.setCount(strCur);
+	data.setJiedian(strCur);
+
+	EraseEntFromDict(strGroupName);
+
+	CDrawZDM zdm;
+	zdm.setData(&data);
+	bool bRet = zdm.mod(strGroupName);
+	return bRet;
+}
+
+bool DrawDMXProcess::Mod()
+{
+	ads_name ename;
+	AcGePoint3d pt;
+	int nRet = acedEntSel(_T("\n选择要编辑的桩号"), ename, asDblArray(pt));
+	if (nRet != RTNORM)
+	{
+		return false;
+	}
+	AcDbObjectId objId = AcDbObjectId::kNull;
+	acdbGetObjectId(objId, ename);
+	AcDbObjectIdArray objIdArrs;
+	objIdArrs.removeAll();
+	objIdArrs = MyEditEntity::openObjAndGetGroupIds(objId);
+	if ((objIdArrs.length() <=0) || (objIdArrs.length() > 1))
+	{
+		AfxMessageBox(_T("没有选中桩号"));
+		return false;
+	}
+	AcDbObjectId groupId;
+	groupId = objIdArrs.at(0);
+	AcDbGroup* pGroup = NULL;
+	if (acdbOpenAcDbObject((AcDbObject*&)pGroup, groupId, AcDb::kForRead) != Acad::eOk)
+	{
+		return false;
+	}
+	CString strGroupName;
+	strGroupName = pGroup->name();
+	pGroup->close();
+
+	CString strCur = CurNumPosition(strGroupName);
+	int nCount = MyTransFunc::StringToInt(strCur);
+
+	CBcUtils utils;
+	CZdmDataInfo data = utils.get(strGroupName);
+	double dZhuanghao = data.getcurData();
+	data.setcurData(dZhuanghao - 10);
+	
+	CDrawZDM zdm;
+	zdm.setData(&data);
+	bool bRet = zdm.mod(strGroupName);
+	return true;
 }
 
 //交互相关
@@ -370,7 +477,7 @@ bool DrawDMXProcess::EraseEntFromDict( CString strGroupName )
 	return true;
 }
 
-CString DrawDMXProcess::CurNumPositon( double dValue )
+CString DrawDMXProcess::CurNumPosition( double dValue )
 {
 	CString strCur = _T("0");
 	double dZhuanghao;
@@ -390,5 +497,21 @@ CString DrawDMXProcess::CurNumPositon( double dValue )
 			break;
 		}
 	}
+	return strCur;
+}
+
+CString DrawDMXProcess::CurNumPosition(CString strlabel)
+{
+	CString strTmp = BC_DICT;
+	int nFind = strlabel.Find(BC_DICT);	
+	CString strCur;
+
+	if (nFind < 0)
+	{
+		strCur = _T("0");
+		return strCur;
+	}
+	int nLen = strTmp.GetLength();
+	strCur = strlabel.Right(strlabel.GetLength() - nLen);
 	return strCur;
 }

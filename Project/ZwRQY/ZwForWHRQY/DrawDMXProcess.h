@@ -20,6 +20,26 @@ public:
 	//************************************
 	bool Insert();
 
+
+	//************************************
+	// Method:    Del
+	// FullName:  DrawDMXProcess::Del
+	// Access:    public 
+	// Returns:   bool
+	// Qualifier:在现有的图形上删除数据
+	//************************************
+	bool Del();
+
+
+	//************************************
+	// Method:    Mod
+	// FullName:  DrawDMXProcess::Mod
+	// Access:    public 
+	// Returns:   bool
+	// Qualifier:在现有图形上编辑数据
+	//************************************
+	bool Mod();
+
 private:
 	//交互相关
 	int GetZhuanghao();
@@ -63,7 +83,18 @@ private:
 	// Qualifier: 计算当前桩号所在的位置
 	// Parameter: double dValue
 	//************************************
-	CString CurNumPositon(double dValue);
+	CString CurNumPosition(double dValue);
+
+
+	//************************************
+	// Method:    CurNumPosition
+	// FullName:  DrawDMXProcess::CurNumPosition
+	// Access:    private 
+	// Returns:   CString
+	// Qualifier:计算当前group所在位置
+	// Parameter: CString strlabel
+	//************************************
+	CString CurNumPosition(CString strlabel);
 
 private:
 	double m_dXScale;//x比例

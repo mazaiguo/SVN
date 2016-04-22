@@ -116,7 +116,7 @@ AcDbObjectId CDrawZDM::insert()
 	CBcUtils bcUtils;
 	bcUtils.insert(strGroupName, m_pZDM);
 
-	DrawLine();
+	DrawLine(false);
 
 	DrawDMText();
 	if (nCount > 1)
@@ -124,7 +124,9 @@ AcDbObjectId CDrawZDM::insert()
 		DrawSMXLine(false);
 	}
 	groupId = MyDrawEntity::MakeGroup(m_idArrs, false, strGroupName);
-
+	
+	strCount = CDMXUtils::getNumCount();
+	nCount = MyTransFunc::StringToInt(strCount);
 	nCount++;
 	strCount.Format(_T("%d"), nCount);
 	CDMXUtils::setNumCount(strCount);
@@ -133,12 +135,64 @@ AcDbObjectId CDrawZDM::insert()
 	return groupId;
 }
 
+bool CDrawZDM::del(CString strGroupName)
+{
+	initdata();
+	CString strCurCount = m_pZDM.getCount();
+	int ncurCount = MyTransFunc::StringToInt(strCurCount);
+
+	if (ncurCount > 1)
+	{	
+		ModifyDictbyInt(ncurCount, false);
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	//将数据添加到图纸中
+	CBcUtils bcUtils;
+	bcUtils.del(strGroupName);
+	CString strCount = CDMXUtils::getNumCount();
+	int nCount = MyTransFunc::StringToInt(strCount);
+
+	if (ncurCount != nCount - 1)//如果不是最后一个桩号
+	{
+		DrawLine();
+		DrawSMXLine();
+		AcDbObjectId objId = AcDbObjectId::kNull;
+		for (int i=0; i<m_idArrs.length(); i++)
+		{
+			objId = m_idArrs.at(i);
+			AddObjToDict(strGroupName, objId);
+		}
+	}
+	
+
+	nCount--;
+	strCount.Format(_T("%d"), nCount);
+	CDMXUtils::setNumCount(strCount);
+	CDMXUtils::SetCurNum(strCount);
+	CDMXUtils::SetJdNum(strCount);
+	return true;
+}
+
+bool CDrawZDM::mod(CString strGroupName)
+{
+	initdata();
+	CString strCurCount = m_pZDM.getCount();
+	int ncurCount = MyTransFunc::StringToInt(strCurCount);
+
+	if (ncurCount > 1)
+	{	
+		
+	}
+	return true;
+}
+
 bool CDrawZDM::initdata()
 {
 	m_dXScale = 1000/(CDMXUtils::getXScale());
 	m_dYScale = 1000/(CDMXUtils::getYScale());
-	CString strCount = m_pZDM.getCount();
-	int nCount = MyTransFunc::StringToInt(strCount);
+	/*CString strCount = m_pZDM.getCount();
+	int nCount = MyTransFunc::StringToInt(strCount);*/
 	//if (nCount == 1)
 	{
 		m_dLen = m_dXScale*10;
@@ -153,7 +207,7 @@ bool CDrawZDM::initdata()
 	return true;
 }
 
-bool CDrawZDM::DrawLine()
+bool CDrawZDM::DrawLine(bool bIsDeFault)
 {
 	AcGePoint3d basePt = CDMXUtils::getbasePt();
 	AcGePoint3d endPt;
@@ -197,6 +251,35 @@ bool CDrawZDM::DrawLine()
 		}
 		lineId = MyDrawEntity::DrawLine(tmpPt, endPt, hxLayerId);
 		m_idArrs.append(lineId);
+	}
+	//插入的时候需要将横向的线绘制一遍
+	if (!bIsDeFault)
+	{
+		CBcUtils utls;
+		CString strNext;
+		strNext.Format(_T("%d"), nCount + 1);
+		CString strNextLabel = BC_DICT + strNext;
+		CZdmDataInfo NextData;
+		NextData = utls.get(strNextLabel);
+		for (int i=0; i<11; i++)
+		{
+			AcGePoint3d tmpPt;
+			if (i >= 6)
+			{
+				acutPolar(asDblArray(basePt), 3*PI/2, (1.5*i + 1.7)*m_dYScale, asDblArray(tmpPt));
+			}
+			else
+			{
+				acutPolar(asDblArray(basePt), 3*PI/2, i*1.5*m_dYScale, asDblArray(tmpPt));
+			}
+			acutPolar(asDblArray(tmpPt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(endPt));
+			if (nCount > 1)
+			{
+				acutPolar(asDblArray(tmpPt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(tmpPt));
+			}
+			lineId = MyDrawEntity::DrawLine(tmpPt, endPt, hxLayerId);
+			AddObjToDict(strNextLabel, lineId);
+		}
 	}
 	//先使用设计水面高来绘制图形，后续不对再修改
 	
@@ -396,26 +479,50 @@ bool CDrawZDM::AddObjToDict( CString strGroupName, AcDbObjectId objId )
 	return true;
 }
 
-bool CDrawZDM::ModifyDictbyInt( int nCur )
+bool CDrawZDM::ModifyDictbyInt( int nCur , bool bIsAdded)
 {	
 	int nCount = 1; 
 	CString strCount = CDMXUtils::getNumCount();
 	nCount = MyTransFunc::StringToInt(strCount);
 	CString strGroupName,strPreGroupNam, strTmp;
-	for (int i=nCount; i>nCur; i--)
+	if (bIsAdded)
 	{
-		strTmp.Format(_T("%d"), i);
-		strGroupName = BC_DICT + strTmp;
-		strTmp.Format(_T("%d"), i-1);
-		strPreGroupNam = BC_DICT + strTmp;
-		if (i == nCur+1)
+		for (int i=nCount; i>nCur; i--)
 		{
-			ChangeDictName(strGroupName, strPreGroupNam, i, false);
+			strTmp.Format(_T("%d"), i);
+			strGroupName = BC_DICT + strTmp;
+			strTmp.Format(_T("%d"), i-1);
+			strPreGroupNam = BC_DICT + strTmp;
+
+			if (i == nCur+1)
+			{
+				ChangeDictName(strGroupName, strPreGroupNam, i, false);
+			}
+			else
+			{
+				ChangeDictName(strGroupName, strPreGroupNam, i);
+			}
+
 		}
-		else
+	}
+	else
+	{
+		for (int i=nCur; i<=nCount; i++)
 		{
-			ChangeDictName(strGroupName, strPreGroupNam, i);
+			strTmp.Format(_T("%d"), i);
+			strGroupName = BC_DICT + strTmp;
+			strTmp.Format(_T("%d"), i+1);
+			strPreGroupNam = BC_DICT + strTmp;
+			if ((i == nCur))
+			{
+				ChangeDictName(strGroupName, strPreGroupNam,  i, false);
+			}
+			else
+			{
+				ChangeDictName(strGroupName, strPreGroupNam,  i);
+			}
 		}
+		
 	}
 	return true;
 }
@@ -451,14 +558,15 @@ bool CDrawZDM::ChangeDictName( CString strGroupName, CString strPreGroupName, in
 			//需要将水面线删除
 			CString strLayer = pEnt->layer();
 			if ((strLayer.CompareNoCase(_T("MQ-XDM")) == 0)
-				||(strLayer.CompareNoCase(_T( "MQ-SDM")) == 0))
+				||(strLayer.CompareNoCase(_T( "MQ-SDM")) == 0)
+				||(strLayer.CompareNoCase(_T( "HX-TMP")) == 0))
 			{
 				if (!bIsDeFault)
 				{
 					pEnt->erase();
 				}
 			}
-			else if (strLayer.CompareNoCase(_T("ZX-TMP")) == 0)
+			else if (strLayer.CompareNoCase(_T("ZX-TMP")) == 0)//修改节点
 			{
 				if (pEnt->isKindOf(AcDbText::desc()))
 				{

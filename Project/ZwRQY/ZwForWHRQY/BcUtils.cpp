@@ -173,30 +173,39 @@ bool CBcUtils::del( LPCTSTR strLabel )
 	if (iter != m_Data.end())
 	{
 		//倒序查找
-		bool bIsErased = false;
-		for (map<CString, CZdmDataInfo>::iterator iTr = m_Data.begin();
-			iTr != m_Data.end();)
+		bool bIsDeCreased = true;
+		vector<pair<CString, CZdmDataInfo> > tmpVec;
+		for (map<CString, CZdmDataInfo>::reverse_iterator iRevers = m_Data.rbegin();
+			iRevers != m_Data.rend(); ++iRevers)
 		{
-			CZdmDataInfo data = iTr->second;
-			CString strName = iTr->first;
+			CZdmDataInfo tmpData = iRevers->second;
+			CString strName = iRevers->first;
+			CString strTmpName;
+
 			if (strName.CompareNoCase(strLabel) == 0)
 			{
-				m_Data.erase(iTr++);
-				bIsErased = true;
+				bIsDeCreased = false;
+				continue;
 			}
-			else
+			CString strCount = iRevers->second.getCount();
+			int nCount = MyTransFunc::StringToInt(strCount);
+			if (bIsDeCreased)
 			{
-				if (bIsErased)
-				{
-					CString strCount = data.getCount();
-					int nCount = MyTransFunc::StringToInt(strCount);
-					nCount--;
-					strName = _T("ZW_FOR_WHRQY_") + strCount;
-					data.setCount(strCount);
-					data.setJiedian(strCount);
-				}	
-				++iTr;
-			}	
+				nCount--;
+			}
+			strCount.Format(_T("%d"), nCount);
+			strTmpName = BC_DICT + strCount;
+			tmpData.setCount(strCount);
+			tmpData.setJiedian(strCount);
+			tmpData.setLabel(strTmpName);
+			tmpVec.push_back(make_pair(strTmpName, tmpData));
+		}
+
+		m_Data.clear();
+		for (vector<pair<CString, CZdmDataInfo> >::iterator iter = tmpVec.begin();
+			iter != tmpVec.end(); ++iter)
+		{
+			m_Data.insert(make_pair(iter->first, iter->second));
 		}
 		//删除所有，然后添加
 		delAll();
@@ -214,7 +223,11 @@ CZdmDataInfo CBcUtils::get( LPCTSTR strLabel )
 {
 	getAllData();
 	map<CString, CZdmDataInfo>::iterator iter = m_Data.find(strLabel);
-	CZdmDataInfo bcData = iter->second;
+	CZdmDataInfo bcData;
+	if (iter != m_Data.end())
+	{ 
+		bcData = iter->second;
+	}
 	return bcData;
 }
 

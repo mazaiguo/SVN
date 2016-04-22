@@ -159,6 +159,22 @@ public:
 		AddtoModelSpace(pText, objId, acdbCurDwg());
 		pText->close();
 	}
+
+	// - WRQ_ZDM._DELDATA command (do not rename)
+	//************************************
+	// Method:    WRQ_ZDM_DELDATA
+	// FullName:  CZwForWHRQYApp::WRQ_ZDM_DELDATA
+	// Access:    public static 
+	// Returns:   void
+	// Qualifier:É¾³ý×®ºÅµÈÊý¾Ý
+	// Parameter: void
+	//************************************
+	static void WRQ_ZDM_DELDATA(void)
+	{
+		// Add your code for command WRQ_ZDM._DELDATA here
+		DrawDMXProcess dmxProcess;
+		dmxProcess.Del();
+	}
 } ;
 
 //-----------------------------------------------------------------------------
@@ -170,3 +186,4 @@ ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, ZwForWHRQY, _TEST, TEST, ACRX_CMD_TRA
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, ZwForWHRQY, _INSERTDATA, CRSJ, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, ZwForWHRQY, _EditDM, EDDM, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, ZwForWHRQY, _Test1, Test1, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _DELDATA, SCSJ, ACRX_CMD_TRANSPARENT, NULL)
