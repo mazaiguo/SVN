@@ -49,13 +49,22 @@ public:
 private:
 	//交互相关
 	int GetZhuanghao();
-	bool GetStartZhuanghao();
 	//是否节点
 	bool GetIsJiedian();
 	//
 	bool GetSJDmHeight();
 
 	bool GetXzDmHeight();
+
+	//是否有坡度
+	bool GetIsPd();
+
+	//获取坡度高度
+	bool GetPdHeight();
+
+	bool GetSJDmHeightS();
+
+	bool GetXzDmHeightS();
 
 	//验证是否符合地面线的高度
 	bool verifyHeight(double dHeight);
@@ -93,6 +102,9 @@ private:
 	CString CurNumPosition(CString strlabel);
 
 	AcDbObjectId setlectEnt(CString strPromPt);
+	
+	//实体交互
+	bool EntInteraction();
 
 
 private:
@@ -100,15 +112,18 @@ private:
 	double m_dYScale;//y比例
 	bool   m_bDrawJiedian;//是否绘制节点
 	double m_dZhuanghao;//桩号
-	double m_dstartZhuanghao;//其实桩号
 	CString m_strJiedian;
 	double m_dSJDmHeight;//设计地面高
 	double m_dXzDmHeight;//现状地面高
+
+	double m_dDesignDmxS;//第二个设计地面线
+	double m_dRealDmxS;//第二个实际地面线
 	AcGePoint3d m_basePt;
 	int m_nCout;//当前计数
 	CZdmDataInfo* m_pZdmInfo;
 	double m_dminElavation;
 	double m_dmaxElavation;
+	bool m_bHasBugle;//是否有坡度
 	//AcDbObjectIdArray m_GroupIds;
 
 };

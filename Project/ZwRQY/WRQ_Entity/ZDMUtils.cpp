@@ -286,6 +286,97 @@ CString CDMXUtils::getJdNum()
 	return nBlkRefCount;
 }
 
+void CDMXUtils::SetStartZH(double dValue)
+{
+	AcDbObjectId StyleId;
+
+	AcDbDictionary* testDict = MyBaseUtils::openDictionaryForWrite(
+		CBaseDataForZdDwg::dictName(), true,
+		acdbHostApplicationServices()->workingDatabase());
+	if (testDict) 
+	{
+		Acad::ErrorStatus es;
+		if (testDict->getAt(_T("BASE"), StyleId) != Acad::eOk)
+		{
+			CBaseDataForZdDwg* newRec = new CBaseDataForZdDwg;
+			newRec->setStartZH(dValue);
+			es = testDict->setAt(_T("BASE"), newRec, StyleId);
+			if (es == Acad::eOk)
+			{
+				newRec->close();
+			}
+			else
+			{
+				//MyBaseUtils::rxErrorAlert(es);
+				delete newRec;
+				StyleId = AcDbObjectId::kNull;
+			}
+		}
+		else
+		{
+			CBaseDataForZdDwg* newRec = NULL;
+			if (acdbOpenAcDbObject((AcDbObject*&)newRec, StyleId, AcDb::kForWrite) != Acad::eOk)
+			{
+				testDict->close();
+				return;
+			}
+			newRec->setStartZH(dValue);
+			newRec->close();
+		}
+		testDict->close();
+	}
+	else 
+	{
+		return;
+	}
+}
+
+double CDMXUtils::getStartZH()
+{
+	double nBlkRefCount = 500;
+	AcDbObjectId StyleId;
+	AcDbDictionary* testDict = MyBaseUtils::openDictionaryForRead(CBaseDataForZdDwg::dictName(), acdbHostApplicationServices()->workingDatabase());
+	if (testDict)
+	{
+		Acad::ErrorStatus es;
+
+		if (testDict->getAt(_T("BASE"), StyleId) != Acad::eOk)
+		{
+			CBaseDataForZdDwg* newRec = NULL;
+
+			es = testDict->getAt(_T("BASE"), (AcDbObject *&)newRec, AcDb::kForRead);
+			if (es == Acad::eOk) 
+			{
+				nBlkRefCount = newRec->startZH();
+				newRec->close();
+			}
+			else 
+			{
+				//ArxDbgUtils::rxErrorAlert(es);
+				delete newRec;
+				StyleId = AcDbObjectId::kNull;
+			}
+		}
+		else
+		{
+			CBaseDataForZdDwg* newRec = NULL;
+			if (acdbOpenAcDbObject((AcDbObject*&)newRec, StyleId, AcDb::kForRead) != Acad::eOk)
+			{
+				testDict->close();
+				return nBlkRefCount;
+			}
+			nBlkRefCount = newRec->startZH();
+			newRec->close();
+		}
+		testDict->close();
+	}
+	else
+	{
+		SetStartZH(0);
+	}
+	return nBlkRefCount;
+}
+
 void CDMXUtils::SetXScale(double dValue)
 {
 	AcDbObjectId StyleId;
@@ -647,7 +738,7 @@ bool CDMXUtils::getcreateJiedian()
 	}
 	else
 	{
-		SetcreateJiedian(true);
+		SetcreateJiedian(false);
 	}
 	return nBlkRefCount;
 }

@@ -31,6 +31,9 @@ public:
 	CString					JdNum();
 	Acad::ErrorStatus	setJdNum(CString nCount);
 
+	double				startZH() const;
+	Acad::ErrorStatus	setStartZH(double dHx); 
+
 	double				XScale() const;
 	Acad::ErrorStatus	setXScale(double dHx);
 
@@ -66,6 +69,7 @@ private:
 	CString				m_strCurNum;//当前图纸的数据
 	CString             m_strJdNum;//当前图纸的节点数
 
+	double				m_dStartZH;//起始桩号
 	double				m_dXScale;//x比例
 	double				m_dYScale;//y比例
 
@@ -95,6 +99,7 @@ private:
 		kDxfYScale			= 41,
 		kDxfminElavation 	= 42,
 		kDxfmaxElavation 	= 43,
+		kDxfStartZH			= 44,
 		kDxfDrawBc			= 290,//290-299 布尔标志值
 		kDxfDrawJiedian		= 291,
 		

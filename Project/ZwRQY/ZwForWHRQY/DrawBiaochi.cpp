@@ -113,7 +113,10 @@ bool CDrawBiaochi::startDraw()
 		acedSSFree(m_ssname);
 		return false;
 	}
-
+	if (!GetStartZhuanghao())
+	{
+		return false;
+	}
 	SaveDataToDwg();
 	return true;
 }
@@ -244,6 +247,24 @@ bool CDrawBiaochi::GetEndBG()
 	return true;
 }
 
+bool CDrawBiaochi::GetStartZhuanghao()
+{
+	int nRet = acedGetReal(_T("\n布置地面线(现状及设计)...\n桩号基准<0>"), &m_dstartZhuanghao);
+	if (nRet == RTNORM)
+	{
+		//return true;
+	}
+	else if (nRet == RTNONE)
+	{
+		m_dstartZhuanghao = 0;
+	}
+	else
+	{
+		return false;
+	}
+	CDMXUtils::SetStartZH(m_dstartZhuanghao);
+	return true;
+}
 
 bool CDrawBiaochi::InitData()
 {

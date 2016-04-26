@@ -46,28 +46,10 @@ DrawDMXProcess::~DrawDMXProcess(void)
 
 bool DrawDMXProcess::Draw()
 {
-	if (m_nCout == 1)
-	{
-		if (!GetStartZhuanghao())
-		{
-			return false;
-		}	
-	}
-
 	int nRet = GetZhuanghao();
 	if (nRet == RTNORM)
 	{
-		if (m_bDrawJiedian)
-		{
-			GetIsJiedian();	
-		}
-
-		if (!GetSJDmHeight())
-		{
-			return false;
-		}
-
-		if (!GetXzDmHeight())
+		if (!EntInteraction())
 		{
 			return false;
 		}
@@ -121,22 +103,12 @@ bool DrawDMXProcess::Insert()
 
 	if (nRet == RTNORM)
 	{
-		if (m_bDrawJiedian)
-		{
-			GetIsJiedian();	
-		}
+		
 
-		if (!GetSJDmHeight())
+		if (!EntInteraction())
 		{
 			return false;
 		}
-
-		if (!GetXzDmHeight())
-		{
-			return false;
-		}
-
-
 		CDrawZDM zdm;
 		zdm.setData(m_pZdmInfo);
 		AcDbObjectId groupId = zdm.insert();
@@ -219,23 +191,7 @@ bool DrawDMXProcess::Mod()
 }
 
 //交互相关
-bool DrawDMXProcess::GetStartZhuanghao()
-{
-	int nRet = acedGetReal(_T("\n布置地面线(现状及设计)...\n桩号基准<0>"), &m_dstartZhuanghao);
-	if (nRet == RTNORM)
-	{
-		//return true;
-	}
-	else if (nRet == RTNONE)
-	{
-		m_dstartZhuanghao = 0;
-	}
-	else
-	{
-		return false;
-	}
-	return true;
-}
+
 
 int DrawDMXProcess::GetZhuanghao()
 {
@@ -368,6 +324,118 @@ bool DrawDMXProcess::GetXzDmHeight()
 	return bRet;
 }
 
+bool DrawDMXProcess::GetIsPd()
+{
+	acedInitGet(0 , _T("Yes No"));
+	TCHAR szKword [132];
+	szKword[0] = _T('N');	//给szKword一个默认值N
+	szKword[1] = _T('\0');
+	int nRet = acedGetKword(_T("\n是否有坡度?>>是(Y)/否(N) <N>:"), szKword);
+	if (nRet == RTNORM)	//如果得到合理的关键字
+	{
+		if (_tcscmp(szKword, _T("Yes")) == 0)
+			m_bHasBugle = true;
+		else if (_tcscmp(szKword, _T("No")) == 0)
+			m_bHasBugle = false;
+	}
+	else if (nRet == RTNONE)	//如果用户输入为空值
+	{
+		m_bHasBugle = false;
+	}
+	if (m_bHasBugle)
+	{
+		if (GetPdHeight())
+		{
+			m_pZdmInfo->setHasBulge(m_bHasBugle);
+		}
+	}
+	return true;
+}
+
+bool DrawDMXProcess::GetPdHeight()
+{
+	if (!GetSJDmHeightS())
+	{
+		return false;
+	}
+	if (!GetXzDmHeightS())
+	{
+		return false;
+	}
+	return true;
+}
+
+bool DrawDMXProcess::GetSJDmHeightS()
+{
+	CString strPrompt;
+	strPrompt.Format(_T("\n坡度设计地面标高<m> <%.2f>:"), m_dSJDmHeight);
+
+	bool bRet = false;
+	while(!bRet)
+	{
+		int nRet = acedGetReal(strPrompt, &m_dDesignDmxS);
+		if (nRet == RTNORM)
+		{
+			//return true;
+			if (verifyHeight(m_dDesignDmxS))
+			{
+				bRet = true;
+			}
+		}
+		else if (nRet == RTNONE)
+		{
+			m_dDesignDmxS = m_dSJDmHeight;
+			if (verifyHeight(m_dDesignDmxS))
+			{
+				bRet = true;
+			}
+		}
+		else
+		{
+			bRet = false;
+			//return false;
+			break;
+		}
+	}
+
+	m_pZdmInfo->setDesingDmxS(m_dDesignDmxS);
+	return bRet;
+}
+
+bool DrawDMXProcess::GetXzDmHeightS()
+{
+	CString strPrompt;
+	strPrompt.Format(_T("\n坡度现状地面标高<m> <%.2f>:"), m_dDesignDmxS);
+	bool bRet = false;
+	while(!bRet)
+	{
+		int nRet = acedGetReal(strPrompt, &m_dRealDmxS);
+		if (nRet == RTNORM)
+		{
+			//return true;
+			if (verifyHeight(m_dRealDmxS))
+			{
+				bRet = true;
+			}
+		}
+		else if (nRet == RTNONE)
+		{
+			m_dRealDmxS = m_dDesignDmxS;
+			if (verifyHeight(m_dRealDmxS))
+			{
+				bRet = true;
+			}
+		}
+		else
+		{
+			bRet = false;
+			break;
+		}
+	}
+	m_pZdmInfo->setRealDmxS(m_dRealDmxS);
+	return bRet;
+}
+
 bool DrawDMXProcess::verifyHeight( double dHeight )
 {
 	if (dHeight < m_dminElavation)
@@ -453,3 +521,30 @@ AcDbObjectId DrawDMXProcess::setlectEnt(CString strPromPt)
 
 	return objId;
 }
+
+bool DrawDMXProcess::EntInteraction()
+{	
+	if (!m_bDrawJiedian)
+	{
+		GetIsJiedian();	
+	}
+
+	if (!GetSJDmHeight())
+	{
+		return false;
+	}
+
+	if (!GetXzDmHeight())
+	{
+		return false;
+	}
+	if (m_nCout > 1)
+	{
+		if (!GetIsPd())
+		{
+			return false;
+		}
+	}
+	
+	return true;
+}	

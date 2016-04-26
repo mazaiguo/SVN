@@ -21,10 +21,11 @@ CBaseDataForZdDwg::CBaseDataForZdDwg()
 	m_dXScale = 500;
 	m_dYScale = 100;
 	m_bDrawBc = true;
-	m_bDrawJiedian = true;
+	m_bDrawJiedian = false;
 	m_strCurNum = _T("1");
 	m_strNumCount = _T("1");
 	m_strJdNum = _T("1");
+	m_dStartZH = 0;
 }
 
 
@@ -33,6 +34,12 @@ CBaseDataForZdDwg::~CBaseDataForZdDwg()
 {
 	m_dXScale = 500;
 	m_dYScale = 100;
+	m_bDrawBc = true;
+	m_bDrawJiedian = false;
+	m_strCurNum = _T("1");
+	m_strNumCount = _T("1");
+	m_strJdNum = _T("1");
+	m_dStartZH = 0;
 }
 
 
@@ -114,6 +121,20 @@ Acad::ErrorStatus CBaseDataForZdDwg::setJdNum(CString nCount)
 {
 	assertWriteEnabled();
 	m_strJdNum = nCount;
+
+	return Acad::eOk;
+}
+
+double CBaseDataForZdDwg::startZH() const
+{
+	assertReadEnabled();
+	return m_dStartZH;
+}
+
+Acad::ErrorStatus CBaseDataForZdDwg::setStartZH(double dHx)
+{
+	assertWriteEnabled();
+	m_dStartZH = dHx;
 
 	return Acad::eOk;
 }
@@ -253,7 +274,7 @@ CBaseDataForZdDwg::dwgInFields(AcDbDwgFiler* filer)
 	filer->readItem(&m_bDrawBc);
 	filer->readItem(&m_bDrawJiedian);
 	filer->readItem(&m_basePt);
-	
+	filer->readItem(&m_dStartZH);
 	//filer->readItem(&m_nNumCount);
 	//filer->readItem(&m_nCurNum);
 	/*filer->readItem(&m_startPt);
@@ -288,6 +309,7 @@ CBaseDataForZdDwg::dwgOutFields(AcDbDwgFiler* filer) const
 	filer->writeItem(m_bDrawBc);
 	filer->writeItem(m_bDrawJiedian);
 	filer->writeItem(m_basePt);
+	filer->writeItem(m_dStartZH);
 	/*filer->writeInt32(m_strNumCount);
 	filer->writeInt32(m_strCurNum);*/
 	/*filer->writeItem(m_nNumCount);
@@ -358,6 +380,10 @@ CBaseDataForZdDwg::dxfInFields(AcDbDxfFiler* filer)
 		{
 			setbasePt(asPnt3d(rb.resval.rpoint));
 		}
+		else if (rb.restype == kDxfStartZH)
+		{
+			setStartZH(rb.resval.rreal);
+		}
 		/*else if (rb.restype == kDxfStartPt)
 		{
            setStartPt(asPnt3d(rb.resval.rpoint));
@@ -410,6 +436,7 @@ CBaseDataForZdDwg::dxfOutFields(AcDbDxfFiler* filer) const
 	filer->writeItem(kDxfDrawBc, m_bDrawBc);
 	filer->writeItem(kDxfDrawJiedian, m_bDrawJiedian);
 	filer->writeItem(kDxfBasePt, m_basePt);
+	filer->writeItem(kDxfStartZH, m_dStartZH);
 	/*filer->writeItem(kDxfStartPt, m_startPt);
 	filer->writeItem(kDxfEndPt, m_endPt);
 	filer->writeItem(kDxfHengxiang, m_dHengxiang);

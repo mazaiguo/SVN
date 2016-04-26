@@ -41,7 +41,7 @@ bool CBcUtils::add( LPCTSTR strLabel, CZdmDataInfo data)
 			newRec->setcurData(data.getcurData());
 			////////////////////
 			newRec->setHasBulge(data.getHasBulge());
-			newRec->setDesingDmxS(data.getDesingDmxS());
+			newRec->setDesingDmxS(data.getDesignDmxS());
 			newRec->setRealDmxS(data.getRealDmxS());
 			newRec->setJiedianS(data.getJiedianS());
 
@@ -155,7 +155,7 @@ bool CBcUtils::modify( LPCTSTR strLabel, CZdmDataInfo pData )
 		iter->second.setcurData(pData.getcurData());
 		////////////////////
 		iter->second.setHasBulge(pData.getHasBulge());
-		iter->second.setDesingDmxS(pData.getDesingDmxS());
+		iter->second.setDesingDmxS(pData.getDesignDmxS());
 		iter->second.setRealDmxS(pData.getRealDmxS());
 		iter->second.setJiedianS(pData.getJiedianS());
 
@@ -322,7 +322,7 @@ void CBcUtils::addAll()
 			newRec->setcurData(data.getcurData());
 			////////////////////
 			newRec->setHasBulge(data.getHasBulge());
-			newRec->setDesingDmxS(data.getDesingDmxS());
+			newRec->setDesingDmxS(data.getDesignDmxS());
 			newRec->setRealDmxS(data.getRealDmxS());
 			newRec->setJiedianS(data.getJiedianS());
 

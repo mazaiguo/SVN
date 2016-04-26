@@ -33,6 +33,8 @@ private:
 	//获取终止标高数据
 	bool GetEndBG();
 
+	bool GetStartZhuanghao();
+
 	//数据初始设置
 	bool InitData();
 	//将数据存入DWG文件中保存
@@ -57,6 +59,7 @@ private:
 	double		m_dYScale;//yscale
 	int			m_nStartBG;//起始标高
 	int			m_nEndBG;//终止标高
+	double		m_dstartZhuanghao;//起始桩号
 	
 	//绘制基础数据
 	double		m_dXRatio;

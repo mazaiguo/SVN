@@ -32,7 +32,7 @@ public:
 	double getcurData() const;
 	//////////////////////////////////////////////////////////////////////////
 	bool   getHasBulge() const;
-	double getDesingDmxS() const;
+	double getDesignDmxS() const;
 	double getRealDmxS() const;
 	double getJiedianS() const;
 	//double getcurDataS() const;

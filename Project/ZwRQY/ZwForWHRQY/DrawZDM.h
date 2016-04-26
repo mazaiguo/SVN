@@ -35,6 +35,8 @@ private:
 	bool DrawLine(bool bIsDeFault = true);
 	//绘制地面线相关的文字
 	bool DrawDMText();
+
+	bool DrawNextDMText();
 	//绘制管道相关的文字
 	bool DrawXMText();
 	//绘制节点文字

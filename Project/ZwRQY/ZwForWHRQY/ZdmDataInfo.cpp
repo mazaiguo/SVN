@@ -93,7 +93,7 @@ bool CZdmDataInfo::getHasBulge() const
 	return m_bHasBulge;
 }
 
-double CZdmDataInfo::getDesingDmxS() const
+double CZdmDataInfo::getDesignDmxS() const
 {
 	return m_dDesignDmxS;
 }

@@ -67,7 +67,7 @@ void CBiaochiInfo::initData()
 	CDMXUtils::setNumCount(_T("1"));
 	CDMXUtils::SetCurNum(_T("1"));
 	CDMXUtils::SetJdNum(_T("1"));
-	CDMXUtils::SetcreateJiedian(true);
+	CDMXUtils::SetcreateJiedian(false);
 	CDMXUtils::SetcreateBc(true);
 	CDMXUtils::SetXScale(500);
 	CDMXUtils::SetYScale(100);
