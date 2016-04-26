@@ -5,6 +5,12 @@
 #include "CBaseDbReactor.h"
 #include "SerialNo.h"
 #include "BaseInfoInDwgFileUtils.h"
+#include "ZDMUtils.h"
+#include "BcUtils.h"
+#include "ZdmDataInfo.h"
+#include "DrawZDM.h"
+#include "DrawDMXProcess.h"
+
 //-----------------------------------------------------------------------------
 ACRX_CONS_DEFINE_MEMBERS(CBaseDbReactor, AcDbDatabaseReactor, 1)
 
@@ -94,7 +100,82 @@ void CBaseDbReactor::objectOpenedForModify(const AcDbDatabase * dwg, const AcDbO
 // -----------------------------------------------------------------------------
 void CBaseDbReactor::objectModified(const AcDbDatabase * dwg, const AcDbObject * dbObj)
 {
-	AcDbDatabaseReactor::objectModified (dwg, dbObj) ;
+	//AcDbDatabaseReactor::objectModified (dwg, dbObj) ;
+	//if (dbObj->isKindOf(AcDbText::desc()))
+	//{
+	//	AcDbText* pText = AcDbText::cast(dbObj);
+	//	CString strLayerName = pText->layer();
+	//	if (strLayerName.CompareNoCase(_T("DM-TEXT")) == 0)
+	//	{
+	//		CString strGroupName(_T(""));
+	//		AcDbObjectIdArray objIdArrs;
+	//		objIdArrs.removeAll();
+	//		objIdArrs = MyEditEntity::openObjAndGetGroupIds(pText);
+	//		if ((objIdArrs.length() <=0) || (objIdArrs.length() > 1))
+	//		{
+	//			return;
+	//		}
+	//		AcDbObjectId groupId;
+	//		groupId = objIdArrs.at(0);
+	//		AcDbGroup* pGroup = NULL;
+	//		if (acdbOpenAcDbObject((AcDbObject*&)pGroup, groupId, AcDb::kForRead) != Acad::eOk)
+	//		{
+	//			return;
+	//		}
+	//		strGroupName = pGroup->name();
+	//		pGroup->close();
+
+	//		int nFind = strGroupName.Find(BC_DICT);
+	//		if (nFind >= 0)
+	//		{
+	//			AcGePoint3d pt = pText->position();
+	//			AcGePoint3d basePt;
+	//			basePt = CDMXUtils::getbasePt();
+	//			double dLen = basePt.y - pt.y;
+	//			double dYScale = 1000/(CDMXUtils::getYScale());
+	//			int nSize = ceil(dLen/(dYScale*1.5));
+	//			CString strText = pText->textString();
+
+	//			CString strTmp = BC_DICT;
+	//			CString strCur;
+	//	
+	//			int nLen = strTmp.GetLength();
+	//			strCur = strGroupName.Right(strGroupName.GetLength() - nLen);
+	//			int nCount = MyTransFunc::StringToInt(strCur);
+
+	//			CBcUtils utils;
+	//			CZdmDataInfo data;
+	//			utils.get(strGroupName, data);				
+
+	//			double dValue = MyTransFunc::StringToDouble(strText);
+	//			if (nSize == 1)//设计地面高文字
+	//			{
+	//				
+	//				data.setDesignDmx(dValue);
+	//			}
+	//			else if (nSize == 2)//现状地面高文字
+	//			{
+	//				data.setRealDmx(dValue);
+	//			}
+	//			else if (nSize == 4)//桩号文字
+	//			{
+	//				data.setcurData(dValue);
+	//			}
+	//			else
+	//			{
+	//				return;
+	//			}
+	//			data.setCount(strCur);
+	//			data.setJiedian(strCur);
+	//			MyEditEntity::EraseEntByGroupName(strGroupName);
+
+	//			CDrawZDM zdm;
+	//			zdm.setData(&data);
+	//			bool bRet = zdm.mod(strGroupName);
+	//		}
+
+	//	}
+	//}
 }
 
 // -----------------------------------------------------------------------------

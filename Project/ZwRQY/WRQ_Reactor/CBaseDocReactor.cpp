@@ -5,6 +5,8 @@
 
 //-----------------------------------------------------------------------------
 ACRX_CONS_DEFINE_MEMBERS(CBaseDocReactor, AcApDocManagerReactor, 1)
+extern void attachDbReactorToAll();
+extern void removeDbReactorFromAll();
 
 //-----------------------------------------------------------------------------
 CBaseDocReactor::CBaseDocReactor (const bool autoInitAndRelease) : AcApDocManagerReactor(), mbAutoInitAndRelease(autoInitAndRelease) {
@@ -50,6 +52,31 @@ bool CBaseDocReactor::IsAttached () const {
 }
 
 
+void CBaseDocReactor::documentCreateStarted(AcApDocument* pDocCreating)
+{
+
+}
+
+void CBaseDocReactor::documentCreated(AcApDocument* pDocCreating)
+{
+
+}
+
+void CBaseDocReactor::documentToBeDestroyed(AcApDocument* pDocToDestroy)
+{
+	removeDbReactorFromAll();
+}
+
+void CBaseDocReactor::documentDestroyed(const ACHAR* fileName)
+{
+	
+}
+
+void CBaseDocReactor::documentCreateCanceled(AcApDocument* pDocCreateCancelled)
+{
+
+}
+
 // -----------------------------------------------------------------------------
 void CBaseDocReactor::documentLockModeWillChange(AcApDocument * param2, AcAp::DocLockMode myCurrentMode, AcAp::DocLockMode myNewMode, AcAp::DocLockMode currentMode, const ACHAR * pGlobalCmdName)
 {
@@ -86,7 +113,9 @@ void CBaseDocReactor::documentActivationModified(bool bActivation)
 // -----------------------------------------------------------------------------
 void CBaseDocReactor::documentActivated(AcApDocument * pActivatedDoc)
 {
-	AcApDocManagerReactor::documentActivated (pActivatedDoc) ;
+	//AcApDocManagerReactor::documentActivated (pActivatedDoc) ;
+	attachDbReactorToAll();
+	MyBaseUtils::SetVar(_T("dblclkedit"), 0);
 }
 
 // -----------------------------------------------------------------------------

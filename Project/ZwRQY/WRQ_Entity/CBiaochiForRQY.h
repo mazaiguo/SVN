@@ -2,12 +2,12 @@
 #define CBIAOCHIFORRQY_H
 #include "MyBase.h"
 
-#ifdef MYBASEDLL_EXPORTS //在创建产生DLL的工程中先把 MYBASEDLL_EXPORTS 预定义上
-#define SERVERDLL_API __declspec(dllexport)
+#ifdef WRQ_ENTITY_MODULE //在创建产生DLL的工程中先把 MYBASEDLL_EXPORTS 预定义上
+#define WRQ_ENTITY_DLL __declspec(dllexport)
 #else
-#define SERVERDLL_API __declspec(dllimport)
+#define WRQ_ENTITY_DLL __declspec(dllimport)
 #endif
-class SERVERDLL_API CBiaochiForRQY : public AcDbObject 
+class WRQ_ENTITY_DLL CBiaochiForRQY : public AcDbObject 
 {
 
 public:

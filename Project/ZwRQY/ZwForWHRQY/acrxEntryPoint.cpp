@@ -12,39 +12,6 @@
 #include "SpecialText.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("")
-
-Acad::ErrorStatus AddtoModelSpace(AcDbEntity*pEnt, AcDbObjectId&retId, AcDbDatabase* pDb/* =NULL */)
-{
-	Acad::ErrorStatus es;
-	AcDbBlockTable* pBlockTable;	//块表指针
-	if(pDb==NULL)
-		pDb=acdbCurDwg();
-
-	es=pDb->getBlockTable(pBlockTable,AcDb::kForRead);	
-	if(es!=Acad::eOk)
-		return es;
-
-	AcDbBlockTableRecord* pBlockTableRecord;	//块表记录指针
-	es=pBlockTable->getAt(ACDB_MODEL_SPACE,pBlockTableRecord,
-		AcDb::kForWrite);
-	if(es!=Acad::eOk)
-	{
-		pBlockTable->close();
-		return es;
-	}
-	pBlockTable->close();	//关闭块表指针
-
-	es=pBlockTableRecord->appendAcDbEntity(retId,pEnt);
-	if(es!=Acad::eOk)
-	{
-		pBlockTableRecord->close();
-		return es;
-	}
-
-	pBlockTableRecord->close();	//关闭模型空间块表记录指针
-	return Acad::eOk;
-}
-
 //-----------------------------------------------------------------------------
 //----- ObjectARX EntryPoint
 class CZwForWHRQYApp : public AcRxArxApp 
@@ -91,7 +58,7 @@ public:
 	}
 
 	// - ZwForWHRQY._TKSZ command (do not rename)
-	static void ZwForWHRQY_TKSZ(void)//图框设置
+	static void WRQ_ZDM_TKSZ(void)//图框设置
 	{
 		// Add your code for command ZwForWHRQY._TKSZ here
 		CAcModuleResourceOverride rs;
@@ -100,20 +67,11 @@ public:
 	}
 
 	// - ZwForWHRQY._XJDMX command (do not rename)
-	static void ZwForWHRQY_XJDMX(void)//新建标尺及地面线
+	static void WRQ_ZDM_XJDMX(void)//新建标尺及地面线
 	{
 		// Add your code for command ZwForWHRQY._XJDMX here
 		CBiaochiInfo info;
 		info.start();
-	}
-
-	// - ZwForWHRQY._TEST command (do not rename)
-	static void ZwForWHRQY_TEST(void)
-	{
-		// Add your code for command ZwForWHRQY._TEST here
-		CBcUtils utls;
-		CZdmDataInfo m_pZDM;
-		utls.add(m_pZDM.label(), m_pZDM);
 	}
 
 	// - ZwForWHRQY._INSERTDATA command (do not rename)
@@ -125,7 +83,7 @@ public:
 	// Qualifier: 插入数据并修改现有的图形，主要是现状水面线和实际水面线及增加的坡度线
 	// Parameter: void
 	//************************************
-	static void ZwForWHRQY_INSERTDATA(void)
+	static void WRQ_ZDM_INSERTDATA(void)
 	{
 		// Add your code for command ZwForWHRQY._INSERTDATA here
 		DrawDMXProcess dmxProcess;
@@ -141,23 +99,11 @@ public:
 	// Qualifier:修改断面数据
 	// Parameter: void
 	//************************************
-	static void ZwForWHRQY_EditDM(void)
+	static void WRQ_ZDM_EditDM(void)
 	{
 		// Add your code for command ZwForWHRQY._EditDM here
-	}
-
-	// - ZwForWHRQY._Test command (do not rename)
-	static void ZwForWHRQY_Test1(void)
-	{
-		// Add your code for command ZwForWHRQY._Test here
-		CSpecialText* pText = new CSpecialText();
-		pText->setPos(AcGePoint3d(0, 0, 0));
-		pText->setHeig(3);
-		pText->setTxtString(_T("ABCD"));
-		//MyBaseUtils::addToCurrentSpaceAndClose(pText);
-		AcDbObjectId objId;
-		AddtoModelSpace(pText, objId, acdbCurDwg());
-		pText->close();
+		DrawDMXProcess dmxProcess;
+		dmxProcess.Mod();
 	}
 
 	// - WRQ_ZDM._DELDATA command (do not rename)
@@ -180,10 +126,8 @@ public:
 //-----------------------------------------------------------------------------
 IMPLEMENT_ARX_ENTRYPOINT(CZwForWHRQYApp)
 
-ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, ZwForWHRQY, _TKSZ, TKSZ, ACRX_CMD_TRANSPARENT, NULL)
-ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, ZwForWHRQY, _XJDMX, XJDMX, ACRX_CMD_TRANSPARENT, NULL)
-ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, ZwForWHRQY, _TEST, TEST, ACRX_CMD_TRANSPARENT, NULL)
-ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, ZwForWHRQY, _INSERTDATA, CRSJ, ACRX_CMD_TRANSPARENT, NULL)
-ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, ZwForWHRQY, _EditDM, EDDM, ACRX_CMD_TRANSPARENT, NULL)
-ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, ZwForWHRQY, _Test1, Test1, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _TKSZ, TKSZ, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _XJDMX, XJDMX, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _INSERTDATA, CRSJ, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _EditDM, EDDM, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _DELDATA, SCSJ, ACRX_CMD_TRANSPARENT, NULL)

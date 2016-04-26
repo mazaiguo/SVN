@@ -7,14 +7,19 @@
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //绘制纵断面的具体流程
-class CDrawZDM
+#ifdef WRQ_ZDM_MODULE //在创建产生DLL的工程中先把 
+#define ZDM_DLL_API __declspec(dllexport)
+#else
+#define ZDM_DLL_API __declspec(dllimport)
+#endif
+class ZDM_DLL_API CDrawZDM
 {
 public:
 	CDrawZDM(void);
 	~CDrawZDM(void);
 	CDrawZDM(CZdmDataInfo* pZDM);
 	//处理编组
-	AcDbObjectId Draw();
+	AcDbObjectId add();
 
 	void setData(CZdmDataInfo* pZDM);
 	
@@ -69,7 +74,7 @@ private:
 	// Parameter: bool bIsDeFault
 	//************************************
 	bool ChangeDictName(CString strGroupName, CString strPreGroupName, int nCount, bool bIsDeFault = true);
-
+	bool EditDict(int nCur);
 private:
 	CZdmDataInfo m_pZDM;
 	CZdmDataInfo m_preData;
@@ -78,4 +83,5 @@ private:
 	double m_dWidth;
 	double m_dXScale;
 	double m_dYScale;
+	bool m_bIsDel;//是否删除
 };

@@ -219,16 +219,16 @@ bool CBcUtils::del( LPCTSTR strLabel )
 	return true;
 }
 
-CZdmDataInfo CBcUtils::get( LPCTSTR strLabel )
+bool CBcUtils::get( LPCTSTR strLabel ,CZdmDataInfo& bcData)
 {
 	getAllData();
 	map<CString, CZdmDataInfo>::iterator iter = m_Data.find(strLabel);
-	CZdmDataInfo bcData;
 	if (iter != m_Data.end())
 	{ 
 		bcData = iter->second;
+		return true;
 	}
-	return bcData;
+	return false;
 }
 
 //************************************

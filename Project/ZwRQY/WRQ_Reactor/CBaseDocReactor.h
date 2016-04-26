@@ -47,6 +47,16 @@ public:
 	virtual AcApDocManager *Subject () const ;
 	virtual bool IsAttached () const ;
 
+	virtual void              documentCreateStarted(AcApDocument* pDocCreating);
+	// Fired when a document has been successfully created replaces kLoadDwgMsg.
+	virtual void              documentCreated(AcApDocument* pDocCreating);
+	// Fired when a document is about to be destroyed replaces kUnloadDwgMsg
+	virtual void              documentToBeDestroyed(AcApDocument* pDocToDestroy);
+	// Fired when a document is completely destroyed
+	virtual void              documentDestroyed(const ACHAR* fileName);
+	// Fired when a user action has cancelled a documents creation.
+	// Only fired in MDI mode and after a documentCreateStarted
+	virtual void              documentCreateCanceled(AcApDocument* pDocCreateCancelled);
 	// -----------------------------------------------------------------------------
 	virtual void documentLockModeWillChange(AcApDocument * param2, AcAp::DocLockMode myCurrentMode, AcAp::DocLockMode myNewMode, AcAp::DocLockMode currentMode, const ACHAR * pGlobalCmdName);
 	// -----------------------------------------------------------------------------

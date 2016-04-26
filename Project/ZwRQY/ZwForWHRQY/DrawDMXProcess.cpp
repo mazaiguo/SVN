@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "DrawDMXProcess.h"
 #include "DrawZDM.h"
+#include "CDlgEditZhuangHao.h"
 
 DrawDMXProcess::DrawDMXProcess(void)
 {
@@ -25,7 +26,8 @@ DrawDMXProcess::DrawDMXProcess(void)
 		CString strTmpLabel = BC_DICT + strCount;
 		CBcUtils bcUtils;
 
-		CZdmDataInfo pBiaoChi = bcUtils.get(strTmpLabel);
+		CZdmDataInfo pBiaoChi;
+		bcUtils.get(strTmpLabel, pBiaoChi);
 		m_dZhuanghao = pBiaoChi.getcurData();
 		m_dSJDmHeight = pBiaoChi.getDesignDmx();
 	}
@@ -73,7 +75,7 @@ bool DrawDMXProcess::Draw()
 
 		CDrawZDM zdm;
 		zdm.setData(m_pZdmInfo);
-		AcDbObjectId groupId = zdm.Draw();
+		AcDbObjectId groupId = zdm.add();
 		return true;
 	}
 	else if (nRet == RTKWORD)
@@ -152,33 +154,8 @@ bool DrawDMXProcess::Insert()
 
 bool DrawDMXProcess::Del()
 {
-	ads_name ename;
-	AcGePoint3d pt;
-	int nRet = acedEntSel(_T("\n选择要删除的桩号"), ename, asDblArray(pt));
-	if (nRet != RTNORM)
-	{
-		return false;
-	}
-	AcDbObjectId objId = AcDbObjectId::kNull;
-	acdbGetObjectId(objId, ename);
-	AcDbObjectIdArray objIdArrs;
-	objIdArrs.removeAll();
-	objIdArrs = MyEditEntity::openObjAndGetGroupIds(objId);
-	if ((objIdArrs.length() <=0) || (objIdArrs.length() > 1))
-	{
-		AfxMessageBox(_T("没有选中桩号"));
-		return false;
-	}
-	AcDbObjectId groupId;
-	groupId = objIdArrs.at(0);
-	AcDbGroup* pGroup = NULL;
-	if (acdbOpenAcDbObject((AcDbObject*&)pGroup, groupId, AcDb::kForRead) != Acad::eOk)
-	{
-		return false;
-	}
-	CString strGroupName;
-	strGroupName = pGroup->name();
-	pGroup->close();
+	AcDbObjectId objId = setlectEnt(_T("\n选择要删除的桩号"));
+	CString strGroupName = MyEditEntity::openObjAndGetGroupName(objId);
 	
 	CString strCur = CurNumPosition(strGroupName);
 	int nCount = MyTransFunc::StringToInt(strCur);
@@ -200,61 +177,45 @@ bool DrawDMXProcess::Del()
 	CString strTmpCur;
 	strTmpCur.Format(_T("%d"), nCount);
 	strNextGroupName = BC_DICT + strTmpCur;
-	CZdmDataInfo data = utils.get(strNextGroupName);
+	CZdmDataInfo data;
+	utils.get(strNextGroupName, data);
 	data.setLabel(strGroupName);
 	data.setCount(strCur);
 	data.setJiedian(strCur);
 
-	EraseEntFromDict(strGroupName);
+	MyEditEntity::EraseEntByGroupName(strGroupName);
 
 	CDrawZDM zdm;
 	zdm.setData(&data);
-	bool bRet = zdm.mod(strGroupName);
+	bool bRet = zdm.del(strGroupName);
 	return bRet;
 }
 
 bool DrawDMXProcess::Mod()
 {
-	ads_name ename;
-	AcGePoint3d pt;
-	int nRet = acedEntSel(_T("\n选择要编辑的桩号"), ename, asDblArray(pt));
-	if (nRet != RTNORM)
-	{
-		return false;
-	}
-	AcDbObjectId objId = AcDbObjectId::kNull;
-	acdbGetObjectId(objId, ename);
-	AcDbObjectIdArray objIdArrs;
-	objIdArrs.removeAll();
-	objIdArrs = MyEditEntity::openObjAndGetGroupIds(objId);
-	if ((objIdArrs.length() <=0) || (objIdArrs.length() > 1))
-	{
-		AfxMessageBox(_T("没有选中桩号"));
-		return false;
-	}
-	AcDbObjectId groupId;
-	groupId = objIdArrs.at(0);
-	AcDbGroup* pGroup = NULL;
-	if (acdbOpenAcDbObject((AcDbObject*&)pGroup, groupId, AcDb::kForRead) != Acad::eOk)
-	{
-		return false;
-	}
-	CString strGroupName;
-	strGroupName = pGroup->name();
-	pGroup->close();
-
+	AcDbObjectId objId = setlectEnt(_T("\n选择要编辑的桩号"));
+	CString strGroupName = MyEditEntity::openObjAndGetGroupName(objId);
 	CString strCur = CurNumPosition(strGroupName);
 	int nCount = MyTransFunc::StringToInt(strCur);
 
 	CBcUtils utils;
-	CZdmDataInfo data = utils.get(strGroupName);
-	double dZhuanghao = data.getcurData();
-	data.setcurData(dZhuanghao - 10);
-	
-	CDrawZDM zdm;
-	zdm.setData(&data);
-	bool bRet = zdm.mod(strGroupName);
-	return true;
+	CZdmDataInfo data;
+	utils.get(strGroupName, data);
+
+	CDlgEditZhuangHao dlg;
+	dlg.setZDMData(&data);
+	if (dlg.DoModal() == IDOK)
+	{
+		data = dlg.getData();
+		MyEditEntity::EraseEntByGroupName(strGroupName);
+
+		CDrawZDM zdm;
+		zdm.setData(&data);
+		bool bRet = zdm.mod(strGroupName);
+		return true;
+	}
+
+	return false;
 }
 
 //交互相关
@@ -429,51 +390,12 @@ bool DrawDMXProcess::doUndo()
 	strCount.Format(_T("%d"), nTmp);
 	CString strTmpLabel = BC_DICT + strCount;
 		
-	EraseEntFromDict(strTmpLabel);
+	MyEditEntity::EraseEntByGroupName(strTmpLabel);
 
 	CBcUtils utils;
 	utils.del(strTmpLabel);
 
 	CDMXUtils::setNumCount(strCount);
-	return true;
-}
-
-bool DrawDMXProcess::EraseEntFromDict( CString strGroupName )
-{
-	AcDbDictionary *pGroupDict;	
-	AcDbGroup* pGroup = NULL;
-	acdbHostApplicationServices()->workingDatabase()->getGroupDictionary(pGroupDict, AcDb::kForWrite);
-	if (pGroupDict->getAt(strGroupName, (AcDbObject*&)pGroup, AcDb::kForWrite) != Acad::eOk)
-	{
-		pGroupDict->close();
-		return false;
-	}
-
-	Acad::ErrorStatus es;
-	AcDbEntity* pEnt = NULL;
-	AcDbObjectId objId;
-	AcDbObjectIdArray objIds;
-	objIds.removeAll();
-	int nLength = 0;
-	nLength = pGroup->allEntityIds(objIds);
-	for (int i=0; i<objIds.length(); i++)
-	{
-		objId = objIds.at(i);
-		es = acdbOpenAcDbEntity((AcDbEntity*&)pEnt, objId, AcDb::kForWrite);
-		if (es!= Acad::eOk)
-		{
-			pEnt->close();
-		}
-		else
-		{
-			pEnt->erase();
-			pEnt->close();
-		}
-	}
-	pGroup->erase();
-	pGroup->close();
-
-	pGroupDict->close();
 	return true;
 }
 
@@ -514,4 +436,20 @@ CString DrawDMXProcess::CurNumPosition(CString strlabel)
 	int nLen = strTmp.GetLength();
 	strCur = strlabel.Right(strlabel.GetLength() - nLen);
 	return strCur;
+}
+
+AcDbObjectId DrawDMXProcess::setlectEnt(CString strPromPt)
+{	
+	AcDbObjectId objId = AcDbObjectId::kNull;
+
+	ads_name ename;
+	AcGePoint3d pt;
+	int nRet = acedEntSel(strPromPt, ename, asDblArray(pt));
+	if (nRet != RTNORM)
+	{
+		return objId;
+	}
+	acdbGetObjectId(objId, ename);
+
+	return objId;
 }

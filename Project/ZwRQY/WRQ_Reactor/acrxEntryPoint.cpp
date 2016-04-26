@@ -27,7 +27,6 @@ void attachDbReactorToAll()
 		MyBaseUtils::getAllDatabases(dbPtrs);
 
 		//acutPrintf(_T("\nAttaching Database Reactor to all active databases..."));
-
 		int len = dbPtrs.length();
 		for (int i=0; i<len; i++) {
 			tmpDb = static_cast<AcDbDatabase*>(dbPtrs[i]);
@@ -85,8 +84,8 @@ public:
 		g_baseEv = new CBaseEventReactor;
 		g_baseEv->Attach();
 
-		g_baseDb = new CBaseDbReactor;
-		g_baseDb->Attach(acdbCurDwg());
+		/*g_baseDb = new CBaseDbReactor;
+		g_baseDb->Attach(acdbCurDwg());*/
 
 		attachDbReactorToAll();
 		return (retCode) ;
@@ -127,11 +126,11 @@ public:
 			g_baseEv = NULL;
 		}
 
-		g_baseDb->Detach();
+		/*g_baseDb->Detach();
 		if (g_baseDb != NULL)
 		{
 			g_baseDb = NULL;
-		}
+		}*/
 		removeDbReactorFromAll();
 		return (retCode) ;
 	}

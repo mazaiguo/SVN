@@ -3,7 +3,13 @@
 #include "ZdmDataInfo.h"
 #include "CBiaochiForRQY.h"
 //控制绘制地面线的流程
-class DrawDMXProcess
+
+#ifdef WRQ_ZDM_MODULE //在创建产生DLL的工程中先把 
+#define ZDM_DLL_API __declspec(dllexport)
+#else
+#define ZDM_DLL_API __declspec(dllimport)
+#endif
+class ZDM_DLL_API DrawDMXProcess
 {
 public:
 	DrawDMXProcess(void);
@@ -66,16 +72,6 @@ private:
 	bool doUndo();
 	
 	//************************************
-	// Method:    EraseEntFromDict
-	// FullName:  DrawDMXProcess::EraseEntFromDict
-	// Access:    private 
-	// Returns:   bool
-	// Qualifier: 操作dictionary删除实体
-	// Parameter: AcDbObjectId groupId
-	//************************************
-	bool EraseEntFromDict(CString strGroupName);
-
-	//************************************
 	// Method:    CurNumPositon
 	// FullName:  DrawDMXProcess::CurNumPositon
 	// Access:    private 
@@ -95,6 +91,9 @@ private:
 	// Parameter: CString strlabel
 	//************************************
 	CString CurNumPosition(CString strlabel);
+
+	AcDbObjectId setlectEnt(CString strPromPt);
+
 
 private:
 	double m_dXScale;//x比例

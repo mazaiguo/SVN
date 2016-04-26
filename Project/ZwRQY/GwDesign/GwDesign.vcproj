@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="GwDesign"
+	Name="WRQ_GwDesign"
 	ProjectGUID="{AE07A69F-1B57-4F2E-BF1A-34484F40AD63}"
 	RootNamespace="GwDesign"
 	TargetFrameworkVersion="196613"
@@ -157,14 +157,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="MyBaseDll.lib"
-				OutputFile="E:\GitHub\SVN\Project\ZwRQY\ZWRQY\GwDesign.arx"
+				OutputFile="E:\GitHub\SVN\Project\ZwRQY\ZWRQY_ACAD\WRQ_GwDesign.arx"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="E:\GitHub\SVN\Project\ZwRQY\lib\acad"
 				LinkDLL="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/GwDesign.pdb"
 				SubSystem="2"
-				ImportLibrary="E:\GitHub\SVN\Project\ZwRQY\lib\acad\GwDesign.lib"
+				ImportLibrary="E:\GitHub\SVN\Project\ZwRQY\lib\acad\WRQ_GwDesign.lib"
 				TargetMachine="17"
 			/>
 			<Tool

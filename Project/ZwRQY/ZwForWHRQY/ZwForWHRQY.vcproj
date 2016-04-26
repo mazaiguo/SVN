@@ -132,7 +132,7 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="E:\GitHub\SVN\MyBaseDLL\MyBaseDLL\code;E:\GitHub\SVN\Project\ZwRQY\WRQ_Entity"
 				AdditionalUsingDirectories="C:\Program Files\AutoCAD 2010\"
-				PreprocessorDefinitions="_WIN64;_WINDOWS;ZWFORWHRQY_MODULE;_AFXEXT;_ACRXAPP;ARX"
+				PreprocessorDefinitions="_WIN64;_WINDOWS;ZWFORWHRQY_MODULE;_AFXEXT;_ACRXAPP;ARX;WRQ_ZDM_MODULE"
 				StringPooling="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -499,15 +499,19 @@
 				<Filter
 					Name="自定义文字"
 					>
-					<File
-						RelativePath=".\SpecialText.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\SpecialText.h"
-						>
-					</File>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="对话框"
+				>
+				<File
+					RelativePath=".\CDlgEditZhuangHao.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\CDlgEditZhuangHao.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter

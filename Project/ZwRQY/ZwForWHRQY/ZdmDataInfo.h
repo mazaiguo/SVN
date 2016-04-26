@@ -5,7 +5,13 @@
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //临时的数据中转
-class CZdmDataInfo
+#ifdef WRQ_ZDM_MODULE //在创建产生DLL的工程中先把 
+#define ZDM_DLL_API __declspec(dllexport)
+#else
+#define ZDM_DLL_API __declspec(dllimport)
+#endif
+
+class ZDM_DLL_API CZdmDataInfo
 {
 public:
 	CZdmDataInfo(void);
@@ -64,4 +70,5 @@ private:
 	double m_dRealDmxS;//第二个实际地面线
 	double m_dJiedianS;
 };
+
 

@@ -40,7 +40,7 @@ CDrawZDM::~CDrawZDM(void)
 }
 
 
-AcDbObjectId CDrawZDM::Draw()
+AcDbObjectId CDrawZDM::add()
 {
 	AcDbObjectId groupId = AcDbObjectId::kNull;
 	initdata();
@@ -138,6 +138,8 @@ AcDbObjectId CDrawZDM::insert()
 bool CDrawZDM::del(CString strGroupName)
 {
 	initdata();
+	m_bIsDel = true;
+
 	CString strCurCount = m_pZDM.getCount();
 	int ncurCount = MyTransFunc::StringToInt(strCurCount);
 
@@ -157,6 +159,7 @@ bool CDrawZDM::del(CString strGroupName)
 	{
 		DrawLine();
 		DrawSMXLine();
+		DrawDMText();
 		AcDbObjectId objId = AcDbObjectId::kNull;
 		for (int i=0; i<m_idArrs.length(); i++)
 		{
@@ -179,11 +182,20 @@ bool CDrawZDM::mod(CString strGroupName)
 	initdata();
 	CString strCurCount = m_pZDM.getCount();
 	int ncurCount = MyTransFunc::StringToInt(strCurCount);
-
-	if (ncurCount > 1)
+	CString strCount = CDMXUtils::getNumCount();
+	int nCount = MyTransFunc::StringToInt(strCount);
+	if (ncurCount != nCount - 1)//如果不是最后一个
 	{	
-		
+		EditDict(ncurCount);
 	}
+
+	CBcUtils utls;
+	utls.modify(strGroupName, m_pZDM);
+	DrawLine(false);
+	DrawSMXLine(false);
+	DrawDMText();
+
+	AcDbObjectId groupId = MyDrawEntity::MakeGroup(m_idArrs, false, strGroupName);
 	return true;
 }
 
@@ -203,7 +215,7 @@ bool CDrawZDM::initdata()
 #else
 	m_dWidth = m_dYScale*16.7;
 #endif
-	
+	m_bIsDel = false;
 	return true;
 }
 
@@ -224,7 +236,7 @@ bool CDrawZDM::DrawLine(bool bIsDeFault)
 		CString strLabel = BC_DICT + strPreCount;
 
 		CBcUtils utls;
-		m_preData = utls.get(strLabel);
+		utls.get(strLabel, m_preData);
 	}
 	
 	//绘制横着的线
@@ -260,26 +272,30 @@ bool CDrawZDM::DrawLine(bool bIsDeFault)
 		strNext.Format(_T("%d"), nCount + 1);
 		CString strNextLabel = BC_DICT + strNext;
 		CZdmDataInfo NextData;
-		NextData = utls.get(strNextLabel);
-		for (int i=0; i<11; i++)
+		bool bGetNextData = utls.get(strNextLabel, NextData);
+		if (bGetNextData)
 		{
-			AcGePoint3d tmpPt;
-			if (i >= 6)
+			for (int i=0; i<11; i++)
 			{
-				acutPolar(asDblArray(basePt), 3*PI/2, (1.5*i + 1.7)*m_dYScale, asDblArray(tmpPt));
+				AcGePoint3d tmpPt;
+				if (i >= 6)
+				{
+					acutPolar(asDblArray(basePt), 3*PI/2, (1.5*i + 1.7)*m_dYScale, asDblArray(tmpPt));
+				}
+				else
+				{
+					acutPolar(asDblArray(basePt), 3*PI/2, i*1.5*m_dYScale, asDblArray(tmpPt));
+				}
+				acutPolar(asDblArray(tmpPt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(endPt));
+				if (nCount > 1)
+				{
+					acutPolar(asDblArray(tmpPt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(tmpPt));
+				}
+				lineId = MyDrawEntity::DrawLine(tmpPt, endPt, hxLayerId);
+				AddObjToDict(strNextLabel, lineId);
 			}
-			else
-			{
-				acutPolar(asDblArray(basePt), 3*PI/2, i*1.5*m_dYScale, asDblArray(tmpPt));
-			}
-			acutPolar(asDblArray(tmpPt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(endPt));
-			if (nCount > 1)
-			{
-				acutPolar(asDblArray(tmpPt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(tmpPt));
-			}
-			lineId = MyDrawEntity::DrawLine(tmpPt, endPt, hxLayerId);
-			AddObjToDict(strNextLabel, lineId);
 		}
+		
 	}
 	//先使用设计水面高来绘制图形，后续不对再修改
 	
@@ -313,7 +329,10 @@ bool CDrawZDM::DrawLine(bool bIsDeFault)
 	}
 	else
 	{
-		DrawJdText(basePt, tmpPt, endPt);
+		if (!m_bIsDel)
+		{
+			DrawJdText(basePt, tmpPt, endPt);
+		}
 	}
 	
 
@@ -324,6 +343,7 @@ bool CDrawZDM::DrawDMText()
 {
 	AcDbObjectId textId = AcDbObjectId::kNull;
 	AcGePoint3d basePt = CDMXUtils::getbasePt();
+	AcDbObjectId ZxLayerId = MySymble::CreateNewLayer(_T("DM-TEXT"), 7);
 	double dSJDmx = m_pZDM.getDesignDmx();
 	double dXZDmx = m_pZDM.getRealDmx();
 	double dCurData = m_pZDM.getcurData();
@@ -340,12 +360,14 @@ bool CDrawZDM::DrawDMText()
 	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 6.0);
 	textId = MyDrawEntity::DrawText(textPt, strSJDmx, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
 	textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
+	textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
 	m_idArrs.append(textId);
 	
 	//绘制现状地面高
 	acutPolar(asDblArray(textPt), 3*PI/2, 1.5*m_dYScale, asDblArray(textPt));
 	textId = MyDrawEntity::DrawText(textPt, strXZDmx, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
 	textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
+	textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
 	m_idArrs.append(textId);
 
 	////绘制节点号
@@ -362,6 +384,7 @@ bool CDrawZDM::DrawDMText()
 	acutPolar(asDblArray(textPt), 3*PI/2, 3*m_dYScale, asDblArray(textPt));
 	textId = MyDrawEntity::DrawText(textPt, strZhuanghao, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
 	textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
+	textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
 	m_idArrs.append(textId);
 
 	//是否有凸起
@@ -446,18 +469,21 @@ bool CDrawZDM::DrawSMXLine(bool bIsDeFault)
 		strNext.Format(_T("%d"), nCount + 1);
 		CString strNextLabel = BC_DICT + strNext;
 		CZdmDataInfo NextData;
-		NextData = utls.get(strNextLabel);
-		double dNextDesignDmx = (NextData.getDesignDmx() - CDMXUtils::getMinElavation())*m_dYScale;
-		double dNextRealDmx = (NextData.getRealDmx() - CDMXUtils::getMinElavation())*m_dYScale;
+		bool bRet = utls.get(strNextLabel, NextData);
+		if (bRet)
+		{
+			double dNextDesignDmx = (NextData.getDesignDmx() - CDMXUtils::getMinElavation())*m_dYScale;
+			double dNextRealDmx = (NextData.getRealDmx() - CDMXUtils::getMinElavation())*m_dYScale;
 
-		acutPolar(asDblArray(basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(tmpPt));
-		acutPolar(asDblArray(tmpPt), PI/2, dNextDesignDmx, asDblArray(startPt));
-		acutPolar(asDblArray(tmpPt), PI/2, dNextRealDmx, asDblArray(preStartPt));
-		
-		AcDbObjectId nextsdmlineId = MyDrawEntity::DrawLine(endPt, startPt, sdmLayerId);
-		AcDbObjectId nextxdmLineId = MyDrawEntity::DrawLine(preEndPt, preStartPt, xdmLayerId);
-		AddObjToDict(strNextLabel, nextsdmlineId);
-		AddObjToDict(strNextLabel, nextxdmLineId);
+			acutPolar(asDblArray(basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(tmpPt));
+			acutPolar(asDblArray(tmpPt), PI/2, dNextDesignDmx, asDblArray(startPt));
+			acutPolar(asDblArray(tmpPt), PI/2, dNextRealDmx, asDblArray(preStartPt));
+
+			AcDbObjectId nextsdmlineId = MyDrawEntity::DrawLine(endPt, startPt, sdmLayerId);
+			AcDbObjectId nextxdmLineId = MyDrawEntity::DrawLine(preEndPt, preStartPt, xdmLayerId);
+			AddObjToDict(strNextLabel, nextsdmlineId);
+			AddObjToDict(strNextLabel, nextxdmLineId);
+		}		
 	}
 	return true;
 }
@@ -559,7 +585,8 @@ bool CDrawZDM::ChangeDictName( CString strGroupName, CString strPreGroupName, in
 			CString strLayer = pEnt->layer();
 			if ((strLayer.CompareNoCase(_T("MQ-XDM")) == 0)
 				||(strLayer.CompareNoCase(_T( "MQ-SDM")) == 0)
-				||(strLayer.CompareNoCase(_T( "HX-TMP")) == 0))
+				||(strLayer.CompareNoCase(_T( "HX-TMP")) == 0)
+				||(strLayer.CompareNoCase(_T("DM-TEXT")) == 0))
 			{
 				if (!bIsDeFault)
 				{
@@ -585,5 +612,53 @@ bool CDrawZDM::ChangeDictName( CString strGroupName, CString strPreGroupName, in
 	pGroupDict->close();
 
 	MyDrawEntity::MakeGroup(objIdArr, false, strGroupName);
+	return true;
+}
+
+
+bool CDrawZDM::EditDict(int nCur)
+{
+	CString strTmp, strGroupName;
+	strTmp.Format(_T("%d"),nCur+1);
+	strGroupName = BC_DICT + strTmp;
+	AcDbDictionary *pGroupDict;	
+	AcDbGroup* pGroup = NULL;
+	acdbHostApplicationServices()->workingDatabase()->getGroupDictionary(pGroupDict, AcDb::kForWrite);
+	if (pGroupDict->getAt(strGroupName, (AcDbObject*&)pGroup, AcDb::kForWrite) != Acad::eOk)
+	{
+		pGroupDict->close();
+		return false;
+	}
+	Acad::ErrorStatus es;
+	AcDbObjectIdArray objIdArr;
+	objIdArr.removeAll();
+	int nLength = 0;
+	nLength = pGroup->allEntityIds(objIdArr);
+
+	AcDbEntity* pEnt = NULL;
+	AcDbObjectId objId = AcDbObjectId::kNull;
+	for (int i=0; i<nLength; i++)
+	{
+		objId = objIdArr.at(i);
+		es = acdbOpenAcDbEntity((AcDbEntity*&)pEnt, objId, AcDb::kForWrite);
+		if (es!= Acad::eOk)
+		{
+			pEnt->close();
+		}
+		else
+		{
+			//需要将水面线删除
+			CString strLayer = pEnt->layer();
+			if ((strLayer.CompareNoCase(_T("MQ-XDM")) == 0)
+				||(strLayer.CompareNoCase(_T( "MQ-SDM")) == 0)
+				||(strLayer.CompareNoCase(_T( "HX-TMP")) == 0))
+			{
+				pEnt->erase();
+			}
+			pEnt->close();
+		}
+	}
+	pGroup->close();
+	pGroupDict->close();
 	return true;
 }

@@ -13,8 +13,12 @@ using namespace std;
 //3.修改单条数据
 //4.
 //编写时间：2016年3月31日16:50:15
-
-class CBcUtils
+#ifdef WRQ_ZDM_MODULE //在创建产生DLL的工程中先把 
+#define ZDM_DLL_API __declspec(dllexport)
+#else
+#define ZDM_DLL_API __declspec(dllimport)
+#endif
+class ZDM_DLL_API CBcUtils
 {
 public:
 	CBcUtils(void);
@@ -40,7 +44,7 @@ public:
 	bool del(LPCTSTR strLabel);
 	//通过strLabel的名称得到存储在该关键字下的对象数据
 	//@param strLabel为关键字
-	CZdmDataInfo get(LPCTSTR strLabel);
+	bool get(LPCTSTR strLabel, CZdmDataInfo&);
 	//获取数量
 	//@param
 	//@return 返回dictionary中的数量
