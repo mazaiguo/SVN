@@ -156,14 +156,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="E:\GitHub\SVN\Project\ZwRQY\ZWRQY\MyBaseDLL.dll"
+				OutputFile="E:\GitHub\SVN\Project\ZwRQY\ZWRQY_ACAD\MyBaseDLL.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;D:\ObjectARX\ObjectARX 2010\lib-x64&quot;"
 				LinkDLL="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MyBaseDLL.pdb"
 				SubSystem="2"
-				ImportLibrary="$(outdir)/MyBaseDLL.lib"
+				ImportLibrary="E:\GitHub\SVN\Project\ZwRQY\lib\acad\MyBaseDLL.lib"
 				TargetMachine="17"
 			/>
 			<Tool

@@ -32,6 +32,8 @@ public:
 	//返回实体所在的组的所有的特殊Id
 	//使用该接口的时候需判定该接头的返回值是否为空
 	static AcDbObjectIdArray openObjAndGetGroupIds(AcDbObjectId objId);
+
+	static AcDbObjectIdArray openObjAndGetGroupIds(AcDbObject* obj);
 	//从组中找到适合的组id里面实体集合
 	static AcDbObjectIdArray openGroupIdsAndGetEntIds(AcDbObjectIdArray IdArrs, BOOL bIslimited = TRUE);
 	//]
@@ -100,4 +102,11 @@ public:
 
 	//删除实体
 	static bool EraseObj(AcDbObjectId);
+	
+
+	//组相关的操作
+	static CString openObjAndGetGroupName(AcDbObjectId objId);
+
+	static bool EraseEntByGroupName(CString strGroupName);
+
 };

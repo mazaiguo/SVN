@@ -604,6 +604,46 @@ AcDbObjectIdArray MyEditEntity::openObjAndGetGroupIds(AcDbObjectId objId)
 	return GroupIdArrs;
 }
 
+AcDbObjectIdArray MyEditEntity::openObjAndGetGroupIds(AcDbObject* pObj)
+{
+	AcDbObjectIdArray GroupIdArrs;
+	GroupIdArrs.removeAll();
+	
+	int nReactorCount = 0;
+	AcDbVoidPtrArray* reactors = pObj->reactors();
+	if (reactors != NULL)
+		nReactorCount = reactors->length();
+
+	if (nReactorCount<=0)
+	{
+		pObj->close();
+		return GroupIdArrs;
+	}
+	ArxDbgReferenceFiler filer;
+	pObj->dwgOut(&filer);
+	AcDbObjectId objId = AcDbObjectId::kNull;
+	AcDbObject* obJ = NULL;
+	for (int i=0; i<filer.m_softPointerIds.length(); i++)
+	{
+		objId = filer.m_softPointerIds.at(i);
+		if (acdbOpenAcDbObject(obJ, objId, AcDb::kForWrite)!=Acad::eOk)
+		{
+			continue;
+		}
+		if (obJ->isKindOf(AcDbGroup::desc()))
+		{
+			GroupIdArrs.append(objId);
+			obJ->close();
+		}
+		else
+		{
+			obJ->close();
+		}
+	}
+
+	return GroupIdArrs;
+}
+
 AcDbObjectIdArray MyEditEntity::openGroupIdsAndGetEntIds(AcDbObjectIdArray IdArrs, BOOL bIslimited)
 {
 	AcDbObjectIdArray objIds;
@@ -1412,5 +1452,68 @@ bool MyEditEntity::EraseObj(AcDbObjectId objId)
 	}
 	pObj->erase();
 	pObj->close();
+	return true;
+}
+
+CString MyEditEntity::openObjAndGetGroupName(AcDbObjectId objId)
+{
+	CString strGroupName(_T(""));
+	AcDbObjectIdArray objIdArrs;
+	objIdArrs.removeAll();
+	objIdArrs = openObjAndGetGroupIds(objId);
+	if ((objIdArrs.length() <=0) || (objIdArrs.length() > 1))
+	{
+		return strGroupName;
+	}
+	AcDbObjectId groupId;
+	groupId = objIdArrs.at(0);
+	AcDbGroup* pGroup = NULL;
+	if (acdbOpenAcDbObject((AcDbObject*&)pGroup, groupId, AcDb::kForRead) != Acad::eOk)
+	{
+		return strGroupName;
+	}
+	strGroupName = pGroup->name();
+	pGroup->close();
+	return strGroupName;
+}
+
+bool MyEditEntity::EraseEntByGroupName(CString strGroupName)
+{
+	AcDbDictionary *pGroupDict;	
+	AcDbGroup* pGroup = NULL;
+	Acad::ErrorStatus es;
+	es = acdbHostApplicationServices()->workingDatabase()->getGroupDictionary(pGroupDict, AcDb::kForWrite);
+	es = pGroupDict->getAt(strGroupName, (AcDbObject*&)pGroup, AcDb::kForWrite);
+	if (es != Acad::eOk)
+	{
+		pGroupDict->close();
+		return false;
+	}
+
+	AcDbEntity* pEnt = NULL;
+	AcDbObjectId objId;
+	AcDbObjectIdArray objIds;
+	objIds.removeAll();
+	int nLength = 0;
+	nLength = pGroup->allEntityIds(objIds);
+	for (int i=0; i<objIds.length(); i++)
+	{
+		objId = objIds.at(i);
+		es = acdbOpenAcDbEntity((AcDbEntity*&)pEnt, objId, AcDb::kForRead);
+		if (es!= Acad::eOk)
+		{
+			pEnt->close();
+		}
+		else
+		{
+			pEnt->upgradeOpen();
+			pEnt->erase();
+			pEnt->close();
+		}
+	}
+	pGroup->erase();
+	pGroup->close();
+
+	pGroupDict->close();
 	return true;
 }

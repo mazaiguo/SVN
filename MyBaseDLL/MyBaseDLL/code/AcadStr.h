@@ -1,6 +1,7 @@
 #ifndef MyBase_ACADSTR_H
 #define MyBase_ACADSTR_H
-
+#define BC_DICT _T("ZW_FOR_WHRQY_")
+const double GeTol = 0.000001;
 
 struct AcadVar {
     static const TCHAR* adserr;
