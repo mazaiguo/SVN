@@ -473,22 +473,20 @@ bool CDrawZDM::DrawNextDMText()
 		textId = MyDrawEntity::DrawText(textPt, strSJDmx, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
 		textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 		textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
-		m_idArrs.append(textId);
+		AddObjToDict(strNextLabel, textId);
 
 		//绘制现状地面高
 		acutPolar(asDblArray(textPt), 3*PI/2, 1.5*m_dYScale, asDblArray(textPt));
 		textId = MyDrawEntity::DrawText(textPt, strXZDmx, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
 		textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 		textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
-		m_idArrs.append(textId);
-
+		AddObjToDict(strNextLabel, textId);
 		//绘制桩号
 		acutPolar(asDblArray(textPt), 3*PI/2, 3*m_dYScale, asDblArray(textPt));
 		textId = MyDrawEntity::DrawText(textPt, strZhuanghao, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
 		textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 		textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
-		m_idArrs.append(textId);
-
+		AddObjToDict(strNextLabel, textId);
 		//是否有凸起
 		if (NextData.getHasBulge())
 		{
@@ -502,14 +500,14 @@ bool CDrawZDM::DrawNextDMText()
 			textId = MyDrawEntity::DrawText(textPt, strSJDmxS, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
 			textId = MyEditEntity::openEntChangeRotation(textId, 3*PI/2);
 			textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
-			m_idArrs.append(textId);
+			AddObjToDict(strNextLabel, textId);
 
 			//绘制现状地面高
 			acutPolar(asDblArray(textPt), 3*PI/2, 1.5*m_dYScale, asDblArray(textPt));
 			textId = MyDrawEntity::DrawText(textPt, strXZDmxS, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
 			textId = MyEditEntity::openEntChangeRotation(textId, 3*PI/2);
 			textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
-			m_idArrs.append(textId);
+			AddObjToDict(strNextLabel, textId);
 		}
 		return true;
 	}
