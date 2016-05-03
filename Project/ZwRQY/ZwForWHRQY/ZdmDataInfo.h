@@ -51,6 +51,8 @@ public:
 	Acad::ErrorStatus setDesingDmxS(double strText);
 	Acad::ErrorStatus setRealDmxS(double strText);
 	Acad::ErrorStatus setPipeDiameter(double strText);
+
+	CZdmDataInfo& operator=(const CZdmDataInfo& zdm);
 private:
 	CString             m_label;
 	CString		m_strCount;//ÊýÁ¿

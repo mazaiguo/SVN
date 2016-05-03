@@ -57,6 +57,7 @@
 #include "MyBase.h"
 #include "Global.h"
 #define BC_DICT _T("ZW_FOR_WHRQY_")
+#define BC_DICT_GD _T("ZW_FOR_WHRQY_GD_")
 
 //- Declare it as an extern here so that it becomes available in all modules
 extern AcApDataManager<CDocData> DocVars ;

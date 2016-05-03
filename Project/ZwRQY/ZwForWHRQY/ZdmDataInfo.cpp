@@ -185,3 +185,25 @@ Acad::ErrorStatus CZdmDataInfo::setPipeDiameter( double strText )
 	m_dJiedianS = strText;
 	return Acad::eOk;
 }
+
+CZdmDataInfo& CZdmDataInfo::operator=(const CZdmDataInfo& zdm)
+{
+	m_label = zdm.label();
+	m_strCount = zdm.getCount();//数量
+	//////////////////////////////////
+	m_dDesignDmx = zdm.getDesignDmx();//设计地面线
+	m_dRealDmx = zdm.getRealDmx();//实际地面线
+	m_strJiedian = zdm.getJiedian();//节点
+	m_dcurData = zdm.getcurData();//当前桩号数据
+	m_dGuanDi = zdm.getGuanDi();//管底
+	m_dWaShen = zdm.getWaShen();//挖深
+	m_dPoDu = zdm.getPoDu();//坡度
+	m_dJuli = zdm.getJuli();//距离
+	//////////////////////////////////
+	//一处凸起
+	m_bHasBulge = zdm.getHasBulge();//是否有凸起
+	m_dDesignDmxS = zdm.getDesignDmxS();//第二个设计地面线
+	m_dRealDmxS = zdm.getRealDmxS();//第二个实际地面线
+	m_dJiedianS = zdm.getPipeDiameter();
+	return *this;
+}
