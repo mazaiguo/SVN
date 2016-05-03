@@ -9,6 +9,8 @@
 CDrawZDM::CDrawZDM(void )
 {
 	//m_pZDM = new CBiaochiForRQY();
+
+	m_bIsDrawGD = false;
 	m_idArrs.removeAll();
 }
 
@@ -48,29 +50,36 @@ AcDbObjectId CDrawZDM::add()
 	initdata();
 	CString strCount = m_pZDM.getCount();
 	int nCount = MyTransFunc::StringToInt(strCount);
-	
-	DrawLine();
-
-	DrawDMText();
-	if (nCount > 1)
-	{
-		DrawSMXLine();
-	}
-	
 	CString strGroupName;
-	strGroupName = BC_DICT + strCount;
-	groupId = MyDrawEntity::MakeGroup(m_idArrs, false, strGroupName);
-	
 	nCount++;
 	strCount.Format(_T("%d"), nCount);
-	CDMXUtils::setNumCount(strCount);
-	//CDMXUtils::SetCurNum(strCount);
-	CDMXUtils::SetJdNum(strCount);
+
+	if (!m_bIsDrawGD)
+	{
+		DrawLine();
+
+		DrawDMText();
+		if (nCount > 1)
+		{
+			DrawSMXLine();
+		}
+		strGroupName = BC_DICT + strCount;
+		groupId = MyDrawEntity::MakeGroup(m_idArrs, false, strGroupName);
+		CDMXUtils::setNumCount(strCount);
+		//CDMXUtils::SetCurNum(strCount);
+		CDMXUtils::SetJdNum(strCount);
+		//////////////////////////////////////////////////////////////////////////
+		//将数据添加到图纸中
+		CBcUtils bcUtils;
+		bcUtils.add(strGroupName, m_pZDM);
+	}
+	else
+	{
+
+	}
+
 	
-	//////////////////////////////////////////////////////////////////////////
-	//将数据添加到图纸中
-	CBcUtils bcUtils;
-	bcUtils.add(strGroupName, m_pZDM);
+	
 	return groupId;
 }
 
@@ -201,6 +210,11 @@ bool CDrawZDM::mod(CString strGroupName)
 	return true;
 }
 
+void CDrawZDM::setDrawGd(bool bIsDrawGd)
+{
+	m_bIsDrawGD = bIsDrawGd;
+}
+
 bool CDrawZDM::initdata()
 {
 	m_dXScale = 1000/(CDMXUtils::getXScale());
@@ -218,12 +232,13 @@ bool CDrawZDM::initdata()
 	m_dWidth = m_dYScale*16.7;
 #endif
 	m_bIsDel = false;
+	m_basePt = CDMXUtils::getbasePt();
+
 	return true;
 }
 
 bool CDrawZDM::DrawLine(bool bIsDeFault)
 {
-	AcGePoint3d basePt = CDMXUtils::getbasePt();
 	AcGePoint3d endPt;
 
 	AcDbObjectId lineId = AcDbObjectId::kNull;
@@ -252,11 +267,11 @@ bool CDrawZDM::DrawLine(bool bIsDeFault)
 		if (i >= 6)
 #endif
 		{
-			acutPolar(asDblArray(basePt), 3*PI/2, (1.5*i + 1.7)*m_dYScale, asDblArray(tmpPt));
+			acutPolar(asDblArray(m_basePt), 3*PI/2, (1.5*i + 1.7)*m_dYScale, asDblArray(tmpPt));
 		}
 		else
 		{
-			acutPolar(asDblArray(basePt), 3*PI/2, i*1.5*m_dYScale, asDblArray(tmpPt));
+			acutPolar(asDblArray(m_basePt), 3*PI/2, i*1.5*m_dYScale, asDblArray(tmpPt));
 		}
 		acutPolar(asDblArray(tmpPt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(endPt));
 		if (nCount > 1)
@@ -282,11 +297,11 @@ bool CDrawZDM::DrawLine(bool bIsDeFault)
 				AcGePoint3d tmpPt;
 				if (i >= 6)
 				{
-					acutPolar(asDblArray(basePt), 3*PI/2, (1.5*i + 1.7)*m_dYScale, asDblArray(tmpPt));
+					acutPolar(asDblArray(m_basePt), 3*PI/2, (1.5*i + 1.7)*m_dYScale, asDblArray(tmpPt));
 				}
 				else
 				{
-					acutPolar(asDblArray(basePt), 3*PI/2, i*1.5*m_dYScale, asDblArray(tmpPt));
+					acutPolar(asDblArray(m_basePt), 3*PI/2, i*1.5*m_dYScale, asDblArray(tmpPt));
 				}
 				acutPolar(asDblArray(tmpPt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(endPt));
 				if (nCount > 1)
@@ -301,7 +316,7 @@ bool CDrawZDM::DrawLine(bool bIsDeFault)
 	}
 	//先使用设计水面高来绘制图形，后续不对再修改
 	
-	acutPolar(asDblArray(basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(basePt));
+	acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(m_basePt));
 	double dDesignDmx = (m_pZDM.getDesignDmx() - CDMXUtils::getMinElavation())*m_dYScale;
 	double dRealDmx = (m_pZDM.getRealDmx() - CDMXUtils::getMinElavation())*m_dYScale;
 	double dDesignDmxS = (m_pZDM.getDesignDmxS() - CDMXUtils::getMinElavation())*m_dYScale;
@@ -311,43 +326,43 @@ bool CDrawZDM::DrawLine(bool bIsDeFault)
 	AcGePoint3d tmpPt;
 	if (dDesignDmx < dRealDmx)
 	{
-		acutPolar(asDblArray(basePt), PI/2, dRealDmx, asDblArray(tmpPt));
+		acutPolar(asDblArray(m_basePt), PI/2, dRealDmx, asDblArray(tmpPt));
 	}
 	else
 	{
-		acutPolar(asDblArray(basePt), PI/2, dDesignDmx, asDblArray(tmpPt));
+		acutPolar(asDblArray(m_basePt), PI/2, dDesignDmx, asDblArray(tmpPt));
 	}
 
 	if ((dDesignDmxS >= dRealDmxS) 
 		&& (dDesignDmxS >= dRealDmx)
 		&& (dDesignDmxS >= dDesignDmx))
 	{
-		acutPolar(asDblArray(basePt), PI/2, dDesignDmxS, asDblArray(tmpPt));
+		acutPolar(asDblArray(m_basePt), PI/2, dDesignDmxS, asDblArray(tmpPt));
 	}
 	else if ((dRealDmxS >= dDesignDmxS) 
 		&& (dRealDmxS >= dRealDmx)
 		&& (dRealDmxS >= dDesignDmx))
 	{
-		acutPolar(asDblArray(basePt), PI/2, dRealDmxS, asDblArray(tmpPt));
+		acutPolar(asDblArray(m_basePt), PI/2, dRealDmxS, asDblArray(tmpPt));
 	}
 	else if ((dRealDmx >= dDesignDmxS) 
 		&& (dRealDmx >= dRealDmxS)
 		&& (dRealDmx >= dDesignDmx))
 	{
-		acutPolar(asDblArray(basePt), PI/2, dRealDmx, asDblArray(tmpPt));
+		acutPolar(asDblArray(m_basePt), PI/2, dRealDmx, asDblArray(tmpPt));
 	}
 	else
 	{
-		acutPolar(asDblArray(basePt), PI/2, dDesignDmx, asDblArray(tmpPt));
+		acutPolar(asDblArray(m_basePt), PI/2, dDesignDmx, asDblArray(tmpPt));
 	}
 
 	if (nCount == 0)
 	{
-		acutPolar(asDblArray(basePt), 3*PI/2, m_dWidth, asDblArray(endPt));
+		acutPolar(asDblArray(m_basePt), 3*PI/2, m_dWidth, asDblArray(endPt));
 	}
 	else
 	{
-		acutPolar(asDblArray(basePt), 3*PI/2, m_dWidth-1.5*m_dYScale, asDblArray(endPt));
+		acutPolar(asDblArray(m_basePt), 3*PI/2, m_dWidth-1.5*m_dYScale, asDblArray(endPt));
 	}
 	bool bJd = CDMXUtils::getcreateJiedian();
 	if (!bJd)
@@ -360,7 +375,7 @@ bool CDrawZDM::DrawLine(bool bIsDeFault)
 	{
 		if (!m_bIsDel)
 		{
-			DrawJdText(basePt, tmpPt, endPt);
+			DrawJdText(m_basePt, tmpPt, endPt);
 		}
 	}
 	
@@ -371,7 +386,6 @@ bool CDrawZDM::DrawLine(bool bIsDeFault)
 bool CDrawZDM::DrawDMText()
 {
 	AcDbObjectId textId = AcDbObjectId::kNull;
-	AcGePoint3d basePt = CDMXUtils::getbasePt();
 	AcDbObjectId ZxLayerId = MySymble::CreateNewLayer(_T("DM-TEXT"), 7);
 	double dSJDmx = m_pZDM.getDesignDmx();
 	double dXZDmx = m_pZDM.getRealDmx();
@@ -384,7 +398,7 @@ bool CDrawZDM::DrawDMText()
 	
 	CString strZhuanghao = MyTransFunc::doubleToStr(dCurData, strTmp);
 	//绘制设计地面高文字
-	acutPolar(asDblArray(basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(textPt));
+	acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(textPt));
 	acutPolar(asDblArray(textPt), 3*PI/2, 0.75*m_dYScale, asDblArray(textPt));
 	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 6.0);
 	textId = MyDrawEntity::DrawText(textPt, strSJDmx, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
@@ -423,7 +437,7 @@ bool CDrawZDM::DrawDMText()
 		double dXZDmxS = m_pZDM.getRealDmxS();
 		CString strSJDmxS = MyTransFunc::doubleToStr(dSJDmxS, strTmp);
 		CString strXZDmxS = MyTransFunc::doubleToStr(dXZDmxS, strTmp);
-		acutPolar(asDblArray(basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(textPt));
+		acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(textPt));
 		acutPolar(asDblArray(textPt), 3*PI/2, 0.75*m_dYScale, asDblArray(textPt));
 		AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 6.0);
 		textId = MyDrawEntity::DrawText(textPt, strSJDmxS, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
@@ -445,7 +459,6 @@ bool CDrawZDM::DrawDMText()
 bool CDrawZDM::DrawNextDMText()
 {
 	AcDbObjectId textId = AcDbObjectId::kNull;
-	AcGePoint3d basePt = CDMXUtils::getbasePt();
 	AcDbObjectId ZxLayerId = MySymble::CreateNewLayer(_T("DM-TEXT"), 7);
 
 	CString strCount = m_pZDM.getCount();	
@@ -469,7 +482,7 @@ bool CDrawZDM::DrawNextDMText()
 
 		CString strZhuanghao = MyTransFunc::doubleToStr(dCurData, strTmp);
 		//绘制设计地面高文字
-		acutPolar(asDblArray(basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(textPt));
+		acutPolar(asDblArray(m_basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(textPt));
 		acutPolar(asDblArray(textPt), 3*PI/2, 0.75*m_dYScale, asDblArray(textPt));
 		AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 6.0);
 		textId = MyDrawEntity::DrawText(textPt, strSJDmx, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
@@ -496,7 +509,7 @@ bool CDrawZDM::DrawNextDMText()
 			double dXZDmxS = NextData.getRealDmxS();
 			CString strSJDmxS = MyTransFunc::doubleToStr(dSJDmxS, strTmp);
 			CString strXZDmxS = MyTransFunc::doubleToStr(dXZDmxS, strTmp);
-			acutPolar(asDblArray(basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(textPt));
+			acutPolar(asDblArray(m_basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(textPt));
 			acutPolar(asDblArray(textPt), 3*PI/2, 0.75*m_dYScale, asDblArray(textPt));
 			AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 6.0);
 			textId = MyDrawEntity::DrawText(textPt, strSJDmxS, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
@@ -553,7 +566,6 @@ bool CDrawZDM::DrawJdText(AcGePoint3d basePt, AcGePoint3d TopPt, AcGePoint3d end
 bool CDrawZDM::DrawSMXLine(bool bIsDeFault)
 {
 	//先使用设计水面高来绘制图形，后续不对再修改
-	AcGePoint3d basePt = CDMXUtils::getbasePt();
 	CString strCount = m_pZDM.getCount();	
 	int nCount = MyTransFunc::StringToInt(strCount);
 	
@@ -569,7 +581,7 @@ bool CDrawZDM::DrawSMXLine(bool bIsDeFault)
 	double dPreRealDmx = (m_preData.getRealDmx() - CDMXUtils::getMinElavation())*m_dYScale;
 
 	AcGePoint3d startPt, endPt, tmpPt, preStartPt, preEndPt,endPtS, preEndPtS;	
-	acutPolar(asDblArray(basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(tmpPt));
+	acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(tmpPt));
 	acutPolar(asDblArray(tmpPt), PI/2, dDesignDmx, asDblArray(endPt));
 	acutPolar(asDblArray(tmpPt), PI/2, dRealDmx, asDblArray(preEndPt));
 	if (m_pZDM.getHasBulge())
@@ -578,7 +590,7 @@ bool CDrawZDM::DrawSMXLine(bool bIsDeFault)
 		acutPolar(asDblArray(tmpPt), PI/2, (m_pZDM.getRealDmxS() - CDMXUtils::getMinElavation())*m_dYScale, asDblArray(preEndPtS));
 	}
 
-	acutPolar(asDblArray(basePt), 0, m_dLen + m_preData.getcurData()*m_dXScale, asDblArray(tmpPt));
+	acutPolar(asDblArray(m_basePt), 0, m_dLen + m_preData.getcurData()*m_dXScale, asDblArray(tmpPt));
 	if (m_preData.getHasBulge())
 	{
 		acutPolar(asDblArray(tmpPt), PI/2, (m_preData.getDesignDmxS() - CDMXUtils::getMinElavation())*m_dYScale, asDblArray(startPt));
@@ -610,7 +622,7 @@ bool CDrawZDM::DrawSMXLine(bool bIsDeFault)
 			double dNextDesignDmx = (NextData.getDesignDmx() - CDMXUtils::getMinElavation())*m_dYScale;
 			double dNextRealDmx = (NextData.getRealDmx() - CDMXUtils::getMinElavation())*m_dYScale;
 
-			acutPolar(asDblArray(basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(tmpPt));
+			acutPolar(asDblArray(m_basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(tmpPt));
 			acutPolar(asDblArray(tmpPt), PI/2, dNextDesignDmx, asDblArray(startPt));
 			acutPolar(asDblArray(tmpPt), PI/2, dNextRealDmx, asDblArray(preStartPt));
 		
@@ -807,5 +819,86 @@ bool CDrawZDM::EditDict(int nCur)
 	}
 	pGroup->close();
 	pGroupDict->close();
+	return true;
+}
+
+void CDrawGd::CDrawGd(void)
+{
+
+}
+
+CDrawGd::~CDrawGd(void)
+{
+
+}
+
+bool CDrawGd::add()
+{
+	return true;
+}
+
+bool CDrawGd::del()
+{
+	return true;
+}
+
+bool CDrawGd::insert()
+{
+	return true;
+}
+
+bool CDrawGd::mod()
+{
+	return true;
+}
+
+//void CDrawGd::setData(CZdmDataInfo pData)
+//{
+//	m_pZDM.setLabel(pData.label());
+//	m_pZDM.setCount(pData.getCount());
+//	m_pZDM.setDesignDmx(pData.getDesignDmx());
+//	m_pZDM.setRealDmx(pData.getRealDmx());
+//	m_pZDM.setJiedian(pData.getJiedian());
+//	m_pZDM.setGuanDi(pData.getGuanDi());
+//	m_pZDM.setWaShen(pData.getWaShen());
+//	m_pZDM.setPoDu(pData.getPoDu());
+//	m_pZDM.setJuli(pData.getJuli());
+//	m_pZDM.setcurData(pData.getcurData());
+//	m_pZDM.setHasBulge(pData.getHasBulge());
+//	m_pZDM.setDesingDmxS(pData.getDesignDmxS());
+//	m_pZDM.setRealDmxS(pData.getRealDmxS());
+//	m_pZDM.setPipeDiameter(pData.getPipeDiameter());
+//}
+
+bool CDrawGd::initdata()
+{
+	m_dXScale = 1000/(CDMXUtils::getXScale());
+	m_dYScale = 1000/(CDMXUtils::getYScale());
+	{
+		m_dLen = m_dXScale*10;
+	}
+	m_dWidth = m_dYScale*16.7;
+	m_bIsDel = false;
+	m_basePt = CDMXUtils::getbasePt();
+	return true;
+}
+
+bool CDrawGd::drawGd()
+{
+	return true;
+}
+
+bool CDrawGd::drawGdflat()
+{
+	return true;
+}
+
+bool CDrawGd::drawText()
+{
+	return true;
+}
+
+bool CDrawGd::drawTextAndLine()
+{
 	return true;
 }

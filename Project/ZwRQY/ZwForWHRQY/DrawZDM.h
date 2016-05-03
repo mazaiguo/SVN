@@ -26,6 +26,8 @@ public:
 	bool del(CString strGroupName);
 	//编辑数据
 	bool mod(CString strGroupName);
+	//绘制管道
+	void setDrawGd(bool bIsDrawGd);
 private:
 	//初始数据获取
 	bool initdata();
@@ -84,4 +86,45 @@ private:
 	double m_dXScale;
 	double m_dYScale;
 	bool m_bIsDel;//是否删除
+	bool m_bIsDrawGD;//是否绘制管道
+	AcGePoint3d m_basePt;
+};
+
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//绘制管道
+class CDrawGd
+{
+	void CDrawGd(void);
+	~CDrawGd(void);
+	bool add(CZdmDataInfo pZDM);
+	bool del(CZdmDataInfo pZDM);
+	bool insert(CZdmDataInfo pZDM);
+	bool mod(CZdmDataInfo pZDM);
+
+private:
+	//初始数据获取
+	bool initdata();
+	//绘制燃气管道
+	bool drawGd();
+	//绘制管道示意图
+	bool drawGdflat();
+	//绘制管底，挖深文字
+	bool drawText();
+	//绘制坡度，距离文字及坡度线
+	bool drawTextAndLine();
+
+private:
+	CZdmDataInfo m_pZDM;
+	CZdmDataInfo m_preData;
+	AcDbObjectIdArray m_idArrs;
+	double m_dLen;
+	double m_dWidth;
+	double m_dXScale;
+	double m_dYScale;
+	bool m_bIsDel;//是否删除
+	bool m_bIsDrawGD;//是否绘制管道
+	AcGePoint3d m_basePt;
 };

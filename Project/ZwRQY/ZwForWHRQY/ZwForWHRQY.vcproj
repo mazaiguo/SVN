@@ -450,8 +450,16 @@
 				</Filter>
 			</Filter>
 			<Filter
-				Name="标尺"
+				Name="纵断面"
 				>
+				<File
+					RelativePath=".\DrawZDM.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DrawZDM.h"
+					>
+				</File>
 				<File
 					RelativePath=".\ZdmDataInfo.cpp"
 					>
@@ -464,35 +472,11 @@
 					Name="地面线"
 					>
 					<File
-						RelativePath=".\BiaochiInfo.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\BiaochiInfo.h"
-						>
-					</File>
-					<File
-						RelativePath=".\DrawBiaochi.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\DrawBiaochi.h"
-						>
-					</File>
-					<File
 						RelativePath=".\DrawDMXProcess.cpp"
 						>
 					</File>
 					<File
 						RelativePath=".\DrawDMXProcess.h"
-						>
-					</File>
-					<File
-						RelativePath=".\DrawZDM.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\DrawZDM.h"
 						>
 					</File>
 				</Filter>
@@ -508,19 +492,31 @@
 						>
 					</File>
 					<File
-						RelativePath=".\DrawZDMGD.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\DrawZDMGD.h"
-						>
-					</File>
-					<File
 						RelativePath=".\StartDrawRQGD.cpp"
 						>
 					</File>
 					<File
 						RelativePath=".\StartDrawRQGD.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="标尺"
+					>
+					<File
+						RelativePath=".\BiaochiInfo.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\BiaochiInfo.h"
+						>
+					</File>
+					<File
+						RelativePath=".\DrawBiaochi.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\DrawBiaochi.h"
 						>
 					</File>
 				</Filter>

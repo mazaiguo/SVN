@@ -10,6 +10,7 @@
 #include "BcUtils.h"
 #include "DrawDMXProcess.h"
 #include "DrawGDProcess.h"
+#include "StartDrawRQGD.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("")
 //-----------------------------------------------------------------------------
@@ -136,8 +137,8 @@ public:
 			AfxMessageBox(_T("没有地面线数据"));
 			return;
 		}
-		CDrawGDProcess	gdProcess;
-		gdProcess.Draw();
+		CStartDrawRQGD	gdProcess;
+		gdProcess.start();
 	}
 } ;
 
