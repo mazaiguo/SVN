@@ -34,7 +34,7 @@ public:
 	bool   getHasBulge() const;
 	double getDesignDmxS() const;
 	double getRealDmxS() const;
-	double getJiedianS() const;
+	double getPipeDiameter() const;
 	//double getcurDataS() const;
 
 	Acad::ErrorStatus setCount(LPCTSTR nCount);
@@ -50,7 +50,7 @@ public:
 	Acad::ErrorStatus setHasBulge(bool bHasBulge);
 	Acad::ErrorStatus setDesingDmxS(double strText);
 	Acad::ErrorStatus setRealDmxS(double strText);
-	Acad::ErrorStatus setJiedianS(double strText);
+	Acad::ErrorStatus setPipeDiameter(double strText);
 private:
 	CString             m_label;
 	CString		m_strCount;//ÊýÁ¿

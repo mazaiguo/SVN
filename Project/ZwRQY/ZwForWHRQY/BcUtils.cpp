@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "BcUtils.h"
+#include "CBiaochiForRQY.h"
 
 CBcUtils::CBcUtils(void)
 {
@@ -43,7 +44,7 @@ bool CBcUtils::add( LPCTSTR strLabel, CZdmDataInfo data)
 			newRec->setHasBulge(data.getHasBulge());
 			newRec->setDesingDmxS(data.getDesignDmxS());
 			newRec->setRealDmxS(data.getRealDmxS());
-			newRec->setJiedianS(data.getJiedianS());
+			newRec->setPipeDiameter(data.getPipeDiameter());
 
 			es = testDict->setAt(strLabel, newRec, StyleId);
 			if (es == Acad::eOk) 
@@ -157,7 +158,7 @@ bool CBcUtils::modify( LPCTSTR strLabel, CZdmDataInfo pData )
 		iter->second.setHasBulge(pData.getHasBulge());
 		iter->second.setDesingDmxS(pData.getDesignDmxS());
 		iter->second.setRealDmxS(pData.getRealDmxS());
-		iter->second.setJiedianS(pData.getJiedianS());
+		iter->second.setPipeDiameter(pData.getPipeDiameter());
 
 		//删除所有，然后添加
 		delAll();
@@ -280,7 +281,7 @@ map<CString, CZdmDataInfo> CBcUtils::getAllData()
 			data.setHasBulge(pEnt->getHasBulge());
 			data.setDesingDmxS(pEnt->getDesingDmxS());
 			data.setRealDmxS(pEnt->getRealDmxS());
-			data.setJiedianS(pEnt->getJiedianS());
+			data.setPipeDiameter(pEnt->getPipeDiameter());
 			m_Data.insert(make_pair(pEnt->label(), data));
 		}
 		es = pObj->close();	
@@ -324,7 +325,7 @@ void CBcUtils::addAll()
 			newRec->setHasBulge(data.getHasBulge());
 			newRec->setDesingDmxS(data.getDesignDmxS());
 			newRec->setRealDmxS(data.getRealDmxS());
-			newRec->setJiedianS(data.getJiedianS());
+			newRec->setPipeDiameter(data.getPipeDiameter());
 
 			es = testDict->setAt(strLable, newRec, StyleId);
 			if (es == Acad::eOk) 

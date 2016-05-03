@@ -1,6 +1,8 @@
 #include "StdAfx.h"
 #include "DrawZDM.h"
-
+#include "ZDMUtils.h"
+#include "BcUtils.h"
+#include "CBiaochiForRQY.h"
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
@@ -25,7 +27,7 @@ CDrawZDM::CDrawZDM( CZdmDataInfo* pData )
 	m_pZDM.setHasBulge(pData->getHasBulge());
 	m_pZDM.setDesingDmxS(pData->getDesignDmxS());
 	m_pZDM.setRealDmxS(pData->getRealDmxS());
-	m_pZDM.setJiedianS(pData->getJiedianS());
+	m_pZDM.setPipeDiameter(pData->getPipeDiameter());
 	m_idArrs.removeAll();
 }
 
@@ -62,7 +64,7 @@ AcDbObjectId CDrawZDM::add()
 	nCount++;
 	strCount.Format(_T("%d"), nCount);
 	CDMXUtils::setNumCount(strCount);
-	CDMXUtils::SetCurNum(strCount);
+	//CDMXUtils::SetCurNum(strCount);
 	CDMXUtils::SetJdNum(strCount);
 	
 	//////////////////////////////////////////////////////////////////////////
@@ -88,7 +90,7 @@ void CDrawZDM::setData( CZdmDataInfo* pData )
 	m_pZDM.setHasBulge(pData->getHasBulge());
 	m_pZDM.setDesingDmxS(pData->getDesignDmxS());
 	m_pZDM.setRealDmxS(pData->getRealDmxS());
-	m_pZDM.setJiedianS(pData->getJiedianS());
+	m_pZDM.setPipeDiameter(pData->getPipeDiameter());
 	m_idArrs.removeAll();
 }
 
@@ -130,7 +132,7 @@ AcDbObjectId CDrawZDM::insert()
 	nCount++;
 	strCount.Format(_T("%d"), nCount);
 	CDMXUtils::setNumCount(strCount);
-	CDMXUtils::SetCurNum(strCount);
+	//CDMXUtils::SetCurNum(strCount);
 	CDMXUtils::SetJdNum(strCount);
 	return groupId;
 }
@@ -172,7 +174,7 @@ bool CDrawZDM::del(CString strGroupName)
 	nCount--;
 	strCount.Format(_T("%d"), nCount);
 	CDMXUtils::setNumCount(strCount);
-	CDMXUtils::SetCurNum(strCount);
+	//CDMXUtils::SetCurNum(strCount);
 	CDMXUtils::SetJdNum(strCount);
 	return true;
 }

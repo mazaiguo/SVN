@@ -1,7 +1,6 @@
 #pragma once
-#include "ZDMUtils.h"
 #include "ZdmDataInfo.h"
-#include "CBiaochiForRQY.h"
+
 //控制绘制地面线的流程
 
 #ifdef WRQ_ZDM_MODULE //在创建产生DLL的工程中先把 

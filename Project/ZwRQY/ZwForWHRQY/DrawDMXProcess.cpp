@@ -2,6 +2,9 @@
 #include "DrawDMXProcess.h"
 #include "DrawZDM.h"
 #include "CDlgEditZhuangHao.h"
+#include "ZDMUtils.h"
+#include "CBiaochiForRQY.h"
+#include "BcUtils.h"
 
 DrawDMXProcess::DrawDMXProcess(void)
 {

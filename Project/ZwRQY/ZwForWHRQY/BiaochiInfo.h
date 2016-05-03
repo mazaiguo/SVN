@@ -1,5 +1,4 @@
 #pragma once
-#include "DrawBiaochi.h"
 //±ê³ßÊý¾Ý
 class CBiaochiInfo
 {

@@ -103,7 +103,7 @@ double CZdmDataInfo::getRealDmxS() const
 	return m_dRealDmxS;
 }
 
-double CZdmDataInfo::getJiedianS() const
+double CZdmDataInfo::getPipeDiameter() const
 {
 	return m_dJiedianS;
 }
@@ -180,7 +180,7 @@ Acad::ErrorStatus CZdmDataInfo::setRealDmxS( double strText )
 	return Acad::eOk;
 }
 
-Acad::ErrorStatus CZdmDataInfo::setJiedianS( double strText )
+Acad::ErrorStatus CZdmDataInfo::setPipeDiameter( double strText )
 {
 	m_dJiedianS = strText;
 	return Acad::eOk;

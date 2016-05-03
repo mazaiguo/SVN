@@ -53,7 +53,7 @@ void CDlgEditZhuangHao::setZDMData(CZdmDataInfo* pData)
 	m_pZDM.setHasBulge(pData->getHasBulge());
 	m_pZDM.setDesingDmxS(pData->getDesignDmxS());
 	m_pZDM.setRealDmxS(pData->getRealDmxS());
-	m_pZDM.setJiedianS(pData->getJiedianS());
+	m_pZDM.setPipeDiameter(pData->getPipeDiameter());
 }
 
 CZdmDataInfo CDlgEditZhuangHao::getData()

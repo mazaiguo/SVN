@@ -9,7 +9,7 @@
 #include "BiaochiInfo.h"
 #include "BcUtils.h"
 #include "DrawDMXProcess.h"
-#include "SpecialText.h"
+#include "DrawGDProcess.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("")
 //-----------------------------------------------------------------------------
@@ -30,8 +30,7 @@ public:
 		// TODO: Add your initialization code here
 		gGlobal.SetIni(gGlobal.GetIniPath());
 
-		CSpecialText::rxInit();
-		acrxBuildClassHierarchy();	
+		//acrxBuildClassHierarchy();	
 		
 		
 
@@ -46,10 +45,6 @@ public:
 		AcRx::AppRetCode retCode =AcRxArxApp::On_kUnloadAppMsg (pkt) ;
 
 		// TODO: Unload dependencies here
-		
-		deleteAcRxClass(CSpecialText::desc());
-		
-
 		return (retCode) ;
 	}
 
@@ -121,6 +116,29 @@ public:
 		DrawDMXProcess dmxProcess;
 		dmxProcess.Del();
 	}
+
+	// - WRQ_ZDM._XJGD command (do not rename)
+	//************************************
+	// Method:    WRQ_ZDM_XJGD
+	// FullName:  CZwForWHRQYApp::WRQ_ZDM_XJGD
+	// Access:    public static 
+	// Returns:   void
+	// Qualifier:新建管道
+	// Parameter: void
+	//************************************
+	static void WRQ_ZDM_XJGD(void)
+	{
+		// Add your code for command WRQ_ZDM._XJGD here
+		CString strCount =  CDMXUtils::getNumCount();
+		int nCount = MyTransFunc::StringToInt(strCount);
+		if (nCount <= 1)
+		{
+			AfxMessageBox(_T("没有地面线数据"));
+			return;
+		}
+		CDrawGDProcess	gdProcess;
+		gdProcess.Draw();
+	}
 } ;
 
 //-----------------------------------------------------------------------------
@@ -131,3 +149,4 @@ ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _XJDMX, XJDMX, ACRX_CMD_TRAN
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _INSERTDATA, CRSJ, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _EditDM, EDDM, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _DELDATA, SCSJ, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _XJGD, XJGD, ACRX_CMD_TRANSPARENT, NULL)

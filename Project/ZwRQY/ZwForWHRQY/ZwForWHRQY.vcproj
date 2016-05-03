@@ -453,38 +453,6 @@
 				Name="标尺"
 				>
 				<File
-					RelativePath=".\BiaochiInfo.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\BiaochiInfo.h"
-					>
-				</File>
-				<File
-					RelativePath=".\DrawBiaochi.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\DrawBiaochi.h"
-					>
-				</File>
-				<File
-					RelativePath=".\DrawDMXProcess.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\DrawDMXProcess.h"
-					>
-				</File>
-				<File
-					RelativePath=".\DrawZDM.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\DrawZDM.h"
-					>
-				</File>
-				<File
 					RelativePath=".\ZdmDataInfo.cpp"
 					>
 				</File>
@@ -492,6 +460,70 @@
 					RelativePath=".\ZdmDataInfo.h"
 					>
 				</File>
+				<Filter
+					Name="地面线"
+					>
+					<File
+						RelativePath=".\BiaochiInfo.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\BiaochiInfo.h"
+						>
+					</File>
+					<File
+						RelativePath=".\DrawBiaochi.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\DrawBiaochi.h"
+						>
+					</File>
+					<File
+						RelativePath=".\DrawDMXProcess.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\DrawDMXProcess.h"
+						>
+					</File>
+					<File
+						RelativePath=".\DrawZDM.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\DrawZDM.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="燃气管道"
+					>
+					<File
+						RelativePath=".\DrawGDProcess.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\DrawGDProcess.h"
+						>
+					</File>
+					<File
+						RelativePath=".\DrawZDMGD.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\DrawZDMGD.h"
+						>
+					</File>
+					<File
+						RelativePath=".\StartDrawRQGD.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\StartDrawRQGD.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="实体"
