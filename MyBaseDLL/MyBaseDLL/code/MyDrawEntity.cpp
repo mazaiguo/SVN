@@ -250,6 +250,16 @@ AcDbObjectId MyDrawEntity::DrawArc(AcGePoint3d cenPt, double dRadius,
 	return objId;
 }
 
+AcDbObjectId MyDrawEntity::DrawEllipse(AcGePoint3d cenPt, AcGeVector3d unitVec, AcGeVector3d majorAxis, double dRadio)
+{
+	AcDbEllipse* pEllipse = new AcDbEllipse;
+	pEllipse->setDatabaseDefaults();
+	pEllipse->set(cenPt, unitVec, majorAxis, dRadio);
+	MyBaseUtils::addToCurrentSpaceAndClose(pEllipse);
+	AcDbObjectId objId = pEllipse->objectId();
+	return objId;
+}
+
 AcDbObjectId MyDrawEntity::InsertBlkRef(CString strFilePathName, AcGePoint3d ptInsert, double inputscale,double inputrotation, AcDbObjectId LayerId)
 {	
 	AcDbObjectId objId = AcDbObjectId::kNull;

@@ -42,6 +42,7 @@ public:
 	static AcDbObjectId DrawArc(AcGePoint3d cenPt, double dRadius, double startAng, double endAng, 
 									int nColor = 5, AcDbObjectId LayerId = AcDbObjectId::kNull);
 
+	static AcDbObjectId DrawEllipse(AcGePoint3d cenPt, AcGeVector3d unitVec, AcGeVector3d majorAxis, double dRadio);
 	//根据给定的文件路径和插入点插入块
 	static AcDbObjectId InsertBlkRef(CString strFilePathName, AcGePoint3d ptInsert, double inputscale =1 ,
 										double inputrotation =0.0 , AcDbObjectId LayerId = AcDbObjectId::kNull);
