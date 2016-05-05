@@ -47,16 +47,29 @@ bool CStartDrawRQGD::newLine()
 		return false;
 	}
 
-
-	CDrawGDProcess drawBc;
-	bool bRet = drawBc.Draw();
+	bool bContinued = true;
+	while(bContinued)
+	{	
+		CDrawGDProcess zdm;
+		if (!zdm.Draw())
+		{
+			bContinued = false;
+		}	
+	}
 	return true;
 }
 
 bool CStartDrawRQGD::oldLine()
 {
 	bool bRet = false;
-	CDrawGDProcess drawBc;
-	bRet = drawBc.Draw();
+	bool bContinued = true;
+	while(bContinued)
+	{	
+		CDrawGDProcess zdm;
+		if (!zdm.Draw())
+		{
+			bContinued = false;
+		}	
+	}
 	return true;
 }

@@ -115,6 +115,7 @@ private:
 	AcGePoint3d m_basePt;
 	int m_nCout;//当前计数
 	CZdmDataInfo m_pZdmInfo;
+	CZdmDataInfo m_preZdmInfo;//上一个zdm数据
 	double m_dminElavation;
 	double m_dmaxElavation;
 	bool m_bHasBugle;//是否有坡度

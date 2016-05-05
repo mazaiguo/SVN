@@ -28,10 +28,9 @@ CDrawGDProcess::CDrawGDProcess(void)
 		int nTmp = m_nCout - 1;
 		strCount.Format(_T("%d"), nTmp);
 		CString strTmpLabel = BC_DICT + strCount;
-		CZdmDataInfo pBiaoChi;
-		bcUtils.get(strTmpLabel, pBiaoChi);
-		m_dPipeDiameter = pBiaoChi.getPipeDiameter();
-		m_dGuandi = pBiaoChi.getGuanDi();
+		bcUtils.get(strTmpLabel, m_preZdmInfo);
+		m_dPipeDiameter = m_preZdmInfo.getPipeDiameter();
+		m_dGuandi = m_preZdmInfo.getGuanDi();
 	}
 	
 }
@@ -57,6 +56,7 @@ bool CDrawGDProcess::Draw()
 	}
 	CDrawZDM zdm;
 	zdm.setDrawGd(true);
+	zdm.setData(&m_pZdmInfo);
 	zdm.add();
 	return true;
 }
@@ -98,12 +98,12 @@ bool CDrawGDProcess::GetPipeDiameter()
 	else if (nRet == RTNONE)
 	{
 		//m_dZhuanghao = m_dZhuanghao;
-		return false;
+		//return true;
 	}
 	else if (nRet == RTKWORD)
 	{
 		doUndo();
-		return false;
+		return true;
 	}
 	else
 	{
@@ -174,15 +174,17 @@ bool CDrawGDProcess::GetGuanDi()
 			//return true;
 			/*if (verifyHeight(m_dGuandi))
 			{
-				bRet = true;
+				
 			}*/
+			bRet = true;
 		}
 		else if (nRet == RTNONE)
 		{
 			/*if (verifyHeight(m_dGuandi))
 			{
-				bRet = true;
+				
 			}*/
+			bRet = true;
 		}
 		else
 		{
@@ -194,6 +196,13 @@ bool CDrawGDProcess::GetGuanDi()
 	m_dWashen = m_dRealDmx - m_dGuandi;
 	m_pZdmInfo.setGuanDi(m_dGuandi);
 	m_pZdmInfo.setWaShen(m_dWashen);
+	if (m_nCout > 1)
+	{
+		double dGuandi = m_preZdmInfo.getGuanDi();
+		double dDist = m_pZdmInfo.getcurData() - m_preZdmInfo.getcurData();
+		m_dPodu = (m_dGuandi - dGuandi)/dDist;
+		m_pZdmInfo.setPoDu(m_dPodu);
+	}
 	return true;
 }
 
@@ -211,16 +220,18 @@ bool CDrawGDProcess::GetWaShen()
 			//return true;
 			/*if (verifyHeight(m_dWashen))
 			{
-				bRet = true;
+				
 			}*/
+			bRet = true;
 		}
 		else if (nRet == RTNONE)
 		{
 			m_dGuandi = m_dWashen;
 			/*if (verifyHeight(m_dWashen))
 			{
-				bRet = true;
+				
 			}*/
+			bRet = true;
 		}
 		else
 		{
@@ -232,6 +243,13 @@ bool CDrawGDProcess::GetWaShen()
 	m_dGuandi = m_dRealDmx - m_dWashen;
 	m_pZdmInfo.setWaShen(m_dWashen);
 	m_pZdmInfo.setGuanDi(m_dGuandi);
+	if (m_nCout > 1)
+	{
+		double dGuandi = m_preZdmInfo.getGuanDi();
+		double dDist = m_pZdmInfo.getcurData() - m_preZdmInfo.getcurData();
+		m_dPodu = (m_dGuandi - dGuandi)/dDist;
+		m_pZdmInfo.setPoDu(m_dPodu);
+	}
 	return true;
 }
 
@@ -249,16 +267,18 @@ bool CDrawGDProcess::GetPodu()
 			//return true;
 		/*	if (verifyHeight(m_dPodu))
 			{
-				bRet = true;
+				
 			}*/
+			bRet = true;
 		}
 		else if (nRet == RTNONE)
 		{
 			m_dGuandi = m_dPodu;
 			/*if (verifyHeight(m_dPodu))
 			{
-				bRet = true;
+				
 			}*/
+			bRet = true;
 		}
 		else
 		{
@@ -268,6 +288,14 @@ bool CDrawGDProcess::GetPodu()
 		}
 	}
 	m_pZdmInfo.setPoDu(m_dPodu);
+	//根据坡度，计算管底，挖深
+	double dDist = m_pZdmInfo.getcurData() - m_preZdmInfo.getcurData();
+	double dGuandi = m_preZdmInfo.getGuanDi();
+	m_dGuandi = dGuandi + m_dPodu*dDist;
+	m_pZdmInfo.setGuanDi(m_dGuandi);
+	m_dRealDmx = m_pZdmInfo.getRealDmx();
+	m_dWashen = m_dRealDmx - m_dGuandi;
+	m_pZdmInfo.setWaShen(m_dWashen);
 	return true;
 }
 
@@ -296,7 +324,9 @@ bool CDrawGDProcess::doUndo()
 	CString strTmpLabel = BC_DICT_GD + strCount;
 
 	MyEditEntity::EraseEntByGroupName(strTmpLabel);
-
+	CString strLabel = BC_DICT + strCount;
+	CBcUtils bcUtils;
+	bcUtils.get(strLabel, m_pZdmInfo);
 	CDMXUtils::SetCurNum(strCount);
 	return true;
 }

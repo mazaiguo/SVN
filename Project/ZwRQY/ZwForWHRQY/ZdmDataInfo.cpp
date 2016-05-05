@@ -24,7 +24,7 @@ CZdmDataInfo::CZdmDataInfo(void)
 	//m_bHasBulge;//是否有凸起
 	m_dDesignDmxS = 0.0;//第二个设计地面线
 	m_dRealDmxS = 0.0;//第二个实际地面线
-	m_dJiedianS = 0.0;
+	m_dJiedianS = 350;
 }
 
 CZdmDataInfo::~CZdmDataInfo(void)
