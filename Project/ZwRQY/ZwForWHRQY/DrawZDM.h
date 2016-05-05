@@ -111,14 +111,20 @@ private:
 	//绘制燃气管道
 	bool drawGd();
 	//绘制管道示意图
-	bool drawGdflat(AcGePoint3d pretmpPt, AcGePoint3d tmpPt);
+	AcDbObjectIdArray drawGdflat(AcGePoint3d pretmpPt, AcGePoint3d tmpPt);
 	//绘制管底，挖深文字
-	bool drawText(AcGePoint3d basePt);
+	AcDbObjectIdArray drawText(AcGePoint3d basePt);
 	//绘制坡度，距离文字及坡度线
-	bool drawTextAndLine(AcGePoint3d pretmpPt, AcGePoint3d tmpPt);
+	AcDbObjectIdArray drawTextAndLine(AcGePoint3d pretmpPt, AcGePoint3d tmpPt, double dDist, double dPodu);
 
 	//绘制椭圆或者圆
 	bool drawCirlceOrEllipse();
+
+	bool ModifyDictbyInt( int nCur , bool bIsAdded = true);
+
+	bool ChangeDictName( CString strGroupName, CString strPreGroupName, int nCount, bool bIsDeFault = true );
+
+	bool EditDict(int nCur);
 private:
 	CZdmDataInfo m_pZDM;
 	CZdmDataInfo m_preData;
@@ -130,5 +136,6 @@ private:
 	bool m_bIsDel;//是否删除
 	bool m_bIsDrawGD;//是否绘制管道
 	int m_nCount;
+	bool m_bIsModified;//是否编辑
 	AcGePoint3d m_basePt;
 };

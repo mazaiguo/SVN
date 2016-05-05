@@ -1517,3 +1517,19 @@ bool MyEditEntity::EraseEntByGroupName(CString strGroupName)
 	pGroupDict->close();
 	return true;
 }
+
+bool MyEditEntity::AddObjToGroup(CString strLabel, AcDbObjectId objId)
+{
+	AcDbDictionary *pGroupDict;	
+	AcDbGroup* pGroup = NULL;
+	acdbHostApplicationServices()->workingDatabase()->getGroupDictionary(pGroupDict, AcDb::kForWrite);
+	if (pGroupDict->getAt(strLabel, (AcDbObject*&)pGroup, AcDb::kForWrite) != Acad::eOk)
+	{
+		pGroupDict->close();
+		return false;
+	}
+	pGroup->append(objId);
+	pGroup->close();
+	pGroupDict->close();
+	return true;
+}

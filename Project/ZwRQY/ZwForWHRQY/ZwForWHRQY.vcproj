@@ -484,14 +484,6 @@
 					Name="È¼Æø¹ÜµÀ"
 					>
 					<File
-						RelativePath=".\DrawGDProcess.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\DrawGDProcess.h"
-						>
-					</File>
-					<File
 						RelativePath=".\StartDrawRQGD.cpp"
 						>
 					</File>

@@ -35,7 +35,7 @@ CBiaochiForRQY::CBiaochiForRQY()
 	//m_bHasBulge;//是否有凸起
 	m_dDesignDmxS = 0.0;//第二个设计地面线
 	m_dRealDmxS = 0.0;//第二个实际地面线
-	m_dJiedianS = 0.0;
+	m_dJiedianS = 350;
 }
 
 
@@ -157,7 +157,7 @@ double CBiaochiForRQY::getRealDmxS() const
 	return m_dRealDmxS;
 }
 
-double CBiaochiForRQY::getJiedianS() const
+double CBiaochiForRQY::getPipeDiameter() const
 {
 	assertReadEnabled();
 	return m_dJiedianS;
@@ -285,7 +285,7 @@ Acad::ErrorStatus CBiaochiForRQY::setRealDmxS( double strText )
 	return Acad::eOk;
 }
 
-Acad::ErrorStatus CBiaochiForRQY::setJiedianS( double strText )
+Acad::ErrorStatus CBiaochiForRQY::setPipeDiameter( double strText )
 {
 	assertWriteEnabled();
 	m_dJiedianS = strText;
@@ -446,7 +446,7 @@ CBiaochiForRQY::dxfInFields(AcDbDxfFiler* filer)
 		}
 		else if (rb.restype == kDxfJieDianS)
 		{
-			setJiedianS(rb.resval.rreal);
+			setPipeDiameter(rb.resval.rreal);
 		}
 		else if (rb.restype == kDxfHasBulge)
 		{

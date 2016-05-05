@@ -51,8 +51,7 @@ AcDbObjectId CDrawZDM::add()
 	CString strCount = m_pZDM.getCount();
 	int nCount = MyTransFunc::StringToInt(strCount);
 	CString strGroupName;
-	nCount++;
-	strCount.Format(_T("%d"), nCount);
+	
 
 	if (!m_bIsDrawGD)
 	{
@@ -65,6 +64,8 @@ AcDbObjectId CDrawZDM::add()
 		}
 		strGroupName = BC_DICT + strCount;
 		groupId = MyDrawEntity::MakeGroup(m_idArrs, false, strGroupName);
+		nCount++;
+		strCount.Format(_T("%d"), nCount);
 		CDMXUtils::setNumCount(strCount);
 		//CDMXUtils::SetCurNum(strCount);
 		CDMXUtils::SetJdNum(strCount);
@@ -317,53 +318,54 @@ bool CDrawZDM::DrawLine(bool bIsDeFault)
 	}
 	//先使用设计水面高来绘制图形，后续不对再修改
 	
-	acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(m_basePt));
 	double dDesignDmx = (m_pZDM.getDesignDmx() - CDMXUtils::getMinElavation())*m_dYScale;
 	double dRealDmx = (m_pZDM.getRealDmx() - CDMXUtils::getMinElavation())*m_dYScale;
 	double dDesignDmxS = (m_pZDM.getDesignDmxS() - CDMXUtils::getMinElavation())*m_dYScale;
 	double dRealDmxS = (m_pZDM.getRealDmxS()- CDMXUtils::getMinElavation())*m_dYScale;
 
 
-	AcGePoint3d tmpPt;
+	AcGePoint3d tmpPt,basePt;	
+	acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(basePt));
+
 	if (dDesignDmx < dRealDmx)
 	{
-		acutPolar(asDblArray(m_basePt), PI/2, dRealDmx, asDblArray(tmpPt));
+		acutPolar(asDblArray(basePt), PI/2, dRealDmx, asDblArray(tmpPt));
 	}
 	else
 	{
-		acutPolar(asDblArray(m_basePt), PI/2, dDesignDmx, asDblArray(tmpPt));
+		acutPolar(asDblArray(basePt), PI/2, dDesignDmx, asDblArray(tmpPt));
 	}
 
 	if ((dDesignDmxS >= dRealDmxS) 
 		&& (dDesignDmxS >= dRealDmx)
 		&& (dDesignDmxS >= dDesignDmx))
 	{
-		acutPolar(asDblArray(m_basePt), PI/2, dDesignDmxS, asDblArray(tmpPt));
+		acutPolar(asDblArray(basePt), PI/2, dDesignDmxS, asDblArray(tmpPt));
 	}
 	else if ((dRealDmxS >= dDesignDmxS) 
 		&& (dRealDmxS >= dRealDmx)
 		&& (dRealDmxS >= dDesignDmx))
 	{
-		acutPolar(asDblArray(m_basePt), PI/2, dRealDmxS, asDblArray(tmpPt));
+		acutPolar(asDblArray(basePt), PI/2, dRealDmxS, asDblArray(tmpPt));
 	}
 	else if ((dRealDmx >= dDesignDmxS) 
 		&& (dRealDmx >= dRealDmxS)
 		&& (dRealDmx >= dDesignDmx))
 	{
-		acutPolar(asDblArray(m_basePt), PI/2, dRealDmx, asDblArray(tmpPt));
+		acutPolar(asDblArray(basePt), PI/2, dRealDmx, asDblArray(tmpPt));
 	}
 	else
 	{
-		acutPolar(asDblArray(m_basePt), PI/2, dDesignDmx, asDblArray(tmpPt));
+		acutPolar(asDblArray(basePt), PI/2, dDesignDmx, asDblArray(tmpPt));
 	}
 
 	if (nCount == 0)
 	{
-		acutPolar(asDblArray(m_basePt), 3*PI/2, m_dWidth, asDblArray(endPt));
+		acutPolar(asDblArray(basePt), 3*PI/2, m_dWidth, asDblArray(endPt));
 	}
 	else
 	{
-		acutPolar(asDblArray(m_basePt), 3*PI/2, m_dWidth-1.5*m_dYScale, asDblArray(endPt));
+		acutPolar(asDblArray(basePt), 3*PI/2, m_dWidth-1.5*m_dYScale, asDblArray(endPt));
 	}
 	bool bJd = CDMXUtils::getcreateJiedian();
 	if (!bJd)
@@ -376,7 +378,7 @@ bool CDrawZDM::DrawLine(bool bIsDeFault)
 	{
 		if (!m_bIsDel)
 		{
-			DrawJdText(m_basePt, tmpPt, endPt);
+			DrawJdText(basePt, tmpPt, endPt);
 		}
 	}
 	
@@ -825,7 +827,8 @@ bool CDrawZDM::EditDict(int nCur)
 
 CDrawGd::CDrawGd(void)
 {
-	//initdata();
+	initdata();
+	m_bIsModified = false;
 }
 
 CDrawGd::~CDrawGd(void)
@@ -837,21 +840,76 @@ bool CDrawGd::add(CZdmDataInfo pZDM)
 {
 	m_pZDM = pZDM;
 	drawGd();
+	m_nCount++;
+	CString strCount;
+	strCount.Format(_T("%d"), m_nCount);
+	CDMXUtils::SetCurNum(strCount);
 	return true;
 }
 
 bool CDrawGd::del(CZdmDataInfo pZDM)
 {
+	m_pZDM = pZDM;
+	CString strCurCount = m_pZDM.getCount();
+	m_nCount = MyTransFunc::StringToInt(strCurCount);
+
+	if (m_nCount > 1)
+	{	
+		ModifyDictbyInt(m_nCount, false);
+	}
+	CString strCount = CDMXUtils::getNumCount();
+	int nCount = MyTransFunc::StringToInt(strCount);
+	if (m_nCount != nCount - 1)//如果不是最后一个桩号
+	{
+		drawGd();
+	}
+	nCount--;
+	strCount.Format(_T("%d"), nCount);
+	CDMXUtils::SetCurNum(strCount);
 	return true;
 }
 
 bool CDrawGd::insert(CZdmDataInfo pZDM)
 {
+	m_pZDM = pZDM;
+	m_bIsModified = true;
+	CString strCount = m_pZDM.getCount();
+	m_nCount = MyTransFunc::StringToInt(strCount);
+
+	if (m_nCount > 1)
+	{	
+		ModifyDictbyInt(m_nCount);	
+	}
+
+	strCount = CDMXUtils::getNumCount();
+	int nCount = MyTransFunc::StringToInt(strCount);
+	if (m_nCount != nCount - 1)//如果不是最后一个桩号
+	{
+		drawGd();
+	}
+	nCount++;
+	strCount.Format(_T("%d"), nCount);
+	CDMXUtils::SetCurNum(strCount);
 	return true;
 }
 
 bool CDrawGd::mod(CZdmDataInfo pZDM)
 {
+	m_pZDM = pZDM;
+	m_bIsModified = true;
+
+	CString strCurCount = m_pZDM.getCount();
+	m_nCount = MyTransFunc::StringToInt(strCurCount);
+	CString strCount = CDMXUtils::getNumCount();
+	int nCount = MyTransFunc::StringToInt(strCount);
+	if (m_nCount != nCount - 1)//如果不是最后一个
+	{	
+		EditDict(m_nCount);
+	}
+	drawGd();
+	CString strGdGroupName;
+	strGdGroupName = BC_DICT_GD + strCurCount;
+	AcDbObjectId groupId = MyDrawEntity::MakeGroup(m_idArrs, false, strGdGroupName);
 	return true;
 }
 
@@ -890,8 +948,10 @@ bool CDrawGd::drawGd()
 {
 	CString strCount = m_pZDM.getCount();
 	m_nCount = MyTransFunc::StringToInt(strCount);
-	CString strGroupName;
+	CString strGroupName, strLabel;
 	strGroupName = BC_DICT_GD + strCount;
+	strLabel = BC_DICT + strCount;
+
 	if (m_nCount > 1)
 	{
 		CString strPreCount;
@@ -906,35 +966,41 @@ bool CDrawGd::drawGd()
 	drawCirlceOrEllipse();
 
 	AcDbObjectId groupId = MyDrawEntity::MakeGroup(m_idArrs, false, strGroupName);
-	m_nCount++;
+	/*m_nCount++;
 	strCount.Format(_T("%d"), m_nCount);
-	CDMXUtils::SetCurNum(strCount);
-
+	CDMXUtils::SetCurNum(strCount);*/
+	
 	CBcUtils utls;
-	utls.modify(strGroupName, m_pZDM);
+	utls.modify(strLabel, m_pZDM);
 
 	return true;
 }
 
 
-bool CDrawGd::drawGdflat(AcGePoint3d pretmpPt, AcGePoint3d tmpPt)
+AcDbObjectIdArray CDrawGd::drawGdflat(AcGePoint3d pretmpPt, AcGePoint3d tmpPt)
 {
 	AcGePoint3d startPt,endPt;
-	acutPolar(asDblArray(pretmpPt), 3*PI/2, 5.35*m_dYScale, asDblArray(startPt));
-	acutPolar(asDblArray(tmpPt), 3*PI/2, 5.35*m_dYScale, asDblArray(endPt));
+	AcDbObjectIdArray objIdArr;
+	objIdArr.removeAll();
+
+	acutPolar(asDblArray(pretmpPt), 3*PI/2, 9.1*m_dYScale, asDblArray(startPt));
+	acutPolar(asDblArray(tmpPt), 3*PI/2, 9.1*m_dYScale, asDblArray(endPt));
 	AcDbObjectId RqLayerId = MySymble::CreateNewLayer(_T("燃气管道"), 1);
 	AcDbObjectId objId = MyDrawEntity::DrawPlineByTwoPoint(startPt, endPt, RqLayerId);
 	objId = MyEditEntity::openPlineChangeWidth(objId, m_pZDM.getPipeDiameter()/1000);
-	m_idArrs.append(objId);
-	return true;
+	objIdArr.append(objId);
+	return objIdArr;
 }
 
-bool CDrawGd::drawText(AcGePoint3d basePt)
+AcDbObjectIdArray CDrawGd::drawText(AcGePoint3d basePt)
 {
 	AcGePoint3d guandiPt,washenPt;
-	acutPolar(asDblArray(basePt), 3*PI/2, 5.725*m_dYScale, asDblArray(guandiPt));
-	acutPolar(asDblArray(guandiPt), 3*PI/2, 0.75*m_dYScale, asDblArray(washenPt));
-	AcDbObjectId ZxLayerId = MySymble::CreateNewLayer(_T("DM-TEXT"), 7);
+	AcDbObjectIdArray objIdArr;
+	objIdArr.removeAll();
+
+	acutPolar(asDblArray(basePt), 3*PI/2, 11.45*m_dYScale, asDblArray(guandiPt));
+	acutPolar(asDblArray(guandiPt), 3*PI/2, 1.5*m_dYScale, asDblArray(washenPt));
+	AcDbObjectId ZxLayerId = MySymble::CreateNewLayer(_T("GD-TEXT"), 7);
 	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 6.0);
 	AcDbObjectId textId = AcDbObjectId::kNull;
 	double dGuandi = m_pZDM.getGuanDi();
@@ -946,50 +1012,72 @@ bool CDrawGd::drawText(AcGePoint3d basePt)
 	textId = MyDrawEntity::DrawText(guandiPt, strGuandiText, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
 	textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 	textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
-	m_idArrs.append(textId);
+	objIdArr.append(textId);
 
-	textId = MyDrawEntity::DrawText(guandiPt, strWashen, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
+	textId = MyDrawEntity::DrawText(washenPt, strWashen, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
 	textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 	textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
-	m_idArrs.append(textId);
+	objIdArr.append(textId);
 
-	return true;
+	return objIdArr;
 }
 
-bool CDrawGd::drawTextAndLine(AcGePoint3d pretmpPt, AcGePoint3d tmpPt)
+AcDbObjectIdArray CDrawGd::drawTextAndLine(AcGePoint3d pretmpPt, AcGePoint3d tmpPt, double dDist, double dPodu)
 {
 	AcGePoint3d startPt,endPt,pdPt,distPt;
-	if (m_pZDM.getGuanDi() > m_preData.getGuanDi())
-	{
-		acutPolar(asDblArray(pretmpPt), 3*PI/2, 7.6*m_dYScale, asDblArray(startPt));
-		acutPolar(asDblArray(tmpPt), 3*PI/2, 6.85*m_dYScale, asDblArray(endPt));
-	}
-	else
-	{
-		acutPolar(asDblArray(pretmpPt), 3*PI/2, 6.85*m_dYScale, asDblArray(startPt));
-		acutPolar(asDblArray(tmpPt), 3*PI/2, 7.6*m_dYScale, asDblArray(endPt));
-	}
-	AcDbObjectId objId = AcDbObjectId::kNull;
-	AcDbObjectId ZxLayerId = MySymble::CreateNewLayer(_T("ZX-TMP"), 7);
-	objId = MyDrawEntity::DrawLine(startPt, endPt, ZxLayerId);
-	m_idArrs.append(objId);
-	//////////////////////////////////////////////////////////////////////////
-	double dDist = m_pZDM.getcurData() - m_preData.getcurData();
+	AcDbObjectIdArray objIdArr;
+	objIdArr.removeAll();
 	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 6.0);
+	AcDbObjectId ZxLayerId = MySymble::CreateNewLayer(_T("GD-TMP"), 7);
 
 	CString strTmp;
 	CString strDist = MyTransFunc::doubleToStr(dDist, strTmp);
+
 	AcDbObjectId textId1,textId2;
-	textId1 = MyDrawEntity::DrawText(endPt, strDist, 3*m_dYScale/10, textStyleId, AcDb::kTextLeft, AcDb::kTextTop);
-	m_idArrs.append(textId1);
-	
-	double dPodu = m_pZDM.getPoDu();
 	CString strPd = MyTransFunc::doubleToStr(dPodu, strTmp);
 	strPd += _T("%");
-	textId2 = MyDrawEntity::DrawText(startPt, strPd, 3*m_dYScale/10, textStyleId, AcDb::kTextRight, AcDb::kTextTop);
-	m_idArrs.append(textId2);	
+	
+	if (abs(dPodu) < 0.000001)
+	{
+		acutPolar(asDblArray(pretmpPt), 3*PI/2, 14.45*m_dYScale, asDblArray(startPt));
+		acutPolar(asDblArray(tmpPt), 3*PI/2, 14.45*m_dYScale, asDblArray(endPt));
 
-	return true;
+		textId1 = MyDrawEntity::DrawText(endPt, strDist, 3*m_dYScale/10, textStyleId, AcDb::kTextRight, AcDb::kTextBottom);
+		textId1 = MyEditEntity::openEntChangeLayer(textId1, ZxLayerId);
+		objIdArr.append(textId1);	
+		textId2 = MyDrawEntity::DrawText(startPt, _T("0"), 3*m_dYScale/10, textStyleId, AcDb::kTextLeft, AcDb::kTextBottom);
+		textId2 = MyEditEntity::openEntChangeLayer(textId2, ZxLayerId);
+		objIdArr.append(textId2);	
+	}
+	else if (dPodu > 0.000001)
+	{
+		acutPolar(asDblArray(pretmpPt), 3*PI/2, 15.2*m_dYScale, asDblArray(startPt));
+		acutPolar(asDblArray(tmpPt), 3*PI/2, 13.7*m_dYScale, asDblArray(endPt));
+
+		textId1 = MyDrawEntity::DrawText(endPt, strDist, 3*m_dYScale/10, textStyleId, AcDb::kTextRight, AcDb::kTextTop);
+		textId1 = MyEditEntity::openEntChangeLayer(textId1, ZxLayerId);
+		objIdArr.append(textId1);	
+		textId2 = MyDrawEntity::DrawText(startPt, strPd, 3*m_dYScale/10, textStyleId, AcDb::kTextLeft, AcDb::kTextBottom);
+		textId2 = MyEditEntity::openEntChangeLayer(textId2, ZxLayerId);
+		objIdArr.append(textId2);	
+	}
+	else
+	{
+		acutPolar(asDblArray(pretmpPt), 3*PI/2, 13.7*m_dYScale, asDblArray(startPt));
+		acutPolar(asDblArray(tmpPt), 3*PI/2, 15.2*m_dYScale, asDblArray(endPt));
+
+		textId1 = MyDrawEntity::DrawText(endPt, strDist, 3*m_dYScale/10, textStyleId, AcDb::kTextRight, AcDb::kTextBottom);
+		textId1 = MyEditEntity::openEntChangeLayer(textId1, ZxLayerId);
+		objIdArr.append(textId1);	
+		textId2 = MyDrawEntity::DrawText(startPt, strPd, 3*m_dYScale/10, textStyleId, AcDb::kTextLeft, AcDb::kTextTop);
+		textId2 = MyEditEntity::openEntChangeLayer(textId2, ZxLayerId);
+		objIdArr.append(textId2);	
+	}
+	AcDbObjectId objId = AcDbObjectId::kNull;
+	objId = MyDrawEntity::DrawLine(startPt, endPt, ZxLayerId);
+	objIdArr.append(objId);
+	//////////////////////////////////////////////////////////////////////////
+	return objIdArr;
 }
 
 bool CDrawGd::drawCirlceOrEllipse()
@@ -997,16 +1085,18 @@ bool CDrawGd::drawCirlceOrEllipse()
 	AcGePoint3d tmpPt,guandiPt,guandiTopPt,cenPt;
 	double dRadius = (m_dYScale*m_pZDM.getPipeDiameter())/2000;
 	acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(tmpPt));
-	acutPolar(asDblArray(tmpPt), PI/2, m_pZDM.getGuanDi()*m_dYScale, asDblArray(guandiPt));
+	acutPolar(asDblArray(tmpPt), PI/2, (m_pZDM.getGuanDi() - CDMXUtils::getMinElavation())*m_dYScale, asDblArray(guandiPt));
 	acutPolar(asDblArray(guandiPt), PI/2, 2*dRadius, asDblArray(guandiTopPt));
 	acutPolar(asDblArray(guandiPt), PI/2, dRadius, asDblArray(cenPt));
 	AcDbObjectId objId = AcDbObjectId::kNull;
-	AcDbObjectId ZxLayerId = MySymble::CreateNewLayer(_T("ZX-TMP"), 7);
+	AcDbObjectId ZxLayerId = MySymble::CreateNewLayer(_T("GD-TMP"), 7);
 	AcDbObjectId RqLayerId = MySymble::CreateNewLayer(_T("燃气管道"), 1);
+	AcDbObjectIdArray objIdArr;
+	objIdArr.removeAll();
 	if (m_dXScale != m_dYScale)
 	{
 		//绘制椭圆
-		double dRadio = m_dYScale/m_dXScale;
+		double dRadio = m_dXScale/m_dYScale;
 		AcGeVector3d unitVec;
 		unitVec = guandiTopPt - cenPt;
 		objId = MyDrawEntity::DrawEllipse(cenPt, AcGeVector3d::kZAxis, unitVec, dRadio);
@@ -1025,7 +1115,7 @@ bool CDrawGd::drawCirlceOrEllipse()
 	{
 		AcGePoint3d preguandiPt,preguandiTopPt,pretmpPt;
 		acutPolar(asDblArray(m_basePt), 0, m_dLen + m_preData.getcurData()*m_dXScale, asDblArray(pretmpPt));
-		acutPolar(asDblArray(pretmpPt), PI/2, m_preData.getGuanDi()*m_dYScale, asDblArray(preguandiPt));
+		acutPolar(asDblArray(pretmpPt), PI/2, (m_preData.getGuanDi() - CDMXUtils::getMinElavation())*m_dYScale, asDblArray(preguandiPt));
 		acutPolar(asDblArray(preguandiPt), PI/2, 2*dRadius, asDblArray(preguandiTopPt));
 		AcDbObjectId lineId1,lineId2;
 		lineId1 = MyDrawEntity::DrawLine(preguandiPt, guandiPt, RqLayerId);
@@ -1033,10 +1123,247 @@ bool CDrawGd::drawCirlceOrEllipse()
 		m_idArrs.append(lineId1);
 		m_idArrs.append(lineId2);
 		//绘制示意图
-		drawGdflat(pretmpPt, tmpPt);
-
-		drawTextAndLine(pretmpPt, tmpPt);
+		objIdArr = drawGdflat(pretmpPt, tmpPt);
+		for (int i=0; i<objIdArr.length(); i++)
+		{
+			m_idArrs.append(objIdArr.at(i));
+		}
+		double dDist = m_pZDM.getcurData() - m_preData.getcurData();
+		double dPodu = 1000*(m_pZDM.getGuanDi() - m_preData.getGuanDi())/dDist;
+		objIdArr = drawTextAndLine(pretmpPt, tmpPt, dDist, dPodu);
+		for (int i=0; i<objIdArr.length(); i++)
+		{
+			m_idArrs.append(objIdArr.at(i));
+		}
 	}
-	drawText(tmpPt);
+	objIdArr = drawText(tmpPt);
+	for (int i=0; i<objIdArr.length(); i++)
+	{
+		m_idArrs.append(objIdArr.at(i));
+	}
+	if (m_bIsModified)
+	{
+		CBcUtils utls;
+		CString strNext;
+		strNext.Format(_T("%d"), m_nCount + 1);
+		CString strNextLabel = BC_DICT + strNext;
+		CString strGdGroup = BC_DICT_GD + strNext;
+		CZdmDataInfo NextData;
+		bool bGetNextData = utls.get(strNextLabel, NextData);
+		if (bGetNextData)
+		{
+			dRadius = (m_dYScale*NextData.getPipeDiameter())/2000;
+			acutPolar(asDblArray(m_basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(tmpPt));
+			acutPolar(asDblArray(tmpPt), PI/2, (NextData.getGuanDi() - CDMXUtils::getMinElavation())*m_dYScale, asDblArray(guandiPt));
+			acutPolar(asDblArray(guandiPt), PI/2, 2*dRadius, asDblArray(guandiTopPt));
+			acutPolar(asDblArray(guandiPt), PI/2, dRadius, asDblArray(cenPt));
+			if (m_dXScale != m_dYScale)
+			{
+				//绘制椭圆
+				double dRadio = m_dXScale/m_dYScale;
+				AcGeVector3d unitVec;
+				unitVec = guandiTopPt - cenPt;
+				objId = MyDrawEntity::DrawEllipse(cenPt, AcGeVector3d::kZAxis, unitVec, dRadio);
+				objId = MyEditEntity::openEntChangeLayer(objId, ZxLayerId);
+				MyEditEntity::AddObjToGroup(strGdGroup, objId);		
+				//
+			}
+			else
+			{
+				//绘制圆
+				objId = MyDrawEntity::DrawCircle(cenPt, dRadius, ZxLayerId);
+				MyEditEntity::AddObjToGroup(strGdGroup, objId);
+			}
+			//绘制管道线
+			if (m_nCount > 1)
+			{
+				AcGePoint3d preguandiPt,preguandiTopPt,pretmpPt;
+				acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(pretmpPt));
+				acutPolar(asDblArray(pretmpPt), PI/2, (m_pZDM.getGuanDi() - CDMXUtils::getMinElavation())*m_dYScale, asDblArray(preguandiPt));
+				acutPolar(asDblArray(preguandiPt), PI/2, 2*dRadius, asDblArray(preguandiTopPt));
+				AcDbObjectId lineId1,lineId2;
+				lineId1 = MyDrawEntity::DrawLine(preguandiPt, guandiPt, RqLayerId);
+				lineId2 = MyDrawEntity::DrawLine(preguandiTopPt, guandiTopPt, RqLayerId);
+				MyEditEntity::AddObjToGroup(strGdGroup, lineId1);
+				MyEditEntity::AddObjToGroup(strGdGroup, lineId2);
+				//绘制示意图
+				objIdArr = drawGdflat(pretmpPt, tmpPt);
+				for (int i=0; i<objIdArr.length(); i++)
+				{
+					MyEditEntity::AddObjToGroup(strGdGroup, objIdArr.at(i));
+				}
+				double dDist = NextData.getcurData() - m_pZDM.getcurData();
+				double dPodu = 1000*(NextData.getGuanDi() - m_pZDM.getGuanDi())/dDist;
+				objIdArr = drawTextAndLine(pretmpPt, tmpPt, dDist, dPodu);
+				for (int i=0; i<objIdArr.length(); i++)
+				{
+					MyEditEntity::AddObjToGroup(strGdGroup, objIdArr.at(i));
+				}
+			}
+			/*objIdArr = drawText(tmpPt);
+			for (int i=0; i<objIdArr.length(); i++)
+			{
+				MyEditEntity::AddObjToGroup(strGdGroup, objIdArr.at(i));
+			}*/
+		}
+		
+	}
+	return true;
+}
+
+bool CDrawGd::ModifyDictbyInt( int nCur , bool bIsAdded)
+{	
+	int nCount = 1; 
+	CString strCount = CDMXUtils::getNumCount();
+	nCount = MyTransFunc::StringToInt(strCount);
+	CString strGroupName,strPreGroupNam, strTmp;
+	if (bIsAdded)
+	{
+		for (int i=nCount; i>nCur; i--)
+		{
+			strTmp.Format(_T("%d"), i);
+			strGroupName = BC_DICT_GD + strTmp;
+			strTmp.Format(_T("%d"), i-1);
+			strPreGroupNam = BC_DICT_GD + strTmp;
+
+			if (i == nCur+1)
+			{
+				ChangeDictName(strGroupName, strPreGroupNam, i, false);
+			}
+			else
+			{
+				ChangeDictName(strGroupName, strPreGroupNam, i);
+			}
+
+		}
+	}
+	else
+	{
+		for (int i=nCur; i<=nCount; i++)
+		{
+			strTmp.Format(_T("%d"), i);
+			strGroupName = BC_DICT_GD + strTmp;
+			strTmp.Format(_T("%d"), i+1);
+			strPreGroupNam = BC_DICT_GD + strTmp;
+			if ((i == nCur))
+			{
+				ChangeDictName(strGroupName, strPreGroupNam,  i, false);
+			}
+			else
+			{
+				ChangeDictName(strGroupName, strPreGroupNam,  i);
+			}
+		}
+
+	}
+	return true;
+}
+
+bool CDrawGd::ChangeDictName( CString strGroupName, CString strPreGroupName, int nCount, bool bIsDeFault /*= true*/ )
+{
+	AcDbDictionary *pGroupDict;	
+	AcDbGroup* pGroup = NULL;
+	acdbHostApplicationServices()->workingDatabase()->getGroupDictionary(pGroupDict, AcDb::kForWrite);
+	if (pGroupDict->getAt(strPreGroupName, (AcDbObject*&)pGroup, AcDb::kForWrite) != Acad::eOk)
+	{
+		pGroupDict->close();
+		return false;
+	}
+	Acad::ErrorStatus es;
+	AcDbObjectIdArray objIdArr;
+	objIdArr.removeAll();
+	int nLength = 0;
+	nLength = pGroup->allEntityIds(objIdArr);
+
+	AcDbEntity* pEnt = NULL;
+	AcDbObjectId objId = AcDbObjectId::kNull;
+	for (int i=0; i<nLength; i++)
+	{
+		objId = objIdArr.at(i);
+		es = acdbOpenAcDbEntity((AcDbEntity*&)pEnt, objId, AcDb::kForWrite);
+		if (es!= Acad::eOk)
+		{
+			pEnt->close();
+		}
+		else
+		{
+			//需要将水面线删除
+			CString strLayer = pEnt->layer();
+			if (/*(strLayer.CompareNoCase(_T("MQ-XDM")) == 0)
+				||(strLayer.CompareNoCase(_T( "MQ-SDM")) == 0)
+				||*/(strLayer.CompareNoCase(_T( "GD-TMP")) == 0)
+				||(strLayer.CompareNoCase(_T("燃气管道")) == 0))
+			{
+				if (!bIsDeFault)
+				{
+					pEnt->erase();
+				}
+			}
+			//else if (strLayer.CompareNoCase(_T("ZX-TMP")) == 0)//修改节点
+			//{
+			//	if (pEnt->isKindOf(AcDbText::desc()))
+			//	{
+			//		CString strText;
+			//		strText.Format(_T("T%d"), nCount);
+			//		AcDbText* pText = AcDbText::cast(pEnt);
+			//		pText->setTextString(strText);
+			//		pText->close();
+			//	}
+			//}
+			pEnt->close();
+		}
+	}
+	pGroup->erase();
+	pGroup->close();
+	pGroupDict->close();
+
+	MyDrawEntity::MakeGroup(objIdArr, false, strGroupName);
+	return true;
+}
+
+bool CDrawGd::EditDict(int nCur)
+{
+
+	CString strTmp, strGroupName;
+	strTmp.Format(_T("%d"),nCur+1);
+	strGroupName = BC_DICT_GD + strTmp;
+	AcDbDictionary *pGroupDict;	
+	AcDbGroup* pGroup = NULL;
+	acdbHostApplicationServices()->workingDatabase()->getGroupDictionary(pGroupDict, AcDb::kForWrite);
+	if (pGroupDict->getAt(strGroupName, (AcDbObject*&)pGroup, AcDb::kForWrite) != Acad::eOk)
+	{
+		pGroupDict->close();
+		return false;
+	}
+	Acad::ErrorStatus es;
+	AcDbObjectIdArray objIdArr;
+	objIdArr.removeAll();
+	int nLength = 0;
+	nLength = pGroup->allEntityIds(objIdArr);
+
+	AcDbEntity* pEnt = NULL;
+	AcDbObjectId objId = AcDbObjectId::kNull;
+	for (int i=0; i<nLength; i++)
+	{
+		objId = objIdArr.at(i);
+		es = acdbOpenAcDbEntity((AcDbEntity*&)pEnt, objId, AcDb::kForWrite);
+		if (es!= Acad::eOk)
+		{
+			pEnt->close();
+		}
+		else
+		{
+			//需要将水面线删除
+			CString strLayer = pEnt->layer();
+			if ((strLayer.CompareNoCase(_T("燃气管道")) == 0)
+				||(strLayer.CompareNoCase(_T( "GD-TMP")) == 0))
+			{
+				pEnt->erase();
+			}
+			pEnt->close();
+		}
+	}
+	pGroup->close();
+	pGroupDict->close();
 	return true;
 }

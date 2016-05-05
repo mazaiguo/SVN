@@ -109,4 +109,6 @@ public:
 
 	static bool EraseEntByGroupName(CString strGroupName);
 
+	static bool AddObjToGroup(CString strLabel, AcDbObjectId objId);
+
 };

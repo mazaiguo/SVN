@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "StartDrawRQGD.h"
 #include "ZDMUtils.h"
-#include "DrawGDProcess.h"
+#include "DrawDMXProcess.h"
 
 CStartDrawRQGD::CStartDrawRQGD(void)
 {
@@ -47,16 +47,29 @@ bool CStartDrawRQGD::newLine()
 		return false;
 	}
 
-
-	CDrawGDProcess drawBc;
-	bool bRet = drawBc.Draw();
+	bool bContinued = true;
+	while(bContinued)
+	{	
+		CDrawGDProcess zdm;
+		if (!zdm.Draw())
+		{
+			bContinued = false;
+		}	
+	}
 	return true;
 }
 
 bool CStartDrawRQGD::oldLine()
 {
 	bool bRet = false;
-	CDrawGDProcess drawBc;
-	bRet = drawBc.Draw();
+	bool bContinued = true;
+	while(bContinued)
+	{	
+		CDrawGDProcess zdm;
+		if (!zdm.Draw())
+		{
+			bContinued = false;
+		}	
+	}
 	return true;
 }
