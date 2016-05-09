@@ -453,14 +453,6 @@
 					<Filter
 						Name="操作基础数据"
 						>
-						<File
-							RelativePath=".\BaseInfoInDwgFileUtils.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\BaseInfoInDwgFileUtils.h"
-							>
-						</File>
 					</Filter>
 					<Filter
 						Name="操作纵断面数据"
@@ -502,14 +494,6 @@
 				<Filter
 					Name="特殊文字"
 					>
-					<File
-						RelativePath=".\SpecialText.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\SpecialText.h"
-						>
-					</File>
 				</Filter>
 			</Filter>
 		</Filter>

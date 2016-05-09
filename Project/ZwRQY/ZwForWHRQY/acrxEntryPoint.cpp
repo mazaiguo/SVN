@@ -9,7 +9,7 @@
 #include "BiaochiInfo.h"
 #include "BcUtils.h"
 #include "DrawDMXProcess.h"
-#include "DrawGDProcess.h"
+//#include "DrawGDProcess.h"
 #include "StartDrawRQGD.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("")

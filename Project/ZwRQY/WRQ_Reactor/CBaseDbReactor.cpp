@@ -181,35 +181,35 @@ void CBaseDbReactor::objectModified(const AcDbDatabase * dwg, const AcDbObject *
 // -----------------------------------------------------------------------------
 void CBaseDbReactor::objectErased(const AcDbDatabase * dwg, const AcDbObject * dbObj, Adesk::Boolean pErased)
 {
-	if (pErased)
-	{
-		/*CString str, str2;
-		MyTransFunc::objToHandleStr(dbObj, str);
-		str2.Format(_T("<DB REACTOR: %p>"), dwg);
+	//if (pErased)
+	//{
+	//	/*CString str, str2;
+	//	MyTransFunc::objToHandleStr(dbObj, str);
+	//	str2.Format(_T("<DB REACTOR: %p>"), dwg);
 
-		acutPrintf(_T("\n%-15s : <%-18s: %s, %s> "), str2, _T("Erased"),
-			MyTransFunc::objToClassStr(dbObj), str);*/
-		if (dbObj->isKindOf(CSerialNo::desc()))
-		{
-			//记录最下的号
-			CString strCurNum = CBaseInfoInDwgFileUtils::getCurNum();
-			CString strNumCount = CBaseInfoInDwgFileUtils::getNumCount();
-			int nCurNum = MyTransFunc::StringToInt(strCurNum);
-			int nNum =  MyTransFunc::StringToInt(strNumCount);
-			nNum--;
-			CSerialNo* pNo = CSerialNo::cast(dbObj);
-			CString strText = pNo->strText();
-			int nCur = MyTransFunc::StringToInt(strText);
-			if (nCur < nCurNum)
-			{
-				nCurNum = nCur;	
-				strCurNum.Format(_T("%d"), nCurNum);
-				CBaseInfoInDwgFileUtils::SetCurNum(strCurNum);
-			}
-			strNumCount.Format(_T("%d"), nNum);
-			CBaseInfoInDwgFileUtils::setNumCount(strNumCount);
-		}
-	}
+	//	acutPrintf(_T("\n%-15s : <%-18s: %s, %s> "), str2, _T("Erased"),
+	//		MyTransFunc::objToClassStr(dbObj), str);*/
+	//	if (dbObj->isKindOf(CSerialNo::desc()))
+	//	{
+	//		//记录最下的号
+	//		CString strCurNum = CBaseInfoInDwgFileUtils::getCurNum();
+	//		CString strNumCount = CBaseInfoInDwgFileUtils::getNumCount();
+	//		int nCurNum = MyTransFunc::StringToInt(strCurNum);
+	//		int nNum =  MyTransFunc::StringToInt(strNumCount);
+	//		nNum--;
+	//		CSerialNo* pNo = CSerialNo::cast(dbObj);
+	//		CString strText = pNo->strText();
+	//		int nCur = MyTransFunc::StringToInt(strText);
+	//		if (nCur < nCurNum)
+	//		{
+	//			nCurNum = nCur;	
+	//			strCurNum.Format(_T("%d"), nCurNum);
+	//			CBaseInfoInDwgFileUtils::SetCurNum(strCurNum);
+	//		}
+	//		strNumCount.Format(_T("%d"), nNum);
+	//		CBaseInfoInDwgFileUtils::setNumCount(strNumCount);
+	//	}
+	//}
 	AcDbDatabaseReactor::objectErased (dwg, dbObj, pErased) ;
 }
 

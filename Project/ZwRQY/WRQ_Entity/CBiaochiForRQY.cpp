@@ -9,7 +9,7 @@
 
      // MDI safe statics
 Adesk::Int16    CBiaochiForRQY::m_version = 0;
-LPCTSTR			CBiaochiForRQY::m_dictName = _T("ZW_BIAOCHI_DATA_IN_DWG");
+LPCTSTR			CBiaochiForRQY::m_dictName = _T("ZW_ZDM_DATA_IN_DWG");
 
 ACRX_DXF_DEFINE_MEMBERS(CBiaochiForRQY, AcDbObject,
                         AcDb::kDHL_CURRENT, AcDb::kMReleaseCurrent,
