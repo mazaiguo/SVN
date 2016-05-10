@@ -876,7 +876,15 @@ double MyEditEntity::OpenObjAndGetWidth(AcDbObjectId objId)
 	pEnt->getGeomExtents(exts);
 	pEnt->close();
 	dHeight = abs(exts.maxPoint().y - exts.minPoint().y);
-	return dHeight;
+	double dTmp = abs(exts.minPoint().y - exts.maxPoint().y);
+	if (dHeight < dTmp)
+	{
+		return dHeight;
+	}
+	else
+	{
+		return dTmp;
+	}
 }
 
 double MyEditEntity::OpenObjAndGetLength(AcDbObjectId objId)
@@ -895,7 +903,15 @@ double MyEditEntity::OpenObjAndGetLength(AcDbObjectId objId)
 	pEnt->getGeomExtents(exts);
 	pEnt->close();
 	dWidth = abs(exts.minPoint().x - exts.maxPoint().x);
-	return dWidth;
+	double dTmp = abs(exts.minPoint().y - exts.maxPoint().y);
+	if (dWidth > dTmp)
+	{
+		return dWidth;
+	}
+	else
+	{
+		return dTmp;
+	}
 }
 
 CString MyEditEntity::OpenObjAndGetString(AcDbObjectId objId)

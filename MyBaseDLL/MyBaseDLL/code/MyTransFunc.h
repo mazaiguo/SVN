@@ -94,5 +94,7 @@ public:
 	static void get_next(CString t, int next[ ]);
 	static int KMP(CString text, CString find); 
 
+	//解析“、”的字符，将其解析存到一个cstringarray中
+	static void GetCommaFromString(CString strInput, CStringArray& strResultArr);
 
 };

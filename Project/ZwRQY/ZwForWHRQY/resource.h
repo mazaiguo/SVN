@@ -11,6 +11,9 @@
 #define IDC_EDIT_REAL                   104
 #define IDC_EDIT3                       105
 #define IDC_EDIT_CurData                105
+#define IDD_DLGDRAWJSD                  106
+#define IDC_COMBO1                      106
+#define IDC_COMBO_TYPE                  106
 
 // Next default values for new objects
 // 
@@ -18,7 +21,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        102
 #define _APS_NEXT_COMMAND_VALUE         32768
-#define _APS_NEXT_CONTROL_VALUE         106
-#define _APS_NEXT_SYMED_VALUE           105
+#define _APS_NEXT_CONTROL_VALUE         107
+#define _APS_NEXT_SYMED_VALUE           107
 #endif
 #endif

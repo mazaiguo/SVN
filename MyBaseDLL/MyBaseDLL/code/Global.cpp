@@ -432,9 +432,9 @@ CString CGlobal::GetIniPath()
 	CString path;
 	TCHAR buf[1000];
 #ifdef ARX
-	DWORD pathLength =GetModuleFileName(GetModuleHandle(_T("ZwForWHRQY.arx")),buf,1000);
+	DWORD pathLength =GetModuleFileName(GetModuleHandle(_T("MyBaseDll.dll")),buf,1000);
 #else
-	DWORD pathLength =GetModuleFileName(GetModuleHandle(_T("ZwForWHRQY.zrx")),buf,1000);
+	DWORD pathLength =GetModuleFileName(GetModuleHandle(_T("MyBaseDll.zrx")),buf,1000);
 #endif
 	if (pathLength)
 	{

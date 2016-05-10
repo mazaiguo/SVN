@@ -291,7 +291,7 @@ AcDbObjectId CDrawBiaochi::DrawTextAndBC(AcGePoint3d pt, CString strText, bool b
 	AcGePoint3d textPt;
 	acutPolar(asDblArray(pt), PI, m_dXRatio*1.5, asDblArray(textPt));
 
-	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 6.0);
+	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXRatio);
 	textId = MyDrawEntity::DrawText(textPt, strText, 3.0*m_dYRatio/10, textStyleId, AcDb::kTextRight);
 	objIds.append(textId);
 

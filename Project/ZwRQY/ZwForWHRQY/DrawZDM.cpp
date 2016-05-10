@@ -403,7 +403,7 @@ bool CDrawZDM::DrawDMText()
 	//绘制设计地面高文字
 	acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(textPt));
 	acutPolar(asDblArray(textPt), 3*PI/2, 0.75*m_dYScale, asDblArray(textPt));
-	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 6.0);
+	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
 	textId = MyDrawEntity::DrawText(textPt, strSJDmx, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
 	textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 	textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
@@ -442,7 +442,7 @@ bool CDrawZDM::DrawDMText()
 		CString strXZDmxS = MyTransFunc::doubleToStr(dXZDmxS, strTmp);
 		acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(textPt));
 		acutPolar(asDblArray(textPt), 3*PI/2, 0.75*m_dYScale, asDblArray(textPt));
-		AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 6.0);
+		AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
 		textId = MyDrawEntity::DrawText(textPt, strSJDmxS, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
 		textId = MyEditEntity::openEntChangeRotation(textId, 3*PI/2);
 		textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
@@ -487,7 +487,7 @@ bool CDrawZDM::DrawNextDMText()
 		//绘制设计地面高文字
 		acutPolar(asDblArray(m_basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(textPt));
 		acutPolar(asDblArray(textPt), 3*PI/2, 0.75*m_dYScale, asDblArray(textPt));
-		AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 6.0);
+		AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
 		textId = MyDrawEntity::DrawText(textPt, strSJDmx, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
 		textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 		textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
@@ -514,7 +514,7 @@ bool CDrawZDM::DrawNextDMText()
 			CString strXZDmxS = MyTransFunc::doubleToStr(dXZDmxS, strTmp);
 			acutPolar(asDblArray(m_basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(textPt));
 			acutPolar(asDblArray(textPt), 3*PI/2, 0.75*m_dYScale, asDblArray(textPt));
-			AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 6.0);
+			AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
 			textId = MyDrawEntity::DrawText(textPt, strSJDmxS, 3*m_dYScale/10, textStyleId, AcDb::kTextCenter);
 			textId = MyEditEntity::openEntChangeRotation(textId, 3*PI/2);
 			textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
@@ -556,7 +556,7 @@ bool CDrawZDM::DrawJdText(AcGePoint3d basePt, AcGePoint3d TopPt, AcGePoint3d end
 	CString strText;
 	CString strTmp = m_pZDM.getJiedian();
 	strText = _T("T") + strTmp;
-	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 6.0);
+	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
 	textId = MyDrawEntity::DrawText(cenPt, strText, 0.3*m_dYScale, textStyleId, AcDb::kTextMid, AcDb::kTextBase);
 	textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
 	m_idArrs.append(line1Id);
@@ -887,6 +887,9 @@ bool CDrawGd::insert(CZdmDataInfo pZDM)
 	{
 		drawGd();
 	}
+
+	strCount = CDMXUtils::getCurNum();
+	nCount = MyTransFunc::StringToInt(strCount);
 	nCount++;
 	strCount.Format(_T("%d"), nCount);
 	CDMXUtils::SetCurNum(strCount);
@@ -1001,7 +1004,7 @@ AcDbObjectIdArray CDrawGd::drawText(AcGePoint3d basePt)
 	acutPolar(asDblArray(basePt), 3*PI/2, 11.45*m_dYScale, asDblArray(guandiPt));
 	acutPolar(asDblArray(guandiPt), 3*PI/2, 1.5*m_dYScale, asDblArray(washenPt));
 	AcDbObjectId ZxLayerId = MySymble::CreateNewLayer(_T("GD-TEXT"), 7);
-	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 6.0);
+	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
 	AcDbObjectId textId = AcDbObjectId::kNull;
 	double dGuandi = m_pZDM.getGuanDi();
 	double dWashen = m_pZDM.getWaShen();
@@ -1027,7 +1030,7 @@ AcDbObjectIdArray CDrawGd::drawTextAndLine(AcGePoint3d pretmpPt, AcGePoint3d tmp
 	AcGePoint3d startPt,endPt,pdPt,distPt;
 	AcDbObjectIdArray objIdArr;
 	objIdArr.removeAll();
-	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 6.0);
+	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
 	AcDbObjectId ZxLayerId = MySymble::CreateNewLayer(_T("GD-TMP"), 7);
 
 	CString strTmp;

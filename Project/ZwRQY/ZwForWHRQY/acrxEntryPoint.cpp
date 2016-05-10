@@ -11,6 +11,7 @@
 #include "DrawDMXProcess.h"
 //#include "DrawGDProcess.h"
 #include "StartDrawRQGD.h"
+#include "DlgDrawJSD.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("")
 //-----------------------------------------------------------------------------
@@ -140,6 +141,23 @@ public:
 		CStartDrawRQGD	gdProcess;
 		gdProcess.start();
 	}
+
+	// - WRQ_ZDM._ZJJSD command (do not rename)
+	//************************************
+	// Method:    WRQ_ZDM_ZJJSD
+	// FullName:  CZwForWHRQYApp::WRQ_ZDM_ZJJSD
+	// Access:    public static 
+	// Returns:   void
+	// Qualifier:增加警示带功能
+	// Parameter: void
+	//************************************
+	static void WRQ_ZDM_ZJJSD(void)
+	{
+		// Add your code for command WRQ_ZDM._ZJJSD here
+		CAcModuleResourceOverride rs;
+		CDlgDrawJSD dlg;
+		dlg.DoModal();
+	}
 } ;
 
 //-----------------------------------------------------------------------------
@@ -151,3 +169,4 @@ ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _INSERTDATA, CRSJ, ACRX_CMD_
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _EditDM, EDDM, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _DELDATA, SCSJ, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _XJGD, XJGD, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _ZJJSD, ZJJSD, ACRX_CMD_TRANSPARENT, NULL)

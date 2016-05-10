@@ -524,14 +524,30 @@
 			<Filter
 				Name="对话框"
 				>
-				<File
-					RelativePath=".\CDlgEditZhuangHao.cpp"
+				<Filter
+					Name="绘制警示带"
 					>
-				</File>
-				<File
-					RelativePath=".\CDlgEditZhuangHao.h"
+					<File
+						RelativePath=".\DlgDrawJSD.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\DlgDrawJSD.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="编辑桩号"
 					>
-				</File>
+					<File
+						RelativePath=".\CDlgEditZhuangHao.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\CDlgEditZhuangHao.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter

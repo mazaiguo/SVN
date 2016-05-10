@@ -132,7 +132,7 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="E:\GitHub\SVN\Project\ZwRQY\MyBaseDLL\MyBaseDLL\code;&quot;D:\ObjectARX\ObjectARX 2010\inc&quot;;&quot;D:\ObjectARX\ObjectARX 2010\inc-x64&quot;"
 				AdditionalUsingDirectories="C:\Program Files\AutoCAD 2010\"
-				PreprocessorDefinitions="_WIN64;_WINDOWS;MYBASEDLL_MODULE;_AFXEXT;_ACRXAPP;MYBASEDLL_EXPORTS;ZRXSDK"
+				PreprocessorDefinitions="_WIN64;_WINDOWS;MYBASEDLL_MODULE;_AFXEXT;_ACRXAPP;MYBASEDLL_EXPORTS;ARX"
 				StringPooling="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -511,6 +511,14 @@
 				</File>
 				<File
 					RelativePath=".\code\MyEditEntity.h"
+					>
+				</File>
+				<File
+					RelativePath=".\code\MyLayout.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\code\MyLayout.h"
 					>
 				</File>
 				<File
