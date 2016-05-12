@@ -9,9 +9,10 @@
 #include "BiaochiInfo.h"
 #include "BcUtils.h"
 #include "DrawDMXProcess.h"
-//#include "DrawGDProcess.h"
 #include "StartDrawRQGD.h"
 #include "DlgDrawJSD.h"
+#include "DlgInsertOther.h"
+#include "MakeBlkFile.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("")
 //-----------------------------------------------------------------------------
@@ -158,6 +159,50 @@ public:
 		CDlgDrawJSD dlg;
 		dlg.DoModal();
 	}
+
+	// - WRQ_ZDM._CRQT command (do not rename)
+	//************************************
+	// Method:    WRQ_ZDM_CRQT
+	// FullName:  CZwForWHRQYApp::WRQ_ZDM_CRQT
+	// Access:    public static 
+	// Returns:   void
+	// Qualifier:插入其它图例，如附属配件
+	// Parameter: void
+	//************************************
+	static void WRQ_ZDM_CRQT(void)
+	{
+		// Add your code for command WRQ_ZDM._CRQT here
+		CAcModuleResourceOverride rs;
+		CDlgInsertOther dlg;
+		dlg.DoModal();
+	}
+
+	// - WRQ_ZDM._SCTL command (do not rename)
+	//************************************
+	// Method:    WRQ_ZDM_SCTL
+	// FullName:  CZwForWHRQYApp::WRQ_ZDM_SCTL
+	// Access:    public static 
+	// Returns:   void
+	// Qualifier: 生成图例
+	// Parameter: void
+	//************************************
+	static void WRQ_ZDM_SCTL(void)
+	{
+		// Add your code for command WRQ_ZDM._SCTL here
+		CString strFileName;
+		CString strBlkName;
+		TCHAR szKword [132];
+		int nRet = acedGetString(1, _T("\n请输入块名："), szKword);
+		if (nRet != RTNORM)
+		{
+			return;
+		}
+		strBlkName = szKword;
+		strFileName = MyBaseUtils::GetAppPath() + _T("附属配件\\") + strBlkName + _T(".dwg"); 
+		CMakeBlkFile mFile;
+		mFile.SetFileName(strFileName);
+		mFile.Save();
+	}
 } ;
 
 //-----------------------------------------------------------------------------
@@ -170,3 +215,5 @@ ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _EditDM, EDDM, ACRX_CMD_TRAN
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _DELDATA, SCSJ, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _XJGD, XJGD, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _ZJJSD, ZJJSD, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _CRQT, CRQT, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _SCTL, SCTL, ACRX_CMD_TRANSPARENT, NULL)

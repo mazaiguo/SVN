@@ -554,6 +554,62 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="view"
+				>
+				<File
+					RelativePath=".\code\GraphBlockViewWnd.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\code\GraphBlockViewWnd.h"
+					>
+				</File>
+				<File
+					RelativePath=".\code\GraphListCtrl.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\code\GraphListCtrl.h"
+					>
+				</File>
+				<File
+					RelativePath=".\code\GraphTitleTip.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\code\GraphTitleTip.h"
+					>
+				</File>
+				<File
+					RelativePath=".\code\GsMPCtrl.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\code\GsMPCtrl.h"
+					>
+				</File>
+				<File
+					RelativePath=".\code\idi_cros.cur"
+					>
+				</File>
+				<File
+					RelativePath=".\code\idi_orbi.cur"
+					>
+				</File>
+				<File
+					RelativePath=".\code\idi_pan.cur"
+					>
+				</File>
+				<File
+					RelativePath=".\code\idi_zoom.cur"
+					>
+				</File>
+				<File
+					RelativePath=".\code\rxdebug.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Include Files"

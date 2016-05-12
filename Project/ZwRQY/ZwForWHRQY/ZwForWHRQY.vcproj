@@ -426,16 +426,44 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="基础函数"
+				Name="块"
 				>
+				<File
+					RelativePath=".\BlkInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\BlkInfo.h"
+					>
+				</File>
+				<File
+					RelativePath=".\BlkJig.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\BlkJig.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgInsertOther.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgInsertOther.h"
+					>
+				</File>
+				<File
+					RelativePath=".\MakeBlkFile.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\MakeBlkFile.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="基础数据"
 				>
-				<Filter
-					Name="标尺基础数据"
-					>
-				</Filter>
 				<Filter
 					Name="操作标尺数据"
 					>
@@ -511,14 +539,6 @@
 						RelativePath=".\DrawBiaochi.h"
 						>
 					</File>
-				</Filter>
-			</Filter>
-			<Filter
-				Name="实体"
-				>
-				<Filter
-					Name="自定义文字"
-					>
 				</Filter>
 			</Filter>
 			<Filter
