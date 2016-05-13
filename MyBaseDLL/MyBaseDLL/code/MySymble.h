@@ -54,8 +54,6 @@ public:
 	//@return 返回所有字体样式名
 	static void GetAllTextStyleName(CStringArray& StrArr);
 
-	//@param str通过宽度数据获得AcDb类型数据
-	static AcDb::LineWeight StrToLineType(LPCTSTR str);
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////// ACAD SYMBOL TABLE UTILITIES //////////////////////////

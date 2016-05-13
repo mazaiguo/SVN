@@ -449,6 +449,78 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="对话框"
+				>
+				<Filter
+					Name="设置"
+					>
+					<File
+						RelativePath=".\DlgBasicSettings.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\DlgBasicSettings.h"
+						>
+					</File>
+					<File
+						RelativePath=".\DlgSettings.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\DlgSettings.h"
+						>
+					</File>
+					<Filter
+						Name="listctrl"
+						>
+						<File
+							RelativePath=".\ComboItem.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ComboItem.h"
+							>
+						</File>
+						<File
+							RelativePath=".\EditItem.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\EditItem.h"
+							>
+						</File>
+						<File
+							RelativePath=".\EditList.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\EditList.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="文字设置"
+						>
+						<File
+							RelativePath=".\DlgTextSettings.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\DlgTextSettings.h"
+							>
+						</File>
+						<File
+							RelativePath=".\MySplite.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\MySplite.H"
+							>
+						</File>
+					</Filter>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Include Files"
@@ -483,5 +555,9 @@
 		</Filter>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="GwDesign.rc"
+		/>
 	</Globals>
 </VisualStudioProject>

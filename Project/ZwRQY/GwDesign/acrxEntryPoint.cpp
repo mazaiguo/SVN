@@ -4,6 +4,9 @@
 #include "StdAfx.h"
 #include "resource.h"
 #include "DistinguishData.h"
+#include "DlgSettings.h"
+//#include "DlgBasicSettings.h"
+//#include "DlgTextSettings.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("")
 
@@ -86,9 +89,31 @@ public:
 		CDistinguishData dData;
 		dData.doIt();
 	}
+
+	// - WRQ_GwDesign._SZ command (do not rename)
+	//************************************
+	// Method:    WRQ_GwDesign_SZ
+	// FullName:  CGwDesignApp::WRQ_GwDesign_SZ
+	// Access:    public static 
+	// Returns:   void
+	// Qualifier: ª˘¥°…Ë÷√
+	// Parameter: void
+	//************************************
+	static void WRQ_GwDesign_SZ(void)
+	{
+		// Add your code for command WRQ_GwDesign._SZ here
+		CAcModuleResourceOverride rs;
+		/*CDlgBasicSettings dlg;
+		dlg.DoModal();*/
+		/*CDlgTextSettings dlg;
+		dlg.DoModal();*/
+		CDlgSettings dlg;
+		dlg.DoModal();
+	}
 } ;
 
 //-----------------------------------------------------------------------------
 IMPLEMENT_ARX_ENTRYPOINT(CGwDesignApp)
 
 ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, GwDesign, _SBGW, SBGW, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _SZ, SZ, ACRX_CMD_TRANSPARENT, NULL)

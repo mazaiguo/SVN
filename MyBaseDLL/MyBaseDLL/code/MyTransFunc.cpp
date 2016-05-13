@@ -1943,32 +1943,3 @@ double MyTransFunc::StringToDouble(CString str)
 	return dRet;
 }
 
-void MyTransFunc::GetCommaFromString(CString strInput, CStringArray& strResultArr)
-{
-	strResultArr.RemoveAll();
-	int nCount = strInput.Find(_T("¡¢"));
-	int nLength;
-	if (nCount==-1)
-	{
-		strResultArr.Add(strInput);
-		return;
-	}
-	CString strPrefix, strNext;
-	strNext = strInput;
-	CString strTmp;
-	while(nCount!=-1)
-	{
-		strPrefix = strNext.Left(nCount);
-		strResultArr.Add(strPrefix);
-		nLength = strNext.GetLength();
-#ifdef UNICODE
-		strTmp = strNext.Right(nLength - nCount - 1);
-#else
-		strTmp = strNext.Right(nLength - nCount - 2);
-#endif
-		strNext = strTmp;
-		nCount = strNext.Find(_T("¡¢"));
-	}
-	strResultArr.Add(strNext);
-	return;
-}

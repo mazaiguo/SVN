@@ -43,7 +43,7 @@ BOOL CDlgDrawJSD::OnInitDialog()
 	CStringArray tmpArr;
 	tmpArr.RemoveAll();
 	CString strGanNature = gGlobal.GetIniValue(_T("警示带设置"), _T("警示带序列"));
-	MyTransFunc::GetCommaFromString(strGanNature, tmpArr);
+	MyParserString::GetCommaFromString(strGanNature, tmpArr);
 
 	for (int i=0; i<tmpArr.GetCount(); i++)
 	{

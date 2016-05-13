@@ -13,3 +13,5 @@
 #include "IniFile.h"//操作ini文件相关函数
 #include "MyOperateFile.h"
 #include "ArxDbgReferenceFiler.h"
+#include "MyParserString.h"//解析字符
+#include "MyLayout.h"
