@@ -530,6 +530,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\code\MyParserString.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\code\MyParserString.h"
+					>
+				</File>
+				<File
 					RelativePath=".\code\MySymble.cpp"
 					>
 				</File>
