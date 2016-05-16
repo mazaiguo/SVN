@@ -26,8 +26,7 @@ public:
 	bool del(CString strGroupName);
 	//编辑数据
 	bool mod(CString strGroupName);
-	//绘制管道
-	void setDrawGd(bool bIsDrawGd);
+
 private:
 	//初始数据获取
 	bool initdata();
@@ -86,7 +85,6 @@ private:
 	double m_dXScale;
 	double m_dYScale;
 	bool m_bIsDel;//是否删除
-	bool m_bIsDrawGD;//是否绘制管道
 	AcGePoint3d m_basePt;
 };
 

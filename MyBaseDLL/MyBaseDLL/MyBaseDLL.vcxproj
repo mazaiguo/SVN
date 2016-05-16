@@ -35,7 +35,7 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>false</UseOfAtl>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_2014|Win32'" Label="Configuration">
@@ -152,17 +152,17 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level1</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>D:\ZRXSDK\ZRXSDK_2015\arxport;D:\ZRXSDK\ZRXSDK_2015\inc;E:\GitHub\SVN\Project\ZwRQY\MyBaseDLL\MyBaseDLL\code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\ZRXSDK\ZRXSDK%282015418%29\arxport;E:\GitHub\SVN\Project\ZwRQY\MyBaseDLL\MyBaseDLL\code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <OutputFile>E:\GitHub\SVN\Project\ZwRQY\ZWRQY\MyBaseDLL.zrx</OutputFile>
+      <OutputFile>E:\GitHub\SVN\Project\ZwRQY\ZWRQY_ZWCAD\MyBaseDLL.zrx</OutputFile>
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MyBaseDLL.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>$(OutDir)MyBaseDLL.lib</ImportLibrary>
+      <ImportLibrary>E:\GitHub\SVN\Project\ZwRQY\lib\zwcad\MyBaseDLL.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>D:\ZRXSDK\ZRXSDK_2015\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\ZRXSDK\ZRXSDK(2015418)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>
       </AdditionalDependencies>
     </Link>
@@ -198,7 +198,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <AdditionalUsingDirectories>C:\Program Files\AutoCAD 2010\;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;MYBASEDLL_MODULE;NDEBUG;_AFXEXT;_ACRXAPP;ZRX_2014;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;MYBASEDLL_MODULE;NDEBUG;_AFXEXT;_ACRXAPP;ZRX_2014;MYBASEDLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -211,18 +211,18 @@
       <WarningLevel>Level1</WarningLevel>
       <DebugInformationFormat>
       </DebugInformationFormat>
-      <AdditionalIncludeDirectories>D:\ZRXSDK\ZRXSDK_2014\arxport;D:\ZRXSDK\ZRXSDK_2014\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\ZRXSDK\ZRXSDK_2015\arxport;E:\GitHub\SVN\MyBaseDLL\MyBaseDLL\code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <OutputFile>$(OutDir)MyBaseDLL.ZRX</OutputFile>
+      <OutputFile>E:\GitHub\SVN\Project\ZwRQY\ZWRQY_ZWCAD\MyBaseDLL.ZRX</OutputFile>
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <ProgramDatabaseFile>
       </ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>$(OutDir)MyBaseDLL.lib</ImportLibrary>
+      <ImportLibrary>E:\GitHub\SVN\Project\ZwRQY\lib\zwcad\MyBaseDLL.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>D:\ZRXSDK\ZRXSDK_2014\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\ZRXSDK\ZRXSDK_2015\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_2014|Win32'">
@@ -318,8 +318,14 @@
     <ClCompile Include="acrxEntryPoint.cpp" />
     <ClCompile Include="code\ArxDbgUtilsDb.cpp" />
     <ClCompile Include="code\Global.cpp" />
+    <ClCompile Include="code\GraphBlockViewWnd.cpp" />
+    <ClCompile Include="code\GraphListCtrl.cpp" />
+    <ClCompile Include="code\GraphTitleTip.cpp" />
+    <ClCompile Include="code\GsMPCtrl.cpp" />
     <ClCompile Include="code\MybaseUtilsDict.cpp" />
+    <ClCompile Include="code\MyLayout.cpp" />
     <ClCompile Include="code\MyOperateFile.cpp" />
+    <ClCompile Include="code\MyParserString.cpp" />
     <ClCompile Include="code\WriteLog.cpp" />
     <ClCompile Include="DocData.cpp" />
     <ClCompile Include="MyBaseDLL.cpp" />
@@ -349,6 +355,10 @@
     <ClInclude Include="code\AcadStr.h" />
     <ClInclude Include="code\ArxDbgReferenceFiler.h" />
     <ClInclude Include="code\Global.h" />
+    <ClInclude Include="code\GraphBlockViewWnd.h" />
+    <ClInclude Include="code\GraphListCtrl.h" />
+    <ClInclude Include="code\GraphTitleTip.h" />
+    <ClInclude Include="code\GsMPCtrl.h" />
     <ClInclude Include="code\IniFile.h" />
     <ClInclude Include="code\MyBase.h" />
     <ClInclude Include="code\MyBaseRbList.h" />
@@ -357,10 +367,13 @@
     <ClInclude Include="code\MyDrag.h" />
     <ClInclude Include="code\MyDrawEntity.h" />
     <ClInclude Include="code\MyEditEntity.h" />
+    <ClInclude Include="code\MyLayout.h" />
     <ClInclude Include="code\MyOperateFile.h" />
+    <ClInclude Include="code\MyParserString.h" />
     <ClInclude Include="code\MySymble.h" />
     <ClInclude Include="code\MyTransFunc.h" />
     <ClInclude Include="code\OperateReg.h" />
+    <ClInclude Include="code\rxdebug.h" />
     <ClInclude Include="code\WriteLog.h" />
     <ClInclude Include="DocData.h" />
     <ClInclude Include="Resource.h" />
@@ -368,6 +381,12 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MyBaseDLL.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="code\idi_cros.cur" />
+    <None Include="code\idi_orbi.cur" />
+    <None Include="code\idi_pan.cur" />
+    <None Include="code\idi_zoom.cur" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -199,7 +199,7 @@ CString MyBaseUtils::GetAppPath()
 {
 	CString path;
 	TCHAR buf[1000];
-#ifdef ZRX_2014
+#ifdef ZRXSDK
 	DWORD pathLength =GetModuleFileName(GetModuleHandle(_T("MyBaseDLL.zrx")),buf,1000);
 #else
 	DWORD pathLength =GetModuleFileName(GetModuleHandle(_T("MyBaseDLL.dll")),buf,1000);

@@ -17,9 +17,19 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Template|Win32">
+      <Configuration>Template</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Template|x64">
+      <Configuration>Template</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
+    <ProjectName>WRQ_GwDesign</ProjectName>
     <ProjectGuid>{AE07A69F-1B57-4F2E-BF1A-34484F40AD63}</ProjectGuid>
+    <RootNamespace>GwDesign</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -35,6 +45,9 @@
     <UseOfAtl>false</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -57,6 +70,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
@@ -92,6 +108,12 @@
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Template|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Template|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Template|x64'" />
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -109,25 +131,26 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level1</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>D:\ZRXSDK\ZRXSDK_2015\arxport;E:\GitHub\SVN\MyBaseDLL\MyBaseDLL\code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\ZRXSDK\ZRXSDK(2015418)\arxport;E:\GitHub\SVN\MyBaseDLL\MyBaseDLL\code;E:\GitHub\SVN\Project\ZwRQY\WRQ_Entity;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <OutputFile>E:\GitHub\SVN\Project\ZwRQY\ZWRQY\GwDesign.zrx</OutputFile>
+      <OutputFile>E:\GitHub\SVN\Project\ZwRQY\ZWRQY_ZWCAD\GwDesign.zrx</OutputFile>
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)GwDesign.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>$(OutDir)GwDesign.lib</ImportLibrary>
+      <ImportLibrary>E:\GitHub\SVN\Project\ZwRQY\lib\zwcad\GwDesign.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>D:\ZRXSDK\ZRXSDK_2015\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>MyBaseDll.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>E:\GitHub\SVN\Project\ZwRQY\lib\zwcad;D:\ZRXSDK\ZRXSDK(2015418)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>MyBaseDLL.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>E:\GitHub\SVN\MyBaseDLL\MyBaseDLL\code;E:\GitHub\SVN\Project\ZwRQY\WRQ_Entity;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>C:\Program Files\AutoCAD 2010\;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>_WIN64;_WINDOWS;GWDESIGN_MODULE;_AFXEXT;_ACRXAPP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WIN64;_WINDOWS;GWDESIGN_MODULE;_AFXEXT;_ACRXAPP;ARX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -141,12 +164,14 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <OutputFile>E:\GitHub\SVN\Project\ZwRQY\ZWRQY\GwDesign.arx</OutputFile>
+      <AdditionalDependencies>MyBaseDll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>E:\GitHub\SVN\Project\ZwRQY\ZWRQY_ACAD\WRQ_GwDesign.arx</OutputFile>
+      <AdditionalLibraryDirectories>E:\GitHub\SVN\Project\ZwRQY\lib\acad;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)GwDesign.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>$(OutDir)GwDesign.lib</ImportLibrary>
+      <ImportLibrary>E:\GitHub\SVN\Project\ZwRQY\lib\acad\WRQ_GwDesign.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -218,8 +243,30 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Arc.cpp" />
+    <ClCompile Include="DistinguishData.cpp" />
+    <ClCompile Include="GDDataStore.cpp" />
+    <ClCompile Include="Line.cpp" />
+    <ClCompile Include="DlgBasicSettings.cpp" />
+    <ClCompile Include="DlgSettings.cpp" />
+    <ClCompile Include="ComboItem.cpp" />
+    <ClCompile Include="EditItem.cpp" />
+    <ClCompile Include="EditList.cpp" />
+    <ClCompile Include="DlgTextSettings.cpp" />
+    <ClCompile Include="MySplite.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Arc.h" />
+    <ClInclude Include="DistinguishData.h" />
+    <ClInclude Include="GDDataStore.h" />
+    <ClInclude Include="Line.h" />
+    <ClInclude Include="DlgBasicSettings.h" />
+    <ClInclude Include="DlgSettings.h" />
+    <ClInclude Include="ComboItem.h" />
+    <ClInclude Include="EditItem.h" />
+    <ClInclude Include="EditList.h" />
+    <ClInclude Include="DlgTextSettings.h" />
+    <ClInclude Include="MySplite.H" />
     <ClInclude Include="DocData.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="StdAfx.h" />
@@ -227,7 +274,18 @@
   <ItemGroup>
     <ResourceCompile Include="GwDesign.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WRQ_Entity\WRQ_Entity.vcxproj">
+      <Project>{040301b6-2bd7-45b7-9e32-32771921a46f}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="GwDesign.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

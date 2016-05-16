@@ -1,5 +1,5 @@
-#ifndef CBASEDATAFORZDDWG_H
-#define CBASEDATAFORZDDWG_H
+#ifndef CBASEDATAFORGWDESIGN_H
+#define CBASEDATAFORGWDESIGN_H
 //#include "MyBase.h"
 
 #ifdef WRQ_ENTITY_MODULE //在创建产生DLL的工程中先把 MYBASEDLL_EXPORTS 预定义上
@@ -8,14 +8,14 @@
 #define WRQ_ENTITY_DLL __declspec(dllimport)
 #endif
 
-class WRQ_ENTITY_DLL CBaseDataForZdDwg : public AcDbObject 
+class WRQ_ENTITY_DLL CBaseDataForGwDesign : public AcDbObject 
 {
 
 public:
-                CBaseDataForZdDwg();
-    virtual     ~CBaseDataForZdDwg();
+                CBaseDataForGwDesign();
+    virtual     ~CBaseDataForGwDesign();
 
-    ACRX_DECLARE_MEMBERS(CBaseDataForZdDwg);
+    ACRX_DECLARE_MEMBERS(CBaseDataForGwDesign);
 
         // access to data members
 
@@ -28,7 +28,7 @@ public:
 	CString					CurNum();
 	Acad::ErrorStatus	setCurNum(CString nCount);
 
-	CString					JdNum();
+	/*CString					JdNum();
 	Acad::ErrorStatus	setJdNum(CString nCount);
 
 	double				startZH() const;
@@ -52,11 +52,8 @@ public:
 	bool				createJiedian() const;
 	Acad::ErrorStatus	setcreateJieidan(bool bDrawBc);
 
-	bool				createGw() const;
-	Acad::ErrorStatus	setcreateGw(bool bDrawBc);
-
 	AcGePoint3d			basePt() const;
-	Acad::ErrorStatus	setbasePt(AcGePoint3d startPt);
+	Acad::ErrorStatus	setbasePt(AcGePoint3d startPt);*/
 
 
 	// overridden from AcDbObject
@@ -70,45 +67,38 @@ private:
     CString             m_label;
 	CString				m_strNumCount;//图纸中数字的总数
 	CString				m_strCurNum;//当前图纸的数据
-	CString             m_strJdNum;//当前图纸的节点数
+	//CString             m_strJdNum;//当前图纸的节点数
 
-	double				m_dStartZH;//起始桩号
-	double				m_dXScale;//x比例
-	double				m_dYScale;//y比例
+	//double				m_dStartZH;//起始桩号
+	//double				m_dXScale;//x比例
+	//double				m_dYScale;//y比例
 
-	double				m_dminElavation;//起始标高
-	double				m_dmaxElavation;//终止标高
+	//double				m_dminElavation;//起始标高
+	//double				m_dmaxElavation;//终止标高
 
-	bool				m_bDrawBc;//绘制标尺
-	bool				m_bDrawJiedian;//绘制节点
-	bool				m_bDrawGW;//绘制管网
-	AcGePoint3d			m_basePt;//基点
+	//bool				m_bDrawBc;//绘制标尺
+	//bool				m_bDrawJiedian;//绘制节点
+	//AcGePoint3d			m_basePt;//基点
 
     static Adesk::Int16 m_version;
 	static LPCTSTR		m_dictName;
 
-	//AcGePoint3d			m_endPt;
-	//double				m_dHengxiang;
-	//double				m_dZongxiang;
-
-
-        // Dxf Codes
+    // Dxf Codes
     enum 
 	{
         kDxfLabel       	= 1,
 		kDxfNumCount		= 300,//90~99 32位整数值
 		kDxfCurNum			= 301,
-		kDxfJdNum			= 302,
-		kDxfXScale			= 40,//4~59
-		kDxfYScale			= 41,
-		kDxfminElavation 	= 42,
-		kDxfmaxElavation 	= 43,
-		kDxfStartZH			= 44,
-		kDxfDrawBc			= 290,//290-299 布尔标志值
-		kDxfDrawJiedian		= 291,
-		kDxfDrawGw			= 292,
-		
-		kDxfBasePt			= 10,//基点
+		//kDxfJdNum			= 302,
+		//kDxfXScale			= 40,//4~59
+		//kDxfYScale			= 41,
+		//kDxfminElavation 	= 42,
+		//kDxfmaxElavation 	= 43,
+		//kDxfStartZH			= 44,
+		//kDxfDrawBc			= 290,//290-299 布尔标志值
+		//kDxfDrawJiedian		= 291,
+		//
+		//kDxfBasePt			= 10,//基点
 		/*kDxfHengxiang		= 140,
 		kDxfZongxiang		= 141,
 		kDxfStartPt			= 10,

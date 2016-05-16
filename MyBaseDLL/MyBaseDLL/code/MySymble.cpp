@@ -124,7 +124,8 @@ AcDbObjectId MySymble::CreateTextStyle(CString stylename,CString strFont,CString
 			TCHAR sPath[MAX_PATH];
 			if( acedFindFile( strFont, sPath ) != RTNORM )
 			{
-				if (pTextStyleTblRcd->setFont(strFont, FALSE, FALSE, 1, 1)!= Acad::eOk)
+				es = pTextStyleTblRcd->setFont(strFont, FALSE, FALSE, 1, 1);
+				if (es != Acad::eOk)
 				{
 					acutPrintf(_T("\n setFont³ö´í!"));
 				}

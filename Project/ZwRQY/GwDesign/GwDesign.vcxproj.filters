@@ -2,19 +2,34 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{13a36970-573f-4488-a8d6-fb08e405e550}</UniqueIdentifier>
+      <UniqueIdentifier>{6bcc4efe-7d80-437a-8bab-1dd0edb402da}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;idl;odl</Extensions>
     </Filter>
+    <Filter Include="Source Files\识别直线">
+      <UniqueIdentifier>{a7baf7ae-c4b1-4020-b7bb-a8de3b8108bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\对话框">
+      <UniqueIdentifier>{6b9a61f2-a07b-4d46-88d8-1b7acd240c03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\对话框\设置">
+      <UniqueIdentifier>{696a2083-ef2b-4e1b-8c44-407248bd6962}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\对话框\设置\listctrl">
+      <UniqueIdentifier>{c8614e56-2cb2-44af-8a5e-6e890e458555}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\对话框\设置\文字设置">
+      <UniqueIdentifier>{1bb71bb8-a422-46b2-9a73-91381f5a9ea9}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Include Files">
-      <UniqueIdentifier>{6dfcde3a-3774-40be-9a5a-99c52c3addd9}</UniqueIdentifier>
+      <UniqueIdentifier>{76bc032a-2d85-4ebd-8a7d-a9ff47db0bc9}</UniqueIdentifier>
       <Extensions>h;hh;hxx</Extensions>
     </Filter>
     <Filter Include="Resource Files">
-      <UniqueIdentifier>{a38d9f70-b12e-4d87-bd9e-4539338ea3a4}</UniqueIdentifier>
+      <UniqueIdentifier>{002aaf21-cefe-444b-9074-fb3295e18ee9}</UniqueIdentifier>
       <Extensions>rc;ico;bmp;cur;jpg;gif</Extensions>
     </Filter>
     <Filter Include="Miscellaneous Files">
-      <UniqueIdentifier>{6492a23f-2495-440d-91dd-f32d23406c15}</UniqueIdentifier>
+      <UniqueIdentifier>{d264c4b1-474a-415b-bddd-840183644fe6}</UniqueIdentifier>
       <Extensions>reg;rgs;mak;clw;vsdir;vsz;css;inf;vcproj;csproj</Extensions>
     </Filter>
   </ItemGroup>
@@ -31,8 +46,74 @@
     <ClCompile Include="StdAfx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Arc.cpp">
+      <Filter>Source Files\识别直线</Filter>
+    </ClCompile>
+    <ClCompile Include="DistinguishData.cpp">
+      <Filter>Source Files\识别直线</Filter>
+    </ClCompile>
+    <ClCompile Include="GDDataStore.cpp">
+      <Filter>Source Files\识别直线</Filter>
+    </ClCompile>
+    <ClCompile Include="Line.cpp">
+      <Filter>Source Files\识别直线</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgBasicSettings.cpp">
+      <Filter>Source Files\对话框\设置</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgSettings.cpp">
+      <Filter>Source Files\对话框\设置</Filter>
+    </ClCompile>
+    <ClCompile Include="ComboItem.cpp">
+      <Filter>Source Files\对话框\设置\listctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="EditItem.cpp">
+      <Filter>Source Files\对话框\设置\listctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="EditList.cpp">
+      <Filter>Source Files\对话框\设置\listctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgTextSettings.cpp">
+      <Filter>Source Files\对话框\设置\文字设置</Filter>
+    </ClCompile>
+    <ClCompile Include="MySplite.cpp">
+      <Filter>Source Files\对话框\设置\文字设置</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Arc.h">
+      <Filter>Source Files\识别直线</Filter>
+    </ClInclude>
+    <ClInclude Include="DistinguishData.h">
+      <Filter>Source Files\识别直线</Filter>
+    </ClInclude>
+    <ClInclude Include="GDDataStore.h">
+      <Filter>Source Files\识别直线</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.h">
+      <Filter>Source Files\识别直线</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgBasicSettings.h">
+      <Filter>Source Files\对话框\设置</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgSettings.h">
+      <Filter>Source Files\对话框\设置</Filter>
+    </ClInclude>
+    <ClInclude Include="ComboItem.h">
+      <Filter>Source Files\对话框\设置\listctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="EditItem.h">
+      <Filter>Source Files\对话框\设置\listctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="EditList.h">
+      <Filter>Source Files\对话框\设置\listctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgTextSettings.h">
+      <Filter>Source Files\对话框\设置\文字设置</Filter>
+    </ClInclude>
+    <ClInclude Include="MySplite.H">
+      <Filter>Source Files\对话框\设置\文字设置</Filter>
+    </ClInclude>
     <ClInclude Include="DocData.h">
       <Filter>Include Files</Filter>
     </ClInclude>

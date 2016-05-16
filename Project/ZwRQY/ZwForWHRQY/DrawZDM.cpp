@@ -9,8 +9,7 @@
 CDrawZDM::CDrawZDM(void )
 {
 	//m_pZDM = new CBiaochiForRQY();
-
-	m_bIsDrawGD = false;
+	
 	m_idArrs.removeAll();
 }
 
@@ -53,7 +52,7 @@ AcDbObjectId CDrawZDM::add()
 	CString strGroupName;
 	
 
-	if (!m_bIsDrawGD)
+	if (!CDMXUtils::getcreateGw())
 	{
 		DrawLine();
 
@@ -212,10 +211,6 @@ bool CDrawZDM::mod(CString strGroupName)
 	return true;
 }
 
-void CDrawZDM::setDrawGd(bool bIsDrawGd)
-{
-	m_bIsDrawGD = bIsDrawGd;
-}
 
 bool CDrawZDM::initdata()
 {

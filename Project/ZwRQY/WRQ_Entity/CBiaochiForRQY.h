@@ -1,6 +1,5 @@
 #ifndef CBIAOCHIFORRQY_H
 #define CBIAOCHIFORRQY_H
-#include "MyBase.h"
 
 #ifdef WRQ_ENTITY_MODULE //在创建产生DLL的工程中先把 MYBASEDLL_EXPORTS 预定义上
 #define WRQ_ENTITY_DLL __declspec(dllexport)

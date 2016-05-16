@@ -5,6 +5,7 @@
 #include "resource.h"
 #include "DistinguishData.h"
 #include "DlgSettings.h"
+#include "SerialNoJig.h"
 //#include "DlgBasicSettings.h"
 //#include "DlgTextSettings.h"
 //-----------------------------------------------------------------------------
@@ -110,6 +111,22 @@ public:
 		CDlgSettings dlg;
 		dlg.DoModal();
 	}
+
+	// - WRQ_GwDesign._CRXH command (do not rename)
+	//************************************
+	// Method:    WRQ_GwDesign_CRXH
+	// FullName:  CGwDesignApp::WRQ_GwDesign_CRXH
+	// Access:    public static 
+	// Returns:   void
+	// Qualifier:≤Â»Î–Ú∫≈
+	// Parameter: void
+	//************************************
+	static void WRQ_GwDesign_CRXH(void)
+	{
+		// Add your code for command WRQ_GwDesign._CRXH here
+		CSerialNoJig jig;
+		jig.startJig();
+	}
 } ;
 
 //-----------------------------------------------------------------------------
@@ -117,3 +134,4 @@ IMPLEMENT_ARX_ENTRYPOINT(CGwDesignApp)
 
 ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, GwDesign, _SBGW, SBGW, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _SZ, SZ, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _CRXH, CRXH, ACRX_CMD_TRANSPARENT, NULL)

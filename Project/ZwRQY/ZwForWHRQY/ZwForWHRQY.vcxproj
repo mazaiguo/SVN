@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
+    <ProjectName>WRQ_ZDM</ProjectName>
     <ProjectGuid>{698C732B-8F7C-4762-9DA3-D5A51F6265BB}</ProjectGuid>
     <RootNamespace>ZwForWHRQY</RootNamespace>
   </PropertyGroup>
@@ -118,7 +119,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalUsingDirectories>C:\Program Files\AutoCAD 2010\;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;ZWFORWHRQY_MODULE;_AFXEXT;_ACRXAPP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;WRQ_ZDM_MODULE;_AFXEXT;_ACRXAPP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -130,25 +131,26 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level1</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>E:\GitHub\SVN\Project\ZwRQY\MyBaseDLL\MyBaseDLL\code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\ZRXSDK\ZRXSDK(2015418)\arxport;E:\GitHub\SVN\MyBaseDLL\MyBaseDLL\code;E:\GitHub\SVN\Project\ZwRQY\WRQ_Entity;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <OutputFile>E:\GitHub\SVN\Project\ZwRQY\ZWRQY\ZwForWHRQY.zrx</OutputFile>
+      <OutputFile>E:\GitHub\SVN\Project\ZwRQY\ZWRQY_ZWCAD\WRQ_ZDM.ZRX</OutputFile>
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)ZwForWHRQY.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>$(OutDir)ZwForWHRQY.lib</ImportLibrary>
+      <ImportLibrary>E:\GitHub\SVN\Project\ZwRQY\lib\zwcad\ZwForWHRQY.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>MyBaseDll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>E:\GitHub\SVN\Project\ZwRQY\lib\zwcad;D:\ZRXSDK\ZRXSDK(2015418)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>MyBaseDLL.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>E:\Project\MyBaseDLL\MyBaseDLL\code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\GitHub\SVN\MyBaseDLL\MyBaseDLL\code;E:\GitHub\SVN\Project\ZwRQY\WRQ_Entity;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>C:\Program Files\AutoCAD 2010\;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>_WIN64;_WINDOWS;ZWFORWHRQY_MODULE;_AFXEXT;_ACRXAPP;ARX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WIN64;_WINDOWS;ZWFORWHRQY_MODULE;_AFXEXT;_ACRXAPP;ARX;WRQ_ZDM_MODULE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -162,14 +164,14 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>MyBaseDLL.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>E:\GitHub\SVN\Project\ZwRQY\ZWRQY\ZwForWHRQY.arx</OutputFile>
-      <AdditionalLibraryDirectories>E:\Project\MyBaseDLL\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>MyBaseDLL.lib;WRQ_Entity.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>E:\GitHub\SVN\Project\ZwRQY\ZWRQY_ACAD\WRQ_ZDM.arx</OutputFile>
+      <AdditionalLibraryDirectories>E:\GitHub\SVN\Project\ZwRQY\lib\acad;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)ZwForWHRQY.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>$(OutDir)ZwForWHRQY.lib</ImportLibrary>
+      <ImportLibrary>E:\GitHub\SVN\Project\ZwRQY\lib\acad\WRQ_ZDM.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -242,44 +244,54 @@
     </ClCompile>
     <ClCompile Include="ZwForWHRQY.cpp" />
     <ClCompile Include="DlgTKSZ.cpp" />
-    <ClCompile Include="Utils.cpp" />
-    <ClCompile Include="CBaseDataFORZDDwg.cpp" />
-    <ClCompile Include="CBiaochiForRQY.cpp" />
+    <ClCompile Include="BlkInfo.cpp" />
+    <ClCompile Include="BlkJig.cpp" />
+    <ClCompile Include="DlgInsertOther.cpp" />
+    <ClCompile Include="MakeBlkFile.cpp" />
     <ClCompile Include="BcUtils.cpp" />
-    <ClCompile Include="BiaochiInfo.cpp" />
-    <ClCompile Include="DrawBiaochi.cpp" />
-    <ClCompile Include="DrawDMXProcess.cpp" />
     <ClCompile Include="DrawZDM.cpp" />
     <ClCompile Include="ZdmDataInfo.cpp" />
-    <ClCompile Include="CDbClick.cpp" />
-    <ClCompile Include="SpecialText.cpp" />
+    <ClCompile Include="DrawDMXProcess.cpp" />
+    <ClCompile Include="StartDrawRQGD.cpp" />
+    <ClCompile Include="BiaochiInfo.cpp" />
+    <ClCompile Include="DrawBiaochi.cpp" />
+    <ClCompile Include="DlgDrawJSD.cpp" />
+    <ClCompile Include="CDlgEditZhuangHao.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DlgTKSZ.h" />
-    <ClInclude Include="Utils.h" />
-    <ClInclude Include="CBaseDataFORZDDwg.h" />
-    <ClInclude Include="CBiaochiForRQY.h" />
+    <ClInclude Include="BlkInfo.h" />
+    <ClInclude Include="BlkJig.h" />
+    <ClInclude Include="DlgInsertOther.h" />
+    <ClInclude Include="MakeBlkFile.h" />
     <ClInclude Include="BcUtils.h" />
-    <ClInclude Include="BiaochiInfo.h" />
-    <ClInclude Include="DrawBiaochi.h" />
-    <ClInclude Include="DrawDMXProcess.h" />
     <ClInclude Include="DrawZDM.h" />
     <ClInclude Include="ZdmDataInfo.h" />
-    <ClInclude Include="CDbClick.h" />
-    <ClInclude Include="SpecialText.h" />
+    <ClInclude Include="DrawDMXProcess.h" />
+    <ClInclude Include="StartDrawRQGD.h" />
+    <ClInclude Include="BiaochiInfo.h" />
+    <ClInclude Include="DrawBiaochi.h" />
+    <ClInclude Include="DlgDrawJSD.h" />
+    <ClInclude Include="CDlgEditZhuangHao.h" />
     <ClInclude Include="DocData.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="StdAfx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="WRQ_ZDM.rc" />
+    <ResourceCompile Include="ZwForWHRQY.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WRQ_Entity\WRQ_Entity.vcxproj">
+      <Project>{040301b6-2bd7-45b7-9e32-32771921a46f}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="WRQ_ZDM.rc" />
+      <UserProperties RESOURCE_FILE="ZwForWHRQY.rc" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

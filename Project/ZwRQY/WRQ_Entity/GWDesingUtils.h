@@ -4,11 +4,11 @@
 #else
 #define WRQ_ENTITY_DLL __declspec(dllimport)
 #endif
-class WRQ_ENTITY_DLL CDMXUtils
+class WRQ_ENTITY_DLL CGWDesingUtils
 {
 public:
-	CDMXUtils(void);
-	~CDMXUtils(void);
+	CGWDesingUtils(void);
+	~CGWDesingUtils(void);
 
 	//操作base里的数据,将数据存储在图纸中
 	static void setNumCount(CString strCount);
@@ -17,7 +17,7 @@ public:
 	static void SetCurNum(CString strCount);
 	static CString getCurNum();
 
-	static void SetJdNum(CString strCount);
+	/*static void SetJdNum(CString strCount);
 	static CString getJdNum();
 
 	static void SetStartZH(double dStartZH);
@@ -41,10 +41,7 @@ public:
 	static void SetcreateJiedian(bool bDrawBc);
 	static bool getcreateJiedian();
 
-	static void SetcreateGw(bool bDrawBc);
-	static bool getcreateGw();
-
 	static void SetbasePt(AcGePoint3d basePt);
-	static AcGePoint3d getbasePt();
+	static AcGePoint3d getbasePt();*/
 };
 

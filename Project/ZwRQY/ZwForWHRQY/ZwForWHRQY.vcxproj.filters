@@ -2,49 +2,52 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{6b17af0d-c921-49a9-b3b8-c91352692e1f}</UniqueIdentifier>
+      <UniqueIdentifier>{5619d4fd-ccac-4499-b5b8-f789e642bc7a}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;idl;odl</Extensions>
     </Filter>
     <Filter Include="Source Files\图框设置">
-      <UniqueIdentifier>{ca9a9382-7be8-4985-b6a2-91f69f695809}</UniqueIdentifier>
+      <UniqueIdentifier>{798e11e1-4e98-4b25-9046-8ef323e52895}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\基础函数">
-      <UniqueIdentifier>{930031e6-1a4d-4ea9-9d42-6b5653da6690}</UniqueIdentifier>
+    <Filter Include="Source Files\块">
+      <UniqueIdentifier>{02ea8b8b-74e9-49c7-ac18-4ae796827b6f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\基础数据">
-      <UniqueIdentifier>{22466393-3d0e-4459-8e26-43eb70d64f2c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\基础数据\标尺基础数据">
-      <UniqueIdentifier>{11456897-6a50-49cd-9ac3-b74b1e6fc801}</UniqueIdentifier>
+      <UniqueIdentifier>{e55ec13d-a15f-4248-a8b2-baa6f9f9ea99}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\基础数据\操作标尺数据">
-      <UniqueIdentifier>{ed9ea983-0536-4680-89b4-2852894347d1}</UniqueIdentifier>
+      <UniqueIdentifier>{7e72ca94-04fd-492c-a397-de8cd52437ea}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\标尺">
-      <UniqueIdentifier>{eb78dbb9-b324-4501-a2f6-1d0fba16d96a}</UniqueIdentifier>
+    <Filter Include="Source Files\纵断面">
+      <UniqueIdentifier>{d32ab312-7267-4b2c-84c6-4cbbb6771b4d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\反应器">
-      <UniqueIdentifier>{05a87eaf-d627-433e-a76d-7c84aa13faee}</UniqueIdentifier>
+    <Filter Include="Source Files\纵断面\地面线">
+      <UniqueIdentifier>{ea02ede6-7694-4c84-b7ab-656ce35a78b7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\反应器\双击编辑">
-      <UniqueIdentifier>{b42ed51f-8b41-4bee-9c2f-9a559fcdb8d8}</UniqueIdentifier>
+    <Filter Include="Source Files\纵断面\燃气管道">
+      <UniqueIdentifier>{c631c8cf-e863-4856-8e79-feedefcc9e3b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\实体">
-      <UniqueIdentifier>{cb706130-387d-4665-b440-cd944375ca13}</UniqueIdentifier>
+    <Filter Include="Source Files\纵断面\标尺">
+      <UniqueIdentifier>{f90de516-08c4-4a57-8d1e-b3dc111a2f66}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\实体\自定义文字">
-      <UniqueIdentifier>{063bde9a-04a8-45b8-a5b2-4889768cc3d7}</UniqueIdentifier>
+    <Filter Include="Source Files\对话框">
+      <UniqueIdentifier>{c25f3b85-5092-4632-98c9-145dfc24f412}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\对话框\绘制警示带">
+      <UniqueIdentifier>{a9cb2a70-2863-4252-85f5-aa24a1222f20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\对话框\编辑桩号">
+      <UniqueIdentifier>{815c5953-8153-4d7a-8336-28ade719fa52}</UniqueIdentifier>
     </Filter>
     <Filter Include="Include Files">
-      <UniqueIdentifier>{97929bad-4247-429f-8b68-7dcd1eb5c1a5}</UniqueIdentifier>
+      <UniqueIdentifier>{792ceacc-af68-46fc-9a4b-cef1e406df2f}</UniqueIdentifier>
       <Extensions>h;hh;hxx</Extensions>
     </Filter>
     <Filter Include="Resource Files">
-      <UniqueIdentifier>{392436c9-1b2b-4efc-a7cd-8357f13182f3}</UniqueIdentifier>
+      <UniqueIdentifier>{f6b0709d-f07c-41c7-b647-62946eabc1a0}</UniqueIdentifier>
       <Extensions>rc;ico;bmp;cur;jpg;gif</Extensions>
     </Filter>
     <Filter Include="Miscellaneous Files">
-      <UniqueIdentifier>{2b445f40-2b3d-4655-918f-abe4ad6458a3}</UniqueIdentifier>
+      <UniqueIdentifier>{b4ebc3da-c2a6-48f2-8081-e9372177775e}</UniqueIdentifier>
       <Extensions>reg;rgs;mak;clw;vsdir;vsz;css;inf;vcproj;csproj</Extensions>
     </Filter>
   </ItemGroup>
@@ -64,76 +67,88 @@
     <ClCompile Include="DlgTKSZ.cpp">
       <Filter>Source Files\图框设置</Filter>
     </ClCompile>
-    <ClCompile Include="Utils.cpp">
-      <Filter>Source Files\基础函数</Filter>
+    <ClCompile Include="BlkInfo.cpp">
+      <Filter>Source Files\块</Filter>
     </ClCompile>
-    <ClCompile Include="CBaseDataFORZDDwg.cpp">
-      <Filter>Source Files\基础数据</Filter>
+    <ClCompile Include="BlkJig.cpp">
+      <Filter>Source Files\块</Filter>
     </ClCompile>
-    <ClCompile Include="CBiaochiForRQY.cpp">
-      <Filter>Source Files\基础数据\标尺基础数据</Filter>
+    <ClCompile Include="DlgInsertOther.cpp">
+      <Filter>Source Files\块</Filter>
+    </ClCompile>
+    <ClCompile Include="MakeBlkFile.cpp">
+      <Filter>Source Files\块</Filter>
     </ClCompile>
     <ClCompile Include="BcUtils.cpp">
       <Filter>Source Files\基础数据\操作标尺数据</Filter>
     </ClCompile>
-    <ClCompile Include="BiaochiInfo.cpp">
-      <Filter>Source Files\标尺</Filter>
-    </ClCompile>
-    <ClCompile Include="DrawBiaochi.cpp">
-      <Filter>Source Files\标尺</Filter>
-    </ClCompile>
-    <ClCompile Include="DrawDMXProcess.cpp">
-      <Filter>Source Files\标尺</Filter>
-    </ClCompile>
     <ClCompile Include="DrawZDM.cpp">
-      <Filter>Source Files\标尺</Filter>
+      <Filter>Source Files\纵断面</Filter>
     </ClCompile>
     <ClCompile Include="ZdmDataInfo.cpp">
-      <Filter>Source Files\标尺</Filter>
+      <Filter>Source Files\纵断面</Filter>
     </ClCompile>
-    <ClCompile Include="CDbClick.cpp">
-      <Filter>Source Files\反应器\双击编辑</Filter>
+    <ClCompile Include="DrawDMXProcess.cpp">
+      <Filter>Source Files\纵断面\地面线</Filter>
     </ClCompile>
-    <ClCompile Include="SpecialText.cpp">
-      <Filter>Source Files\实体\自定义文字</Filter>
+    <ClCompile Include="StartDrawRQGD.cpp">
+      <Filter>Source Files\纵断面\燃气管道</Filter>
+    </ClCompile>
+    <ClCompile Include="BiaochiInfo.cpp">
+      <Filter>Source Files\纵断面\标尺</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawBiaochi.cpp">
+      <Filter>Source Files\纵断面\标尺</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgDrawJSD.cpp">
+      <Filter>Source Files\对话框\绘制警示带</Filter>
+    </ClCompile>
+    <ClCompile Include="CDlgEditZhuangHao.cpp">
+      <Filter>Source Files\对话框\编辑桩号</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DlgTKSZ.h">
       <Filter>Source Files\图框设置</Filter>
     </ClInclude>
-    <ClInclude Include="Utils.h">
-      <Filter>Source Files\基础函数</Filter>
+    <ClInclude Include="BlkInfo.h">
+      <Filter>Source Files\块</Filter>
     </ClInclude>
-    <ClInclude Include="CBaseDataFORZDDwg.h">
-      <Filter>Source Files\基础数据</Filter>
+    <ClInclude Include="BlkJig.h">
+      <Filter>Source Files\块</Filter>
     </ClInclude>
-    <ClInclude Include="CBiaochiForRQY.h">
-      <Filter>Source Files\基础数据\标尺基础数据</Filter>
+    <ClInclude Include="DlgInsertOther.h">
+      <Filter>Source Files\块</Filter>
+    </ClInclude>
+    <ClInclude Include="MakeBlkFile.h">
+      <Filter>Source Files\块</Filter>
     </ClInclude>
     <ClInclude Include="BcUtils.h">
       <Filter>Source Files\基础数据\操作标尺数据</Filter>
     </ClInclude>
-    <ClInclude Include="BiaochiInfo.h">
-      <Filter>Source Files\标尺</Filter>
-    </ClInclude>
-    <ClInclude Include="DrawBiaochi.h">
-      <Filter>Source Files\标尺</Filter>
-    </ClInclude>
-    <ClInclude Include="DrawDMXProcess.h">
-      <Filter>Source Files\标尺</Filter>
-    </ClInclude>
     <ClInclude Include="DrawZDM.h">
-      <Filter>Source Files\标尺</Filter>
+      <Filter>Source Files\纵断面</Filter>
     </ClInclude>
     <ClInclude Include="ZdmDataInfo.h">
-      <Filter>Source Files\标尺</Filter>
+      <Filter>Source Files\纵断面</Filter>
     </ClInclude>
-    <ClInclude Include="CDbClick.h">
-      <Filter>Source Files\反应器\双击编辑</Filter>
+    <ClInclude Include="DrawDMXProcess.h">
+      <Filter>Source Files\纵断面\地面线</Filter>
     </ClInclude>
-    <ClInclude Include="SpecialText.h">
-      <Filter>Source Files\实体\自定义文字</Filter>
+    <ClInclude Include="StartDrawRQGD.h">
+      <Filter>Source Files\纵断面\燃气管道</Filter>
+    </ClInclude>
+    <ClInclude Include="BiaochiInfo.h">
+      <Filter>Source Files\纵断面\标尺</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawBiaochi.h">
+      <Filter>Source Files\纵断面\标尺</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgDrawJSD.h">
+      <Filter>Source Files\对话框\绘制警示带</Filter>
+    </ClInclude>
+    <ClInclude Include="CDlgEditZhuangHao.h">
+      <Filter>Source Files\对话框\编辑桩号</Filter>
     </ClInclude>
     <ClInclude Include="DocData.h">
       <Filter>Include Files</Filter>

@@ -7,11 +7,11 @@
 #include "CBaseDocReactor.h"
 #include "CBaseEdReactor.h"
 #include "CBaseEntDoubleClick.h"
-#include "CBaseEventReactor.h"
+//#include "CBaseEventReactor.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("")
 CBaseDbReactor* g_baseDb = NULL;
-CBaseEventReactor* g_baseEv = NULL;
+//CBaseEventReactor* g_baseEv = NULL;
 CBaseEdReactor* g_baseEd = NULL;
 CBaseEntDoubleClick* g_baseEnt = NULL;
 CBaseDocReactor* g_baseDoc = NULL;
@@ -81,8 +81,8 @@ public:
 		g_baseDoc = new CBaseDocReactor;
 		g_baseDoc->Attach();
 
-		g_baseEv = new CBaseEventReactor;
-		g_baseEv->Attach();
+	/*	g_baseEv = new CBaseEventReactor;
+		g_baseEv->Attach();*/
 
 		/*g_baseDb = new CBaseDbReactor;
 		g_baseDb->Attach(acdbCurDwg());*/
@@ -119,12 +119,12 @@ public:
 			g_baseEd = NULL;
 		}
 
-		g_baseEv->Detach();
+		/*g_baseEv->Detach();
 		if (g_baseEv != NULL)
 		{
 			delete g_baseEv;
 			g_baseEv = NULL;
-		}
+		}*/
 
 		/*g_baseDb->Detach();
 		if (g_baseDb != NULL)

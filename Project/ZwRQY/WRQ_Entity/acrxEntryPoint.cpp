@@ -5,6 +5,8 @@
 #include "resource.h"
 #include "CBaseDataForZdDwg.h"
 #include "CBiaochiForRQY.h"
+#include "CBaseDataForGwDesign.h"
+#include "SerialNo.h"
 //#include "SpecialText.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("")
@@ -25,6 +27,8 @@ public:
 		// TODO: Add your initialization code here
 		CBaseDataForZdDwg::rxInit();
 		CBiaochiForRQY::rxInit();
+		CBaseDataForGwDesign::rxInit();
+		CSerialNo::rxInit();
 		//CSpecialText::rxInit();
 		acrxBuildClassHierarchy();	
 		return (retCode) ;
@@ -39,6 +43,8 @@ public:
 		// TODO: Unload dependencies here
 		deleteAcRxClass(CBaseDataForZdDwg::desc());
 		deleteAcRxClass(CBiaochiForRQY::desc());
+		deleteAcRxClass(CBaseDataForGwDesign::desc());
+		deleteAcRxClass(CSerialNo::desc());
 		//deleteAcRxClass(CSpecialText::desc());
 
 

@@ -436,23 +436,31 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="纵断面基础数据"
-					>
-					<File
-						RelativePath=".\CBaseDataForZdDwg.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\CBaseDataForZdDwg.h"
-						>
-					</File>
-				</Filter>
-				<Filter
 					Name="数据调用"
 					>
 					<Filter
-						Name="操作基础数据"
+						Name="操作管网基础数据"
 						>
+						<File
+							RelativePath=".\GWDesingUtils.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\GWDesingUtils.h"
+							>
+						</File>
+						<Filter
+							Name="管网基础数据"
+							>
+							<File
+								RelativePath=".\CBaseDataForGwDesign.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\CBaseDataForGwDesign.h"
+								>
+							</File>
+						</Filter>
 					</Filter>
 					<Filter
 						Name="操作纵断面数据"
@@ -465,6 +473,18 @@
 							RelativePath=".\ZDMUtils.h"
 							>
 						</File>
+						<Filter
+							Name="纵断面基础数据"
+							>
+							<File
+								RelativePath=".\CBaseDataForZdDwg.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\CBaseDataForZdDwg.h"
+								>
+							</File>
+						</Filter>
 					</Filter>
 				</Filter>
 			</Filter>

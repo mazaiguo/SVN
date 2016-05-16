@@ -114,9 +114,12 @@ bool DrawDMXProcess::Insert()
 		zdm.setData(m_pZdmInfo);
 		AcDbObjectId groupId = zdm.insert();
 
-		CDrawGDProcess gd;
-		gd.Insert(strCur);
-
+		if (CDMXUtils::getcreateGw())
+		{
+			CDrawGDProcess gd;
+			gd.Insert(strCur);
+		}
+	
 		return true;
 	}
 	else if (nRet == RTKWORD)
@@ -166,13 +169,17 @@ bool DrawDMXProcess::Del()
 	zdm.setData(&data);
 	bool bRet = zdm.del(strGroupName);
 
-	//删除管道线
-	CString strGdGroupName;
-	strGdGroupName = BC_DICT_GD + strCur;
-	MyEditEntity::EraseEntByGroupName(strGdGroupName);
+	if (CDMXUtils::getcreateGw())
+	{
+		//删除管道线
+		CString strGdGroupName;
+		strGdGroupName = BC_DICT_GD + strCur;
+		MyEditEntity::EraseEntByGroupName(strGdGroupName);
 
-	CDrawGd gd;
-	gd.del(data);
+		CDrawGd gd;
+		gd.del(data);
+	}
+	
 	return bRet;
 }
 
@@ -198,12 +205,16 @@ bool DrawDMXProcess::Mod()
 		zdm.setData(&data);
 		bool bRet = zdm.mod(strGroupName);
 
-		CString strGdGroupName;
-		strGdGroupName = BC_DICT_GD + strCur;
-		MyEditEntity::EraseEntByGroupName(strGdGroupName);
+		if (CDMXUtils::getcreateGw())
+		{
+			CString strGdGroupName;
+			strGdGroupName = BC_DICT_GD + strCur;
+			MyEditEntity::EraseEntByGroupName(strGdGroupName);
 
-		CDrawGd gd;
-		gd.mod(data);
+			CDrawGd gd;
+			gd.mod(data);
+		}
+		
 		return bRet;
 	}
 
@@ -619,8 +630,9 @@ bool CDrawGDProcess::Draw()
 	{
 		return false;
 	}
+	CDMXUtils::SetcreateGw(true);
 	CDrawZDM zdm;
-	zdm.setDrawGd(true);
+	//zdm.setDrawGd(true);
 	zdm.setData(&m_pZdmInfo);
 	zdm.add();
 	return true;

@@ -130,7 +130,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="E:\GitHub\SVN\MyBaseDLL\MyBaseDLL\code"
+				AdditionalIncludeDirectories="E:\GitHub\SVN\MyBaseDLL\MyBaseDLL\code;E:\GitHub\SVN\Project\ZwRQY\WRQ_Entity"
 				AdditionalUsingDirectories="C:\Program Files\AutoCAD 2010\"
 				PreprocessorDefinitions="_WIN64;_WINDOWS;GWDESIGN_MODULE;_AFXEXT;_ACRXAPP;ARX"
 				StringPooling="false"
