@@ -48,7 +48,12 @@ private:
 	bool doData();
 
 
+	AcDbObjectId drawPipe(AcGePoint3d startPt, AcGePoint3d endPt, AcDbObjectId startId, AcDbObjectId endId);
+	AcDbObjectId drawXh(AcGePoint3d basePt);
 private:
 	CGDDataStore* m_pDataStore;
 	vector<CLine> m_lineVec;
+	map<CString, AcDbObjectId> m_MapInfo;
+	map<CString, CString> m_MulData;
+
 };

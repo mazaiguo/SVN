@@ -1,5 +1,7 @@
 #include "StdAfx.h"
 #include "DistinguishData.h"
+#include "CGasPipe.h"
+#include "SerialNo.h"
 
 CDistinguishData::CDistinguishData(void)
 {
@@ -23,7 +25,12 @@ bool CDistinguishData::doIt()
 	{
 		return bRet;
 	}
-	collectData();
+	bRet = collectData();
+	if (!bRet)
+	{
+		AfxMessageBox(_T("请处理重合的线"));
+	}
+	doData();
 	return true;
 }
 
@@ -46,6 +53,7 @@ bool CDistinguishData::selectEnt()
 	AcDbEntity* pEnt = NULL;
 	ads_name ename;
 	AcDbObjectId objId = AcDbObjectId::kNull;
+	map<CString, AcDbObjectId> mapInfo;
 	for (int i=0; i<sslen; i++)
 	{
 		acedSSName(ssname, i, ename);
@@ -62,6 +70,19 @@ bool CDistinguishData::selectEnt()
 			tmpLine.setEndPt(pLine->endPoint());
 			tmpLine.setObjectId(objId);
 			m_lineVec.push_back(tmpLine);
+			CString strTmp;
+			MyTransFunc::ptToStr(pLine->startPoint(), strTmp);
+			pair<map<CString, AcDbObjectId>::iterator, bool> bRet = mapInfo.insert(make_pair(strTmp, objId));
+			if (!bRet.second)
+			{
+				m_MulData.insert(make_pair(strTmp, strTmp));
+			}
+			MyTransFunc::ptToStr(pLine->endPoint(), strTmp);
+			bRet = mapInfo.insert(make_pair(strTmp, objId));
+			if (!bRet.second)
+			{
+				m_MulData.insert(make_pair(strTmp, strTmp));
+			}
 		}
 		else if (pEnt->isKindOf(AcDbPolyline::desc()))
 		{
@@ -130,10 +151,98 @@ bool CDistinguishData::collectData()
 		AcDbObjectId objId = tmpLine.objId();
 		MyEditEntity::openEntChangeColor(objId, 1);
 	}
+	if (multipleLine.size() > 0)
+	{
+		return false;
+	}
 	return true;
 }
 
 bool CDistinguishData::doData()
 {
+	AcDbObjectId entId = AcDbObjectId::kNull;
+	AcDbObjectId startId,endId;
+	AcGePoint3d startPt,endPt,tmpPt;
+	CString strTmp;
+	AcDbObjectId layId = MySymble::CreateNewLayer(_T("abcd"), 1);
+	map<CString, AcDbObjectId> xhInfo;
+	for (vector<CLine>::iterator iter = m_lineVec.begin();
+		iter != m_lineVec.end(); ++iter)
+	{
+		CLine pline = *iter;
+		startPt = pline.startPt();
+		endPt = pline.endPt();
+		MyTransFunc::ptToStr(startPt, strTmp);
+		map<CString, CString>::iterator Itr = m_MulData.find(strTmp);
+		if (Itr != m_MulData.end())
+		{
+			//说明找到了
+			map<CString, AcDbObjectId>::iterator iItr = xhInfo.find(strTmp);
+			if (iItr != xhInfo.end())//说明找到了
+			{
+				startId = iItr->second;
+			}
+			else
+			{
+				startId = drawXh(startPt);
+				xhInfo.insert(make_pair(strTmp, startId));
+			}
+		}
+		else
+		{
+			//没有找到，直接新建序号
+			startId = drawXh(startPt);
+			xhInfo.insert(make_pair(strTmp, startId));
+		}
+
+		MyTransFunc::ptToStr(endPt, strTmp);
+		Itr = m_MulData.find(strTmp);
+		if (Itr != m_MulData.end())
+		{
+			//说明找到了
+			map<CString, AcDbObjectId>::iterator iItr = xhInfo.find(strTmp);
+			if (iItr != xhInfo.end())//说明找到了
+			{
+				endId = iItr->second;
+			}
+			else
+			{
+				endId = drawXh(startPt);
+				xhInfo.insert(make_pair(strTmp, endId));
+			}
+		}
+		else
+		{
+			//没有找到，直接新建序号
+			endId = drawXh(startPt);
+			xhInfo.insert(make_pair(strTmp, endId));
+		}
+
+		drawPipe(startPt, endPt, startId, endId);
+		MyEditEntity::EraseObj(pline.objId());
+		//m_MapInfo.insert(make_pair(tmpPt, entId));
+	}
+
 	return true;
+}
+
+AcDbObjectId CDistinguishData::drawPipe(AcGePoint3d startPt, AcGePoint3d endPt, AcDbObjectId startId, AcDbObjectId endId)
+{
+	AcDbObjectId layId = MySymble::CreateNewLayer(_T("abcd"), 1);
+	CGasPipe* pPipe = new CGasPipe;
+	pPipe->setStartPt(startPt);
+	pPipe->setStartId(startId);
+	pPipe->setEndId(endId);
+	pPipe->setEndPt(endPt);
+	pPipe->setLayer(layId);
+	MyBaseUtils::addToCurrentSpaceAndClose(pPipe);
+	return pPipe->objectId();
+}
+
+AcDbObjectId  CDistinguishData::drawXh(AcGePoint3d basePt)
+{
+	CSerialNo* pNo = new CSerialNo;
+	pNo->setBasePt(basePt);
+	MyBaseUtils::addToCurrentSpaceAndClose(pNo);
+	return pNo->objectId();
 }

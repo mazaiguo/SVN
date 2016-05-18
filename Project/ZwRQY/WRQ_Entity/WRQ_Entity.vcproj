@@ -515,6 +515,18 @@
 					Name="特殊文字"
 					>
 				</Filter>
+				<Filter
+					Name="管道"
+					>
+					<File
+						RelativePath=".\CGasPipe.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\CGasPipe.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter

@@ -7,17 +7,17 @@
 #define WRQ_ENTITY_DLL __declspec(dllimport)
 #endif
 //-----------------------------------------------------------------------------
-class WRQ_ENTITY_DLL CSerialNo : public AcDbEntity {
+class WRQ_ENTITY_DLL CGasPipe : public AcDbEntity {
 
 public:
-	ACRX_DECLARE_MEMBERS(CSerialNo) ;
+	ACRX_DECLARE_MEMBERS(CGasPipe) ;
 
 protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 
 public:
-	CSerialNo () ;
-	virtual ~CSerialNo () ;
+	CGasPipe () ;
+	virtual ~CGasPipe () ;
 
 	//----- AcDbObject protocols
 	//- Dwg Filing protocol
@@ -157,22 +157,25 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
 	//函数
-	AcGePoint3d basePt();
-	double radius();
-	double textHeight();
+	AcGePoint3d startPt();
+	AcGePoint3d endPt();
 	AcDbObjectId textId();
 	AcDbObjectId layerId();
-	CString strText();
+	AcDbObjectId startId();
+	AcDbObjectId endId();
 
-	void setBasePt(AcGePoint3d basePt);
-	void setRadius(double dRadius);
-	void setTextHeight(double dTextHeight);
+	void setStartPt(AcGePoint3d basePt);
+	void setEndPt(AcGePoint3d endPt);
 	void setTextId(AcDbObjectId textId);
-	void setLayerId(AcDbObjectId layerId);
-	void setstrText(CString strText);
+	void setLayerId(AcDbObjectId layerId);	
+	void setStartId(AcDbObjectId startId);
+	void setEndId(AcDbObjectId endId);
+
+	//返回长度
+	double length();
 
 	//返回no
-	int No() const;
+	//int No() const;
 
 	////创建wipeout
 	//Acad::ErrorStatus CreateWipeout () const;
@@ -180,12 +183,15 @@ public:
 	//void GetPointArr(AcGePoint3dArray& point3d) const;
 
 private:
-	AcGePoint3d m_basePt;//插入点
+	AcGePoint3d m_startPt;//插入点
+	AcGePoint3d m_endPt;
 	double m_dRadius;//圆半径，默认为30
 	double m_dTextHeight;//字高，默认为40
 	AcDbObjectId m_TextId;//字体样式
 	AcDbObjectId m_LayerId;//图层名
-	CString	m_strText;//文字
+	AcDbObjectId m_startId;//序号
+	AcDbObjectId m_endId;//序号
+	//CString	m_strText;//文字
 protected:
 } ;
 	

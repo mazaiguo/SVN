@@ -24,6 +24,7 @@ CBaseDataForGwDesign::CBaseDataForGwDesign()
 	m_bDrawJiedian = false;*/
 	m_strCurNum = _T("1");
 	m_strNumCount = _T("1");
+	m_dGlobalScale = 1.0;
 	/*m_strJdNum = _T("1");
 	m_dStartZH = 0;*/
 }
@@ -111,6 +112,19 @@ Acad::ErrorStatus CBaseDataForGwDesign::setCurNum(CString nCount)
 	return Acad::eOk;
 }
 
+double CBaseDataForGwDesign::globalScale() const
+{
+	assertReadEnabled();
+	return m_dGlobalScale;
+}
+
+Acad::ErrorStatus CBaseDataForGwDesign::setGlobalScale(double dHx)
+{
+	assertWriteEnabled();
+	m_dGlobalScale = dHx;
+
+	return Acad::eOk;
+}
 //CString CBaseDataForGwDesign::JdNum()
 //{
 //	assertReadEnabled();
@@ -263,6 +277,8 @@ CBaseDataForGwDesign::dwgInFields(AcDbDwgFiler* filer)
 	filer->readItem(&tmpStr);
 	m_strCurNum = tmpStr;
 	acutDelString(tmpStr);
+
+	filer->readItem(&m_dGlobalScale);
 	/*filer->readItem(&tmpStr);
 	m_strJdNum = tmpStr;
 	acutDelString(tmpStr);
@@ -301,6 +317,7 @@ CBaseDataForGwDesign::dwgOutFields(AcDbDwgFiler* filer) const
     filer->writeItem(static_cast<const TCHAR*>(m_label));
 	filer->writeItem(static_cast<const TCHAR*>(m_strNumCount));
 	filer->writeItem(static_cast<const TCHAR*>(m_strCurNum));
+	filer->writeItem(m_dGlobalScale);
 	/*filer->writeItem(static_cast<const TCHAR*>(m_strJdNum));
 	filer->writeItem(m_dXScale);
 	filer->writeItem(m_dYScale);
@@ -347,6 +364,10 @@ CBaseDataForGwDesign::dxfInFields(AcDbDxfFiler* filer)
 		else if (rb.restype == kDxfCurNum)
 		{
 			setCurNum(rb.resval.rstring);
+		}
+		else if (rb.restype == kDxfGlobalScale)
+		{
+			setGlobalScale(rb.resval.rreal);
 		}
 		/*else if (rb.restype == kDxfJdNum)
 		{
@@ -428,6 +449,7 @@ CBaseDataForGwDesign::dxfOutFields(AcDbDxfFiler* filer) const
     filer->writeItem(kDxfLabel, static_cast<const TCHAR*>(m_label));
 	filer->writeItem(kDxfNumCount, m_strNumCount);
 	filer->writeItem(kDxfCurNum, m_strCurNum);
+	filer->writeItem(kDxfGlobalScale, m_dGlobalScale);
 	/*filer->writeItem(kDxfJdNum, m_strJdNum);
 	filer->writeItem(kDxfXScale, m_dXScale);
 	filer->writeItem(kDxfYScale, m_dYScale);

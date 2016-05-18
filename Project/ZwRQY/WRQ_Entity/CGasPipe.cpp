@@ -1,41 +1,36 @@
 #include "StdAfx.h"
-#include "SerialNo.h"
+#include "CGasPipe.h"
 #include "GWDesingUtils.h"
 //#include "Utils.h"
-//#include "DoSerialNo.h"
+//#include "DoGasPipe.h"
 //#include "dbwipe.h"
 
 //-----------------------------------------------------------------------------
-Adesk::UInt32 CSerialNo::kCurrentVersionNumber =1 ;
+Adesk::UInt32 CGasPipe::kCurrentVersionNumber =1 ;
 
 //-----------------------------------------------------------------------------
 ACRX_DXF_DEFINE_MEMBERS (
-	CSerialNo, AcDbEntity,
+	CGasPipe, AcDbEntity,
 	AcDb::kDHL_CURRENT, AcDb::kMReleaseCurrent, 
-	AcDbProxyEntity::kNoOperation, 序号,
+	AcDbProxyEntity::kNoOperation, 燃气管道,
 ZWFORWHRQAPP
-|Product Desc:     序号 mazaiguo@zwcad.com
+|Product Desc:     燃气管道 mazaiguo@zwcad.com
 |Company:          ZwSoft
 |WEB Address:      http://www.zwcad.com
 )
 
 //-----------------------------------------------------------------------------
-CSerialNo::CSerialNo () : AcDbEntity () 
+CGasPipe::CGasPipe () : AcDbEntity () 
 {
-	m_basePt.set(0, 0, 0);//插入点
+	m_startPt.set(0, 0, 0);//插入点
 	m_dRadius = CGWDesingUtils::getGlobalRadius();//圆半径，默认为30
 	m_dTextHeight = CGWDesingUtils::getGlobalTextHeight();//字高，默认为40
 	m_TextId = AcDbObjectId::kNull;//字体样式
 	m_LayerId = AcDbObjectId::kNull;//图层名
-	m_strText = CGWDesingUtils::getNumCount();//文字	
-	int nCount = MyTransFunc::StringToInt(m_strText);
-	nCount++;
-	CString strTmp;
-	strTmp.Format(_T("%d"), nCount);
-	CGWDesingUtils::setNumCount(strTmp);
+	//m_strText = CGWDesingUtils::getNumCount();//文字	
 }
 
-CSerialNo::~CSerialNo ()
+CGasPipe::~CGasPipe ()
 {
 
 }
@@ -43,7 +38,7 @@ CSerialNo::~CSerialNo ()
 //-----------------------------------------------------------------------------
 //----- AcDbObject protocols
 //- Dwg Filing protocol
-Acad::ErrorStatus CSerialNo::dwgOutFields (AcDbDwgFiler *pFiler) const 
+Acad::ErrorStatus CGasPipe::dwgOutFields (AcDbDwgFiler *pFiler) const 
 {
 	assertReadEnabled () ;
 	//----- Save parent class information first.
@@ -51,21 +46,21 @@ Acad::ErrorStatus CSerialNo::dwgOutFields (AcDbDwgFiler *pFiler) const
 	if ( es != Acad::eOk )
 		return (es) ;
 	//----- Object version number needs to be saved first
-	if ( (es =pFiler->writeUInt32 (CSerialNo::kCurrentVersionNumber)) != Acad::eOk )
+	if ( (es =pFiler->writeUInt32 (CGasPipe::kCurrentVersionNumber)) != Acad::eOk )
 		return (es) ;
 	//----- Output params
 	//.....
-	es = pFiler->writePoint3d(m_basePt);
-	es = pFiler->writeDouble(m_dRadius);
-	es = pFiler->writeDouble(m_dTextHeight);
+	es = pFiler->writePoint3d(m_startPt);
+	es = pFiler->writePoint3d(m_endPt);
 	es = pFiler->writeHardPointerId(m_TextId);
 	es = pFiler->writeHardPointerId(m_LayerId);
-	pFiler->writeString((AcString)m_strText);
+	es = pFiler->writeHardPointerId(m_startId);
+	es = pFiler->writeHardPointerId(m_endId);
 
 	return (pFiler->filerStatus ()) ;
 }
 
-Acad::ErrorStatus CSerialNo::dwgInFields (AcDbDwgFiler *pFiler)
+Acad::ErrorStatus CGasPipe::dwgInFields (AcDbDwgFiler *pFiler)
 {
 	assertWriteEnabled () ;
 	//----- Read parent class information first.
@@ -76,43 +71,41 @@ Acad::ErrorStatus CSerialNo::dwgInFields (AcDbDwgFiler *pFiler)
 	Adesk::UInt32 version =0 ;
 	if ( (es =pFiler->readUInt32 (&version)) != Acad::eOk )
 		return (es) ;
-	if ( version > CSerialNo::kCurrentVersionNumber )
+	if ( version > CGasPipe::kCurrentVersionNumber )
 		return (Acad::eMakeMeProxy) ;
 	//- Uncomment the 2 following lines if your current object implementation cannot
 	//- support previous version of that object.
-	//if ( version < CSerialNo::kCurrentVersionNumber )
+	//if ( version < CGasPipe::kCurrentVersionNumber )
 	//	return (Acad::eMakeMeProxy) ;
 	//----- Read params
 	//.....
-	es = pFiler->readPoint3d(&m_basePt);
-	es = pFiler->readDouble(&m_dRadius);
-	es = pFiler->readDouble(&m_dTextHeight);
+	es = pFiler->readPoint3d(&m_startPt);
+	es = pFiler->readPoint3d(&m_endPt);
 	AcDbHardPointerId tmpId = AcDbHardPointerId::kNull;
 	es = pFiler->readHardPointerId(&tmpId);
 	m_TextId = tmpId;
 	es = pFiler->readHardPointerId(&tmpId);
 	m_LayerId = tmpId;
-	TCHAR* pStrTextFirst = NULL;
-	pFiler->readString(&pStrTextFirst);
-	m_strText = pStrTextFirst;
-	acutDelString(pStrTextFirst);
-
+	es = pFiler->readHardPointerId(&tmpId);
+	m_startId = tmpId;
+	es = pFiler->readHardPointerId(&tmpId);
+	m_endId = tmpId;
 	return (pFiler->filerStatus ()) ;
 }
 
 //- Dxf Filing protocol
-Acad::ErrorStatus CSerialNo::dxfOutFields (AcDbDxfFiler *pFiler) const
+Acad::ErrorStatus CGasPipe::dxfOutFields (AcDbDxfFiler *pFiler) const
 {
 	assertReadEnabled () ;
 	//----- Save parent class information first.
 	Acad::ErrorStatus es =AcDbEntity::dxfOutFields (pFiler) ;
 	if ( es != Acad::eOk )
 		return (es) ;
-	es =pFiler->writeItem (AcDb::kDxfSubclass, _RXST("CSerialNo")) ;
+	es =pFiler->writeItem (AcDb::kDxfSubclass, _RXST("CGasPipe")) ;
 	if ( es != Acad::eOk )
 		return (es) ;
 	//----- Object version number needs to be saved first
-	if ( (es =pFiler->writeUInt32 (kDxfInt32, CSerialNo::kCurrentVersionNumber)) != Acad::eOk )
+	if ( (es =pFiler->writeUInt32 (kDxfInt32, CGasPipe::kCurrentVersionNumber)) != Acad::eOk )
 		return (es) ;
 	//----- Output params
 	//.....
@@ -121,12 +114,12 @@ Acad::ErrorStatus CSerialNo::dxfOutFields (AcDbDxfFiler *pFiler) const
 	return (pFiler->filerStatus ()) ;
 }
 
-Acad::ErrorStatus CSerialNo::dxfInFields (AcDbDxfFiler *pFiler) 
+Acad::ErrorStatus CGasPipe::dxfInFields (AcDbDxfFiler *pFiler) 
 {
 	assertWriteEnabled () ;
 	//----- Read parent class information first.
 	Acad::ErrorStatus es =AcDbEntity::dxfInFields (pFiler) ;
-	if ( es != Acad::eOk || !pFiler->atSubclassData (_RXST("CSerialNo")) )
+	if ( es != Acad::eOk || !pFiler->atSubclassData (_RXST("CGasPipe")) )
 		return (pFiler->filerStatus ()) ;
 	//----- Object version number needs to be read first
 	struct resbuf rb ;
@@ -137,11 +130,11 @@ Acad::ErrorStatus CSerialNo::dxfInFields (AcDbDxfFiler *pFiler)
 		return (pFiler->filerStatus ()) ;
 	}
 	Adesk::UInt32 version =(Adesk::UInt32)rb.resval.rlong ;
-	if ( version > CSerialNo::kCurrentVersionNumber )
+	if ( version > CGasPipe::kCurrentVersionNumber )
 		return (Acad::eMakeMeProxy) ;
 	//- Uncomment the 2 following lines if your current object implementation cannot
 	//- support previous version of that object.
-	//if ( version < CSerialNo::kCurrentVersionNumber )
+	//if ( version < CGasPipe::kCurrentVersionNumber )
 	//	return (Acad::eMakeMeProxy) ;
 	//----- Read params in non order dependant manner
 	while ( es == Acad::eOk && (es =pFiler->readResBuf (&rb)) == Acad::eOk ) {
@@ -173,12 +166,12 @@ Acad::ErrorStatus CSerialNo::dxfInFields (AcDbDxfFiler *pFiler)
 }
 
 //- SubXXX() methods (self notification)
-Acad::ErrorStatus CSerialNo::subOpen (AcDb::OpenMode mode)
+Acad::ErrorStatus CGasPipe::subOpen (AcDb::OpenMode mode)
 {
 	return (AcDbEntity::subOpen (mode)) ;
 }
 
-Acad::ErrorStatus CSerialNo::subErase (Adesk::Boolean erasing)
+Acad::ErrorStatus CGasPipe::subErase (Adesk::Boolean erasing)
 {
 	//记录最下的号
 	//CString strCurNum = CUtils::getCurNum();
@@ -205,97 +198,97 @@ Acad::ErrorStatus CSerialNo::subErase (Adesk::Boolean erasing)
 	//	strTmp.Format(_T("第%s个实体被删除,是否对实体进行重排"), m_strText);
 	//	if (MyBaseUtils::yesNoAlert(strTmp) == IDYES)
 	//	{
-	//		CDoSerialNo doNo;
+	//		CDoGasPipe doNo;
 	//		doNo.sortNo();
 	//	}		
 	//}	
 	return (AcDbEntity::subErase (erasing)) ;
 }
 
-Acad::ErrorStatus CSerialNo::subCancel () 
+Acad::ErrorStatus CGasPipe::subCancel () 
 {
 	return (AcDbEntity::subCancel ()) ;
 }
 
-Acad::ErrorStatus CSerialNo::subClose ()
+Acad::ErrorStatus CGasPipe::subClose ()
 {
 	return (AcDbEntity::subClose ()) ;
 }
 
 //- Persistent reactor callbacks
-void CSerialNo::openedForModify (const AcDbObject *pDbObj)
+void CGasPipe::openedForModify (const AcDbObject *pDbObj)
 {
 	assertReadEnabled () ;
 	AcDbEntity::openedForModify (pDbObj) ;
 }
 
-void CSerialNo::cancelled (const AcDbObject *pDbObj)
+void CGasPipe::cancelled (const AcDbObject *pDbObj)
 {
 	assertReadEnabled () ;
 	AcDbEntity::cancelled (pDbObj) ;
 }
 
-void CSerialNo::objectClosed (const AcDbObjectId objId) 
+void CGasPipe::objectClosed (const AcDbObjectId objId) 
 {
 	assertReadEnabled () ;
 	AcDbEntity::objectClosed (objId) ;
 }
 
-void CSerialNo::goodbye (const AcDbObject *pDbObj)
+void CGasPipe::goodbye (const AcDbObject *pDbObj)
 {
 	assertReadEnabled () ;
 	AcDbEntity::goodbye (pDbObj) ;
 }
 
-void CSerialNo::copied (const AcDbObject *pDbObj, const AcDbObject *pNewObj)
+void CGasPipe::copied (const AcDbObject *pDbObj, const AcDbObject *pNewObj)
 {
 	assertReadEnabled () ;
 	AcDbEntity::copied (pDbObj, pNewObj) ;
 }
 
-void CSerialNo::erased (const AcDbObject *pDbObj, Adesk::Boolean bErasing) 
+void CGasPipe::erased (const AcDbObject *pDbObj, Adesk::Boolean bErasing) 
 {
 	assertReadEnabled () ;
 	AcDbEntity::erased (pDbObj, bErasing) ;
 }
 
-void CSerialNo::modified (const AcDbObject *pDbObj)
+void CGasPipe::modified (const AcDbObject *pDbObj)
 {
 	assertReadEnabled () ;
 	AcDbEntity::modified (pDbObj) ;
 }
 
-void CSerialNo::modifiedGraphics (const AcDbEntity *pDbEnt)
+void CGasPipe::modifiedGraphics (const AcDbEntity *pDbEnt)
 {
 	assertReadEnabled () ;
 	AcDbEntity::modifiedGraphics (pDbEnt) ;
 }
 
-void CSerialNo::modifiedXData (const AcDbObject *pDbObj) 
+void CGasPipe::modifiedXData (const AcDbObject *pDbObj) 
 {
 	assertReadEnabled () ;
 	AcDbEntity::modifiedXData (pDbObj) ;
 }
 
-void CSerialNo::subObjModified (const AcDbObject *pMainbObj, const AcDbObject *pSubObj)
+void CGasPipe::subObjModified (const AcDbObject *pMainbObj, const AcDbObject *pSubObj)
 {
 	assertReadEnabled () ;
 	AcDbEntity::subObjModified (pMainbObj, pSubObj) ;
 }
 
-void CSerialNo::modifyUndone (const AcDbObject *pDbObj)
+void CGasPipe::modifyUndone (const AcDbObject *pDbObj)
 {
 	assertReadEnabled () ;
 	AcDbEntity::modifyUndone (pDbObj) ;
 }
 
-void CSerialNo::reappended (const AcDbObject *pDbObj)
+void CGasPipe::reappended (const AcDbObject *pDbObj)
 {
 	assertReadEnabled () ;
 	AcDbEntity::reappended (pDbObj) ;
 }
 
-void CSerialNo::unappended (const AcDbObject *pDbObj) 
+void CGasPipe::unappended (const AcDbObject *pDbObj) 
 {
 	assertReadEnabled () ;
 	AcDbEntity::unappended (pDbObj) ;
@@ -303,14 +296,14 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 
 //----- deepClone
 #ifdef ARX
-	Acad::ErrorStatus CSerialNo::subDeepClone (AcDbObject *pOwnerObject, AcDbObject *&pClonedObject, AcDbIdMapping &idMap, Adesk::Boolean isPrimary) const 
+	Acad::ErrorStatus CGasPipe::subDeepClone (AcDbObject *pOwnerObject, AcDbObject *&pClonedObject, AcDbIdMapping &idMap, Adesk::Boolean isPrimary) const 
 	{
 		assertReadEnabled () ;
 		return (AcDbEntity::subDeepClone (pOwnerObject, pClonedObject, idMap, isPrimary)) ;
 	}
 
 	//----- wblockClone
-	Acad::ErrorStatus CSerialNo::subWblockClone (AcRxObject *pOwnerObject, AcDbObject *&pClonedObject, AcDbIdMapping &idMap, Adesk::Boolean isPrimary) const
+	Acad::ErrorStatus CGasPipe::subWblockClone (AcRxObject *pOwnerObject, AcDbObject *&pClonedObject, AcDbIdMapping &idMap, Adesk::Boolean isPrimary) const
 	{
 		assertReadEnabled () ;
 		return (AcDbEntity::subWblockClone (pOwnerObject, pClonedObject, idMap, isPrimary)) ;
@@ -318,7 +311,7 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 
 	//-----------------------------------------------------------------------------
 	//----- AcDbEntity protocols
-	Adesk::Boolean CSerialNo::subWorldDraw (AcGiWorldDraw *mode) 
+	Adesk::Boolean CGasPipe::subWorldDraw (AcGiWorldDraw *mode) 
 	{
 		assertReadEnabled () ;
 
@@ -329,63 +322,64 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 			db = acdbHostApplicationServices()->workingDatabase();
 
 		//CreateWipeout();
-
-		Acad::ErrorStatus es;
-		AcDbCircle pCircle;
-		pCircle.setDatabaseDefaults(db);
-		pCircle.setCenter(m_basePt);
-		pCircle.setLayer(m_LayerId);
-		pCircle.setRadius(m_dRadius);
-		pCircle.worldDraw(mode);
-		//绘制文字
-		AcDbMText pText;
-		pText.setDatabaseDefaults(db);
-		pText.setAttachment(AcDbMText::kMiddleCenter);
-		pText.setLocation(m_basePt);
-		pText.setContents(m_strText);
+		AcDbLine pline;
+		pline.setDatabaseDefaults(db);
 		if (!m_LayerId.isNull())
 		{
-			pText.setLayer(m_LayerId);
+			pline.setLayer(m_LayerId);
 		}
-		if (!m_TextId.isNull())
+		AcGePoint3d startPt,endPt;
+		AcGeVector3d vec = m_endPt - m_startPt;
+		startPt = m_startPt;
+		endPt = m_endPt;
+		double dAng = vec.angleOnPlane(AcGePlane::kXYPlane);
+		if (!m_startId.isNull())
 		{
-			pText.setTextStyle(m_TextId);
+			acutPolar(asDblArray(m_startPt), dAng, m_dRadius, asDblArray(startPt));
 		}
-		pText.setTextHeight(m_dTextHeight);
-		pText.worldDraw(mode);
+		if (!m_endId.isNull())
+		{
+			acutPolar(asDblArray(m_endPt), dAng + PI, m_dRadius, asDblArray(endPt));
+		}
+		
+		pline.setStartPoint(startPt);
+		pline.setEndPoint(endPt);
+		pline.worldDraw(mode);
+		
 		return Adesk::kTrue;
 	}
 
-	void CSerialNo::subViewportDraw (AcGiViewportDraw *mode) 
+	void CGasPipe::subViewportDraw (AcGiViewportDraw *mode) 
 	{
 		assertReadEnabled () ;
 		AcDbEntity::subViewportDraw (mode) ;
 	}
 
-	Adesk::UInt32 CSerialNo::subViewportDrawLogicalFlags (AcGiViewportDraw *vd)
+	Adesk::UInt32 CGasPipe::subViewportDrawLogicalFlags (AcGiViewportDraw *vd)
 	{
 		assertReadEnabled () ;
 		return (AcDbEntity::subViewportDrawLogicalFlags (vd)) ;
 	}
 
-	Adesk::UInt32 CSerialNo::subSetAttributes (AcGiDrawableTraits *traits) 
+	Adesk::UInt32 CGasPipe::subSetAttributes (AcGiDrawableTraits *traits) 
 	{
 		assertReadEnabled () ;
 		return (AcDbEntity::subSetAttributes (traits)) ;
 	}
 
 	// -----------------------------------------------------------------------------
-	Acad::ErrorStatus CSerialNo::subTransformBy(const AcGeMatrix3d & xform)
+	Acad::ErrorStatus CGasPipe::subTransformBy(const AcGeMatrix3d & xform)
 	{
 		assertWriteEnabled();
 		//Acad::ErrorStatus retCode =AcDbEntity::subTransformBy (xform) ;
 		//return (retCode) ;
-		m_basePt.transformBy(xform);
+		m_startPt.transformBy(xform);
+		m_endPt.transformBy(xform);
 		return Acad::eOk;
 	}
 
 	//- Osnap points protocol
-	Acad::ErrorStatus CSerialNo::subGetOsnapPoints (
+	Acad::ErrorStatus CGasPipe::subGetOsnapPoints (
 		AcDb::OsnapMode     osnapMode,
 		Adesk::GsMarker     gsSelectionMark,
 		const AcGePoint3d&  pickPoint,
@@ -395,11 +389,24 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 		AcDbIntArray &   geomIds) const
 	{
 		assertReadEnabled () ;
-		snapPoints.append(m_basePt);
+		AcGeVector3d viewDir(viewXform(Z, 0), viewXform(Z, 1),
+			viewXform(Z, 2));
+		AcGeLineSeg3d lnsg(m_startPt, m_endPt);
+		AcGePoint3d pt;
+		if (osnapMode == AcDb::kOsModeEnd)
+		{
+			snapPoints.append(m_startPt);
+			snapPoints.append(m_endPt);
+		}
+		else if (osnapMode == AcDb::kOsModeNear)
+		{
+			pt = lnsg.projClosestPointTo(pickPoint, viewDir);
+			snapPoints.append(pt);
+		}
 		return (AcDbEntity::subGetOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds)) ;
 	}
 
-	Acad::ErrorStatus CSerialNo::subGetOsnapPoints (
+	Acad::ErrorStatus CGasPipe::subGetOsnapPoints (
 		AcDb::OsnapMode     osnapMode,
 		Adesk::GsMarker     gsSelectionMark,
 		const AcGePoint3d&  pickPoint,
@@ -410,34 +417,47 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 		const AcGeMatrix3d& insertionMat) const
 	{
 		assertReadEnabled () ;
-		snapPoints.append(m_basePt);
+		AcGeVector3d viewDir(viewXform(Z, 0), viewXform(Z, 1),
+			viewXform(Z, 2));
+		AcGeLineSeg3d lnsg(m_startPt, m_endPt);
+		AcGePoint3d pt;
+		if (osnapMode == AcDb::kOsModeEnd)
+		{
+			snapPoints.append(m_startPt);
+			snapPoints.append(m_endPt);
+		}
+		else if (osnapMode == AcDb::kOsModeNear)
+		{
+			pt = lnsg.projClosestPointTo(pickPoint, viewDir);
+			snapPoints.append(pt);
+		}
 		return (AcDbEntity::subGetOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds, insertionMat)) ;
 	}
 
 	//- Grip points protocol
-	Acad::ErrorStatus CSerialNo::subGetGripPoints (
+	Acad::ErrorStatus CGasPipe::subGetGripPoints (
 		AcGePoint3dArray &gripPoints, AcDbIntArray &osnapModes, AcDbIntArray &geomIds
 		) const 
 	{
 		assertReadEnabled () ;
 		//----- This method is never called unless you return eNotImplemented 
 		//----- from the new getGripPoints() method below (which is the default implementation)
-		gripPoints.append(m_basePt);
-
+		gripPoints.append(m_startPt);
+		gripPoints.append(m_endPt);
 		return Acad::eOk ;
 	}
 
-	Acad::ErrorStatus CSerialNo::subMoveGripPointsAt (const AcDbIntArray &indices, const AcGeVector3d &offset)
+	Acad::ErrorStatus CGasPipe::subMoveGripPointsAt (const AcDbIntArray &indices, const AcGeVector3d &offset)
 	{
 		assertWriteEnabled () ;
 		//----- This method is never called unless you return eNotImplemented 
 		//----- from the new moveGripPointsAt() method below (which is the default implementation)
-		m_basePt += offset;
-
+		m_startPt += offset;
+		m_endPt += offset;
 		return Acad::eOk ;
 	}
 
-	Acad::ErrorStatus CSerialNo::subGetGripPoints (
+	Acad::ErrorStatus CGasPipe::subGetGripPoints (
 		AcDbGripDataPtrArray &grips, const double curViewUnitSize, const int gripSize, 
 		const AcGeVector3d &curViewDir, const int bitflags
 		) const 
@@ -450,7 +470,7 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 		return (AcDbEntity::subGetGripPoints (grips, curViewUnitSize, gripSize, curViewDir, bitflags)) ;
 	}
 
-	Acad::ErrorStatus CSerialNo::subMoveGripPointsAt (
+	Acad::ErrorStatus CGasPipe::subMoveGripPointsAt (
 		const AcDbVoidPtrArray &gripAppData, const AcGeVector3d &offset,
 		const int bitflags
 		) 
@@ -464,13 +484,13 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 	}
 
 	// -----------------------------------------------------------------------------
-	void CSerialNo::subList(void) const
+	void CGasPipe::subList(void) const
 	{
 		AcDbEntity::subList () ;
 	}
 
 	// -----------------------------------------------------------------------------
-	Acad::ErrorStatus CSerialNo::subExplode(AcDbVoidPtrArray & entitySet) const
+	Acad::ErrorStatus CGasPipe::subExplode(AcDbVoidPtrArray & entitySet) const
 	{
 		//Acad::ErrorStatus retCode =AcDbEntity::subExplode (entitySet) ;
 		AcDbDatabase* db = database();
@@ -479,37 +499,25 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 
 
 		Acad::ErrorStatus es;
-		AcDbCircle* pCircle = new AcDbCircle;
-		pCircle->setDatabaseDefaults(db);
-		pCircle->setCenter(m_basePt);
-		pCircle->setLayer(m_LayerId);
-		pCircle->setRadius(m_dRadius);
-		entitySet.append(pCircle);
-		//绘制文字
-		AcDbMText* pText = new AcDbMText;
-		pText->setDatabaseDefaults(db);
-		pText->setAttachment(AcDbMText::kMiddleCenter);
-		pText->setLocation(m_basePt);
-		pText->setContents(m_strText);
-		pText->setDatabaseDefaults(db);
-		pText->setLayer(m_LayerId);
-		pText->setTextStyle(m_TextId);
-		pText->setTextHeight(m_dTextHeight);
-		entitySet.append(pText);
-
+		AcDbLine* pLine = new AcDbLine;
+		pLine->setDatabaseDefaults(db);
+		pLine->setStartPoint(m_startPt);
+		pLine->setEndPoint(m_endPt);
+		pLine->setLayer(m_LayerId);
+		entitySet.append(pLine);
 		return Acad::eOk ;
 	}
 
 #else
 
-	Acad::ErrorStatus CSerialNo::deepClone (AcDbObject *pOwnerObject, AcDbObject *&pClonedObject, AcDbIdMapping &idMap, Adesk::Boolean isPrimary) const 
+	Acad::ErrorStatus CGasPipe::deepClone (AcDbObject *pOwnerObject, AcDbObject *&pClonedObject, AcDbIdMapping &idMap, Adesk::Boolean isPrimary) const 
 	{
 		assertReadEnabled () ;
 		return (AcDbEntity::deepClone (pOwnerObject, pClonedObject, idMap, isPrimary)) ;
 	}
 
 	//----- wblockClone
-	Acad::ErrorStatus CSerialNo::wblockClone (AcRxObject *pOwnerObject, AcDbObject *&pClonedObject, AcDbIdMapping &idMap, Adesk::Boolean isPrimary) const
+	Acad::ErrorStatus CGasPipe::wblockClone (AcRxObject *pOwnerObject, AcDbObject *&pClonedObject, AcDbIdMapping &idMap, Adesk::Boolean isPrimary) const
 	{
 		assertReadEnabled () ;
 		return (AcDbEntity::wblockClone (pOwnerObject, pClonedObject, idMap, isPrimary)) ;
@@ -517,7 +525,7 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 
 	//-----------------------------------------------------------------------------
 	//----- AcDbEntity protocols
-	Adesk::Boolean CSerialNo::worldDraw (AcGiWorldDraw *mode) 
+	Adesk::Boolean CGasPipe::worldDraw (AcGiWorldDraw *mode) 
 	{
 		assertReadEnabled () ;
 
@@ -527,63 +535,53 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 		if (db == NULL)
 			db = acdbHostApplicationServices()->workingDatabase();
 
-		Acad::ErrorStatus es;
-		AcDbCircle pCircle;
-		pCircle.setDatabaseDefaults(db);
-		pCircle.setCenter(m_basePt);
-		pCircle.setLayer(m_LayerId);
-		pCircle.setRadius(m_dRadius);
-		pCircle.worldDraw(mode);
-		//绘制文字
-		AcDbMText pText;
-		pText.setDatabaseDefaults(db);
-		pText.setAttachment(AcDbMText::kMiddleCenter);
-		pText.setLocation(m_basePt);
-		pText.setContents(m_strText);
-		pText.setDatabaseDefaults(db);
+		//CreateWipeout();
+		AcDbLine pline;
+		pline.setDatabaseDefaults(db);
 		if (!m_LayerId.isNull())
 		{
-			pText.setLayer(m_LayerId);
+			pline.setLayer(m_LayerId);
 		}
-		if (!m_TextId.isNull())
-		{
-			pText.setTextStyle(m_TextId);
-		}
-		pText.setTextHeight(m_dTextHeight);
-		pText.worldDraw(mode);
-
-		//return (Adesk::kFalse) ;
+		AcGePoint3d startPt,endPt;
+		AcGeVector3d vec = m_endPt - m_startPt;
+		double dAng = vec.angleOnPlane(AcGePlane::kXYPlane);
+		acutPolar(asDblArray(m_startPt), dAng, m_dRadius, asDblArray(startPt));
+		acutPolar(asDblArray(m_endPt), dAng + PI, m_dRadius, asDblArray(endPt));
+		pline.setStartPoint(startPt);
+		pline.setEndPoint(endPt);
+		pline.worldDraw(mode);
 		return Adesk::kTrue;
 	}
 
-	void CSerialNo::viewportDraw (AcGiViewportDraw *mode) 
+	void CGasPipe::viewportDraw (AcGiViewportDraw *mode) 
 	{
 		assertReadEnabled () ;
 		AcDbEntity::viewportDraw (mode) ;
 	}
 
-	Adesk::UInt32 CSerialNo::viewportDrawLogicalFlags (AcGiViewportDraw *vd)
+	Adesk::UInt32 CGasPipe::viewportDrawLogicalFlags (AcGiViewportDraw *vd)
 	{
 		assertReadEnabled () ;
 		return (AcDbEntity::viewportDrawLogicalFlags (vd)) ;
 	}
 
-	Adesk::UInt32 CSerialNo::setAttributes (AcGiDrawableTraits *traits) 
+	Adesk::UInt32 CGasPipe::setAttributes (AcGiDrawableTraits *traits) 
 	{
 		assertReadEnabled () ;
 		return (AcDbEntity::setAttributes (traits)) ;
 	}
 
 	// -----------------------------------------------------------------------------
-	Acad::ErrorStatus CSerialNo::transformBy(const AcGeMatrix3d & xform)
+	Acad::ErrorStatus CGasPipe::transformBy(const AcGeMatrix3d & xform)
 	{
 		assertWriteEnabled();
-		m_basePt.transformBy(xform);
+		m_startPt.transformBy(xform);
+		m_endPt.transformBy(xform);
 		return Acad::eOk ;
 	}
 
 	//- Osnap points protocol
-	Acad::ErrorStatus CSerialNo::getOsnapPoints (
+	Acad::ErrorStatus CGasPipe::getOsnapPoints (
 		AcDb::OsnapMode     osnapMode,
 		Adesk::GsMarker     gsSelectionMark,
 		const AcGePoint3d&  pickPoint,
@@ -593,11 +591,12 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 		AcDbIntArray &   geomIds) const
 	{
 		assertReadEnabled () ;
-		snapPoints.append(m_basePt);
+		snapPoints.append(m_startPt);
+		snapPoints.append(m_endPt);
 		return (AcDbEntity::getOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds)) ;
 	}
 
-	Acad::ErrorStatus CSerialNo::getOsnapPoints (
+	Acad::ErrorStatus CGasPipe::getOsnapPoints (
 		AcDb::OsnapMode     osnapMode,
 		Adesk::GsMarker     gsSelectionMark,
 		const AcGePoint3d&  pickPoint,
@@ -608,34 +607,36 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 		const AcGeMatrix3d& insertionMat) const
 	{
 		assertReadEnabled () ;
-		snapPoints.append(m_basePt);
+		snapPoints.append(m_startPt);
+		snapPoints.append(m_endPt);
 		return (AcDbEntity::getOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds, insertionMat)) ;
 	}
 
 	//- Grip points protocol
-	Acad::ErrorStatus CSerialNo::getGripPoints (
+	Acad::ErrorStatus CGasPipe::getGripPoints (
 		AcGePoint3dArray &gripPoints, AcDbIntArray &osnapModes, AcDbIntArray &geomIds
 		) const 
 	{
 		assertReadEnabled () ;
 		//----- This method is never called unless you return eNotImplemented 
 		//----- from the new getGripPoints() method below (which is the default implementation)
-		gripPoints.append(m_basePt);
+		gripPoints.append(m_startPt);
+		gripPoints.append(m_endPt);
 
 		return Acad::eOk ;
 	}
 
-	Acad::ErrorStatus CSerialNo::moveGripPointsAt (const AcDbIntArray &indices, const AcGeVector3d &offset)
+	Acad::ErrorStatus CGasPipe::moveGripPointsAt (const AcDbIntArray &indices, const AcGeVector3d &offset)
 	{
 		assertWriteEnabled () ;
 		//----- This method is never called unless you return eNotImplemented 
 		//----- from the new moveGripPointsAt() method below (which is the default implementation)
-		m_basePt += offset;
-
+		m_startPt += offset;
+		m_endPt += offset;
 		return Acad::eOk ;
 	}
 
-	Acad::ErrorStatus CSerialNo::getGripPoints (
+	Acad::ErrorStatus CGasPipe::getGripPoints (
 		AcDbGripDataPtrArray &grips, const double curViewUnitSize, const int gripSize, 
 		const AcGeVector3d &curViewDir, const int bitflags
 		) const 
@@ -648,7 +649,7 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 		return (AcDbEntity::getGripPoints (grips, curViewUnitSize, gripSize, curViewDir, bitflags)) ;
 	}
 
-	Acad::ErrorStatus CSerialNo::moveGripPointsAt (
+	Acad::ErrorStatus CGasPipe::moveGripPointsAt (
 		const AcDbVoidPtrArray &gripAppData, const AcGeVector3d &offset,
 		const int bitflags
 		) 
@@ -662,13 +663,13 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 	}
 
 	// -----------------------------------------------------------------------------
-	void CSerialNo::list(void) const
+	void CGasPipe::list(void) const
 	{
 		AcDbEntity::list () ;
 	}
 
 	// -----------------------------------------------------------------------------
-	Acad::ErrorStatus CSerialNo::explode(AcDbVoidPtrArray & entitySet) const
+	Acad::ErrorStatus CGasPipe::explode(AcDbVoidPtrArray & entitySet) const
 	{
 		//Acad::ErrorStatus retCode =AcDbEntity::subExplode (entitySet) ;
 		AcDbDatabase* db = database();
@@ -676,23 +677,12 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 			db = acdbHostApplicationServices()->workingDatabase();
 
 		Acad::ErrorStatus es;
-		AcDbCircle* pCircle = new AcDbCircle;
-		pCircle->setDatabaseDefaults(db);
-		pCircle->setCenter(m_basePt);
-		pCircle->setLayer(m_LayerId);
-		pCircle->setRadius(m_dRadius);
-		entitySet.append(pCircle);
-		//绘制文字
-		AcDbMText* pText = new AcDbMText;
-		pText->setDatabaseDefaults(db);
-		pText->setAttachment(AcDbMText::kMiddleCenter);
-		pText->setLocation(m_basePt);
-		pText->setContents(m_strText);
-		pText->setDatabaseDefaults(db);
-		pText->setLayer(m_LayerId);
-		pText->setTextStyle(m_TextId);
-		pText->setTextHeight(m_dTextHeight);
-		entitySet.append(pText);
+		AcDbLine* pLine = new AcDbLine;
+		pLine->setDatabaseDefaults(db);
+		pLine->setStartPoint(m_startPt);
+		pLine->setEndPoint(m_endPt);
+		pLine->setLayer(m_LayerId);
+		entitySet.append(pLine);
 
 		return Acad::eOk ;
 	}
@@ -704,79 +694,86 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //函数
-AcGePoint3d CSerialNo::basePt()
+AcGePoint3d CGasPipe::startPt()
 {
 	assertReadEnabled () ;
-	return m_basePt;
+	return m_startPt;
 }
-double CSerialNo::radius()
+
+AcGePoint3d CGasPipe::endPt()
 {
-	assertReadEnabled () ;
-	return m_dRadius;
+	assertReadEnabled();
+	return m_endPt;
 }
-double CSerialNo::textHeight()
-{
-	assertReadEnabled () ;
-	return m_dTextHeight;
-}
-AcDbObjectId CSerialNo::textId()
+
+AcDbObjectId CGasPipe::textId()
 {
 	assertReadEnabled () ;
 	return m_TextId;
 }
-AcDbObjectId CSerialNo::layerId()
+AcDbObjectId CGasPipe::layerId()
 {
 	assertReadEnabled () ;
 	return m_LayerId;
 }
-CString CSerialNo::strText()
+
+AcDbObjectId CGasPipe::startId()
 {
-	assertReadEnabled () ;
-	return m_strText;
+	assertReadEnabled();
+	return m_startId;
 }
 
-void CSerialNo::setBasePt(AcGePoint3d basePt)
+AcDbObjectId CGasPipe::endId()
+{	
+	assertReadEnabled();
+	return m_endId;
+}
+
+void CGasPipe::setStartPt(AcGePoint3d basePt)
 {
 	assertWriteEnabled () ;
-	m_basePt = basePt;
+	m_startPt = basePt;
 }
-void CSerialNo::setRadius(double dRadius)
+
+void CGasPipe::setEndPt(AcGePoint3d endPt)
 {
-	assertWriteEnabled () ;
-	m_dRadius = dRadius;
+	assertWriteEnabled();
+	m_endPt = endPt;
 }
-void CSerialNo::setTextHeight(double dTextHeight)
-{
-	assertWriteEnabled () ;
-	m_dTextHeight = dTextHeight;
-}
-void CSerialNo::setTextId(AcDbObjectId textId)
+
+
+void CGasPipe::setTextId(AcDbObjectId textId)
 {
 	assertWriteEnabled () ;
 	m_TextId = textId;
 }
-void CSerialNo::setLayerId(AcDbObjectId layerId)
+void CGasPipe::setLayerId(AcDbObjectId layerId)
 {
 	assertWriteEnabled () ;
 	m_LayerId = layerId;
 }
-void CSerialNo::setstrText(CString strText)
+
+void CGasPipe::setStartId(AcDbObjectId startId)
 {
-	assertWriteEnabled () ;
-	m_strText = strText;
+	assertWriteEnabled();
+	m_startId = startId;
 }
 
+void CGasPipe::setEndId(AcDbObjectId endId)
+{
+	assertWriteEnabled();
+	m_endId = endId;
+}
 
-int	 CSerialNo::No() const
+double CGasPipe::length()
 {
 	assertReadEnabled();
-	int nNo = MyTransFunc::StringToInt(m_strText);
-	return nNo;
+	double dLength = acutDistance(asDblArray(m_startPt), asDblArray(m_endPt))/CGWDesingUtils::getGlobalScale();
+	return dLength;
 }
 
-
 ////创建WipeOut对象
-//Acad::ErrorStatus CSerialNo::CreateWipeout () const
+//Acad::ErrorStatus CGasPipe::CreateWipeout () const
 //{
 //	Acad::ErrorStatus es;
 //#ifndef ZRX_2014
@@ -829,7 +826,7 @@ int	 CSerialNo::No() const
 //	return Acad::eOk;
 //}
 //
-//void CSerialNo::GetPointArr(AcGePoint3dArray& point3d) const
+//void CGasPipe::GetPointArr(AcGePoint3dArray& point3d) const
 //{
 //	point3d.removeAll();
 //	AcGePoint3d minPt,maxPt,leftPt,rightPt;

@@ -192,8 +192,107 @@ CString CGWDesingUtils::getCurNum()
 	return nBlkRefCount;
 }
 
+void CGWDesingUtils::SetGlobalScale(double dValue)
+{
+	AcDbObjectId StyleId;
+
+	AcDbDictionary* testDict = MyBaseUtils::openDictionaryForWrite(
+		CBaseDataForGwDesign::dictName(), true,
+		acdbHostApplicationServices()->workingDatabase());
+	if (testDict) 
+	{
+		Acad::ErrorStatus es;
+		if (testDict->getAt(_T("BASE"), StyleId) != Acad::eOk)
+		{
+			CBaseDataForGwDesign* newRec = new CBaseDataForGwDesign;
+			newRec->setGlobalScale(dValue);
+			es = testDict->setAt(_T("BASE"), newRec, StyleId);
+			if (es == Acad::eOk)
+			{
+				newRec->close();
+			}
+			else
+			{
+				//MyBaseUtils::rxErrorAlert(es);
+				delete newRec;
+				StyleId = AcDbObjectId::kNull;
+			}
+		}
+		else
+		{
+			CBaseDataForGwDesign* newRec = NULL;
+			if (acdbOpenAcDbObject((AcDbObject*&)newRec, StyleId, AcDb::kForWrite) != Acad::eOk)
+			{
+				testDict->close();
+				return;
+			}
+			newRec->setGlobalScale(dValue);
+			newRec->close();
+		}
+		testDict->close();
+	}
+	else 
+	{
+		return;
+	}
+}
+
+double CGWDesingUtils::getGlobalScale()
+{
+	double nBlkRefCount = 1.0;
+	AcDbObjectId StyleId;
+	AcDbDictionary* testDict = MyBaseUtils::openDictionaryForRead(CBaseDataForGwDesign::dictName(), acdbHostApplicationServices()->workingDatabase());
+	if (testDict)
+	{
+		Acad::ErrorStatus es;
+
+		if (testDict->getAt(_T("BASE"), StyleId) != Acad::eOk)
+		{
+			CBaseDataForGwDesign* newRec = NULL;
+
+			es = testDict->getAt(_T("BASE"), (AcDbObject *&)newRec, AcDb::kForRead);
+			if (es == Acad::eOk) 
+			{
+				nBlkRefCount = newRec->globalScale();
+				newRec->close();
+			}
+			else 
+			{
+				//ArxDbgUtils::rxErrorAlert(es);
+				delete newRec;
+				StyleId = AcDbObjectId::kNull;
+			}
+		}
+		else
+		{
+			CBaseDataForGwDesign* newRec = NULL;
+			if (acdbOpenAcDbObject((AcDbObject*&)newRec, StyleId, AcDb::kForRead) != Acad::eOk)
+			{
+				testDict->close();
+				return nBlkRefCount;
+			}
+			nBlkRefCount = newRec->globalScale();
+			newRec->close();
+		}
+		testDict->close();
+	}
+	else
+	{
+		SetGlobalScale(1.0);
+	}
+	return nBlkRefCount;
+}
 
 
+double CGWDesingUtils::getGlobalRadius()
+{
+	return getGlobalScale()*3;
+}
+
+double CGWDesingUtils::getGlobalTextHeight()
+{
+	return getGlobalScale()*4;
+}
 
 //void CGWDesingUtils::SetJdNum(CString nValue)
 //{

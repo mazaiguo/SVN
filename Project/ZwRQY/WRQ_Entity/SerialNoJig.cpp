@@ -7,11 +7,11 @@ CSerialNoJig::CSerialNoJig () : AcEdJig (),
 	mCurrentInputLevel(0)
 {
 	mpEntity = new CSerialNo();
-	mpEntity->setstrText(_T("1"));
-	mpEntity->setTextHeight(40);
-	mpEntity->setRadius(30);
-	mpEntity->setLayerId(AcDbObjectId::kNull);
-	mpEntity->setTextId(AcDbObjectId::kNull);
+	//mpEntity->setstrText(_T("1"));
+	//mpEntity->setTextHeight(40);
+	//mpEntity->setRadius(30);
+	//mpEntity->setLayerId(AcDbObjectId::kNull);
+	//mpEntity->setTextId(AcDbObjectId::kNull);
 }
 
 CSerialNoJig::~CSerialNoJig () 

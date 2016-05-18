@@ -28,6 +28,9 @@ public:
 	CString					CurNum();
 	Acad::ErrorStatus	setCurNum(CString nCount);
 
+	double				globalScale() const;
+	Acad::ErrorStatus	setGlobalScale(double dHx); 
+
 	/*CString					JdNum();
 	Acad::ErrorStatus	setJdNum(CString nCount);
 
@@ -69,7 +72,7 @@ private:
 	CString				m_strCurNum;//当前图纸的数据
 	//CString             m_strJdNum;//当前图纸的节点数
 
-	//double				m_dStartZH;//起始桩号
+	double				m_dGlobalScale;//全局比例
 	//double				m_dXScale;//x比例
 	//double				m_dYScale;//y比例
 
@@ -90,6 +93,7 @@ private:
 		kDxfNumCount		= 300,//90~99 32位整数值
 		kDxfCurNum			= 301,
 		//kDxfJdNum			= 302,
+		kDxfGlobalScale		= 40,
 		//kDxfXScale			= 40,//4~59
 		//kDxfYScale			= 41,
 		//kDxfminElavation 	= 42,

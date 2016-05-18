@@ -3,12 +3,12 @@
 #define MyBaseRBLIST_H
 
 
-//#ifdef MYBASEDLL_EXPORTS //在创建产生DLL的工程中先把 MYBASEDLL_EXPORTS 预定义上
-//#define SERVERDLL_API __declspec(dllexport)
-//#else
-//#define SERVERDLL_API __declspec(dllimport)
-//#endif
-class  /*SERVERDLL_API*/ MyBaseRbList {
+#ifdef MYBASEDLL_EXPORTS //在创建产生DLL的工程中先把 MYBASEDLL_EXPORTS 预定义上
+#define SERVERDLL_API __declspec(dllexport)
+#else
+#define SERVERDLL_API __declspec(dllimport)
+#endif
+class  SERVERDLL_API MyBaseRbList {
 
 public:
                 MyBaseRbList();                     // constructs empty list
@@ -55,16 +55,16 @@ private:
 
     // global functions applicable to raw resbuf usage but also used as helper
     // functions for MyBaseRbList class
-int			dxfCodeToDataType(int resType);
-void        dxfToStr(const resbuf* rb, CString& dxfCodeStr, CString& valueStr);
+int		SERVERDLL_API	dxfCodeToDataType(int resType);
+void    SERVERDLL_API    dxfToStr(const resbuf* rb, CString& dxfCodeStr, CString& valueStr);
 // Unicode: Leaving as char type because it is a buffer
-LPCTSTR     bytesToHexStr(char* buffer, int len, CString& hexStr);
-resbuf*     duplicateResbufNode(resbuf* rb);
-resbuf*     duplicateResbufChain(resbuf* rb);
-resbuf*     duplicateResbufChain(resbuf* startPtr, resbuf* endPtr);
-resbuf*     ptArrayToResbuf(const AcGePoint3dArray& ptArray);
-resbuf*     tailOfResbufChain(resbuf* const rb);
-void        printResbufChain(resbuf* const rb);
+LPCTSTR    bytesToHexStr(char* buffer, int len, CString& hexStr);
+resbuf*    duplicateResbufNode(resbuf* rb);
+resbuf*    duplicateResbufChain(resbuf* rb);
+resbuf*    duplicateResbufChain(resbuf* startPtr, resbuf* endPtr);
+resbuf*    ptArrayToResbuf(const AcGePoint3dArray& ptArray);
+resbuf*    tailOfResbufChain(resbuf* const rb);
+void   SERVERDLL_API    printResbufChain(resbuf* const rb);
 
 
 #endif    // MyBaseRBLIST_H

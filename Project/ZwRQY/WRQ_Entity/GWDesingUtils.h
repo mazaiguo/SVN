@@ -17,6 +17,13 @@ public:
 	static void SetCurNum(CString strCount);
 	static CString getCurNum();
 
+	static void SetGlobalScale(double dStartZH);
+	static double getGlobalScale();
+
+	//为全局变量创建的函数
+	static double getGlobalRadius();
+	static double getGlobalTextHeight();
+
 	/*static void SetJdNum(CString strCount);
 	static CString getJdNum();
 
