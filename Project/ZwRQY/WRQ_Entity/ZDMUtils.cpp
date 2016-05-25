@@ -286,7 +286,7 @@ CString CDMXUtils::getJdNum()
 	return nBlkRefCount;
 }
 
-void CDMXUtils::SetStartZH(double dValue)
+void CDMXUtils::SetStartZH(CString dValue)
 {
 	AcDbObjectId StyleId;
 
@@ -331,9 +331,9 @@ void CDMXUtils::SetStartZH(double dValue)
 	}
 }
 
-double CDMXUtils::getStartZH()
+CString CDMXUtils::getStartZH()
 {
-	double nBlkRefCount = 500;
+	CString nBlkRefCount = _T("0");
 	AcDbObjectId StyleId;
 	AcDbDictionary* testDict = MyBaseUtils::openDictionaryForRead(CBaseDataForZdDwg::dictName(), acdbHostApplicationServices()->workingDatabase());
 	if (testDict)
@@ -372,10 +372,103 @@ double CDMXUtils::getStartZH()
 	}
 	else
 	{
-		SetStartZH(0);
+		SetStartZH(_T("0"));
 	}
 	return nBlkRefCount;
 }
+
+
+void CDMXUtils::SetPipeType(CString dValue)
+{
+	AcDbObjectId StyleId;
+
+	AcDbDictionary* testDict = MyBaseUtils::openDictionaryForWrite(
+		CBaseDataForZdDwg::dictName(), true,
+		acdbHostApplicationServices()->workingDatabase());
+	if (testDict) 
+	{
+		Acad::ErrorStatus es;
+		if (testDict->getAt(_T("BASE"), StyleId) != Acad::eOk)
+		{
+			CBaseDataForZdDwg* newRec = new CBaseDataForZdDwg;
+			newRec->setPipeType(dValue);
+			es = testDict->setAt(_T("BASE"), newRec, StyleId);
+			if (es == Acad::eOk)
+			{
+				newRec->close();
+			}
+			else
+			{
+				//MyBaseUtils::rxErrorAlert(es);
+				delete newRec;
+				StyleId = AcDbObjectId::kNull;
+			}
+		}
+		else
+		{
+			CBaseDataForZdDwg* newRec = NULL;
+			if (acdbOpenAcDbObject((AcDbObject*&)newRec, StyleId, AcDb::kForWrite) != Acad::eOk)
+			{
+				testDict->close();
+				return;
+			}
+			newRec->setPipeType(dValue);
+			newRec->close();
+		}
+		testDict->close();
+	}
+	else 
+	{
+		return;
+	}
+}
+
+CString CDMXUtils::getPipeType()
+{
+	CString nBlkRefCount = _T("DN");
+	AcDbObjectId StyleId;
+	AcDbDictionary* testDict = MyBaseUtils::openDictionaryForRead(CBaseDataForZdDwg::dictName(), acdbHostApplicationServices()->workingDatabase());
+	if (testDict)
+	{
+		Acad::ErrorStatus es;
+
+		if (testDict->getAt(_T("BASE"), StyleId) != Acad::eOk)
+		{
+			CBaseDataForZdDwg* newRec = NULL;
+
+			es = testDict->getAt(_T("BASE"), (AcDbObject *&)newRec, AcDb::kForRead);
+			if (es == Acad::eOk) 
+			{
+				nBlkRefCount = newRec->pipeType();
+				newRec->close();
+			}
+			else 
+			{
+				//ArxDbgUtils::rxErrorAlert(es);
+				delete newRec;
+				StyleId = AcDbObjectId::kNull;
+			}
+		}
+		else
+		{
+			CBaseDataForZdDwg* newRec = NULL;
+			if (acdbOpenAcDbObject((AcDbObject*&)newRec, StyleId, AcDb::kForRead) != Acad::eOk)
+			{
+				testDict->close();
+				return nBlkRefCount;
+			}
+			nBlkRefCount = newRec->pipeType();
+			newRec->close();
+		}
+		testDict->close();
+	}
+	else
+	{
+		SetStartZH(_T("DN"));
+	}
+	return nBlkRefCount;
+}
+
 
 void CDMXUtils::SetXScale(double dValue)
 {

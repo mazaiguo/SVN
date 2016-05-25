@@ -76,6 +76,8 @@ private:
 	//************************************
 	bool ChangeDictName(CString strGroupName, CString strPreGroupName, int nCount, bool bIsDeFault = true);
 	bool EditDict(int nCur);
+
+	CString doZhuanghaoText(CString strTmp);
 private:
 	CZdmDataInfo m_pZDM;
 	CZdmDataInfo m_preData;

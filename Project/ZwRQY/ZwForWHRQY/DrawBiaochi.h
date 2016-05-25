@@ -59,7 +59,7 @@ private:
 	double		m_dYScale;//yscale
 	int			m_nStartBG;//起始标高
 	int			m_nEndBG;//终止标高
-	double		m_dstartZhuanghao;//起始桩号
+	CString		m_dstartZhuanghao;//起始桩号
 	
 	//绘制基础数据
 	double		m_dXRatio;

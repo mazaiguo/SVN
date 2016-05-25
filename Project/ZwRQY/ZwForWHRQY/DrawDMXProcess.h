@@ -190,7 +190,8 @@ private:
 	bool GetVertical();
 
 
-	
+	//管道类型
+	bool GetPipeType();
 	
 	bool doUndo();
 	//************************************
@@ -230,11 +231,13 @@ private:
 	double m_dWashen;//挖深
 	double m_dRealDmx;//实际地面线
 	double m_dPodu;
-
+	
+	CString m_strPipeType;//管道类型
 	double m_dDesignDmxS;//第二个设计地面线
 	double m_dRealDmxS;//第二个实际地面线
 	AcGePoint3d m_basePt;
 	int m_nCout;//当前计数
+	int m_nNumCount;
 	CZdmDataInfo m_pZdmInfo;
 	CZdmDataInfo m_preZdmInfo;//上一个zdm数据
 	double m_dminElavation;

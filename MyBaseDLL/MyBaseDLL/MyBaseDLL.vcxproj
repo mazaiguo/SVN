@@ -152,7 +152,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level1</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>D:\ZRXSDK\ZRXSDK%282015418%29\arxport;E:\GitHub\SVN\Project\ZwRQY\MyBaseDLL\MyBaseDLL\code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\ZRXSDK\ZRXSDK%2820141127%29\arxport;E:\GitHub\SVN\Project\ZwRQY\MyBaseDLL\MyBaseDLL\code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <OutputFile>E:\GitHub\SVN\Project\ZwRQY\ZWRQY_ZWCAD\MyBaseDLL.zrx</OutputFile>
@@ -162,7 +162,7 @@
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>E:\GitHub\SVN\Project\ZwRQY\lib\zwcad\MyBaseDLL.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>D:\ZRXSDK\ZRXSDK(2015418)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\ZRXSDK\ZRXSDK(20141127)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>
       </AdditionalDependencies>
     </Link>

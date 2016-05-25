@@ -131,7 +131,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level1</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>D:\ZRXSDK\ZRXSDK(2015418)\arxport;E:\GitHub\SVN\MyBaseDLL\MyBaseDLL\code;E:\GitHub\SVN\Project\ZwRQY\WRQ_Entity;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\ZRXSDK\ZRXSDK(20141127)\arxport;E:\GitHub\SVN\MyBaseDLL\MyBaseDLL\code;E:\GitHub\SVN\Project\ZwRQY\WRQ_Entity;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <OutputFile>E:\GitHub\SVN\Project\ZwRQY\ZWRQY_ZWCAD\GwDesign.zrx</OutputFile>
@@ -141,7 +141,7 @@
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>E:\GitHub\SVN\Project\ZwRQY\lib\zwcad\GwDesign.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>E:\GitHub\SVN\Project\ZwRQY\lib\zwcad;D:\ZRXSDK\ZRXSDK(2015418)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\GitHub\SVN\Project\ZwRQY\lib\zwcad;D:\ZRXSDK\ZRXSDK(20141127)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>MyBaseDLL.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

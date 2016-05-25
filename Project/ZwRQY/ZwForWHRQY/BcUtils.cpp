@@ -35,6 +35,7 @@ bool CBcUtils::add( LPCTSTR strLabel, CZdmDataInfo data)
 			newRec->setDesignDmx(data.getDesignDmx());
 			newRec->setRealDmx(data.getRealDmx());
 			newRec->setJiedian(data.getJiedian());
+			newRec->setPipeType(data.getPipeType());
 			newRec->setGuanDi(data.getGuanDi());
 			newRec->setWaShen(data.getWaShen());
 			newRec->setPoDu(data.getPoDu());
@@ -148,7 +149,7 @@ bool CBcUtils::modify( LPCTSTR strLabel, CZdmDataInfo pData )
 		iter->second.setJiedian(pData.getJiedian());
 		iter->second.setDesignDmx(pData.getDesignDmx());
 		iter->second.setRealDmx(pData.getRealDmx());
-		iter->second.setJiedian(pData.getJiedian());
+		iter->second.setPipeType(pData.getPipeType());
 		iter->second.setGuanDi(pData.getGuanDi());
 		iter->second.setWaShen(pData.getWaShen());
 		iter->second.setPoDu(pData.getPoDu());
@@ -271,7 +272,7 @@ map<CString, CZdmDataInfo> CBcUtils::getAllData()
 			data.setJiedian(pEnt->getJiedian());
 			data.setDesignDmx(pEnt->getDesignDmx());
 			data.setRealDmx(pEnt->getRealDmx());
-			data.setJiedian(pEnt->getJiedian());
+			data.setPipeType(pEnt->getPipeType());
 			data.setGuanDi(pEnt->getGuanDi());
 			data.setWaShen(pEnt->getWaShen());
 			data.setPoDu(pEnt->getPoDu());
@@ -316,6 +317,7 @@ void CBcUtils::addAll()
 			newRec->setDesignDmx(data.getDesignDmx());
 			newRec->setRealDmx(data.getRealDmx());
 			newRec->setJiedian(data.getJiedian());
+			newRec->setPipeType(data.getPipeType());
 			newRec->setGuanDi(data.getGuanDi());
 			newRec->setWaShen(data.getWaShen());
 			newRec->setPoDu(data.getPoDu());

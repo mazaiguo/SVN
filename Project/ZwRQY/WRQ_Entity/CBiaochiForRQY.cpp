@@ -109,6 +109,12 @@ LPCTSTR CBiaochiForRQY::getJiedian() const
 	return m_strJiedian;
 }
 
+LPCTSTR CBiaochiForRQY::getPipeType() const
+{
+	assertReadEnabled();
+	return m_strPipeType;
+}
+
 double CBiaochiForRQY::getGuanDi() const
 {
 	assertReadEnabled();
@@ -229,6 +235,30 @@ Acad::ErrorStatus CBiaochiForRQY::setJiedian( LPCTSTR newLabel )
 	return Acad::eOk;
 }
 
+Acad::ErrorStatus CBiaochiForRQY::setPipeType(LPCTSTR newLabel)
+{
+	if (newLabel == NULL) 
+	{
+		if (m_strPipeType.IsEmpty() == FALSE)
+		{   // make sure it will actually change
+			assertWriteEnabled();
+			m_strPipeType.Empty();
+		}
+		return Acad::eOk;
+	}
+
+	// don't allow to be longer than 255 for DXF simplicity
+	int len = _tcslen(newLabel);
+	if (len > 255)
+		return Acad::eStringTooLong;
+
+	if (m_strPipeType.Compare(newLabel))
+	{
+		assertWriteEnabled();
+		m_strPipeType = newLabel;
+	}
+}
+
 Acad::ErrorStatus CBiaochiForRQY::setGuanDi( double strText )
 {
 	assertWriteEnabled();
@@ -334,6 +364,9 @@ CBiaochiForRQY::dwgInFields(AcDbDwgFiler* filer)
 	filer->readItem(&tmpStr);
 	m_strJiedian = tmpStr;
 	acutDelString(tmpStr);
+	filer->readItem(&tmpStr);
+	m_strPipeType = tmpStr;
+	acutDelString(tmpStr);
 
 	filer->readItem(&m_dDesignDmx);
 	filer->readItem(&m_dRealDmx);
@@ -366,6 +399,7 @@ CBiaochiForRQY::dwgOutFields(AcDbDwgFiler* filer) const
     filer->writeItem(static_cast<const TCHAR*>(m_label));
 	filer->writeItem(static_cast<const TCHAR*>(m_strCount));
 	filer->writeItem(static_cast<const TCHAR*>(m_strJiedian));
+	filer->writeItem(static_cast<const TCHAR*>(m_strPipeType));
 	filer->writeItem(m_dDesignDmx);
 	filer->writeItem(m_dRealDmx);
 	filer->writeItem(m_dcurData);
@@ -407,6 +441,10 @@ CBiaochiForRQY::dxfInFields(AcDbDxfFiler* filer)
 		else if (rb.restype == kDxfJieDian)
 		{
 			setJiedian(rb.resval.rstring);
+		}
+		else if (rb.restype == kDxfPipeType)
+		{
+			setPipeType(rb.resval.rstring);
 		}
 		else if (rb.restype == kDxfDesignDmx)
 		{
@@ -486,6 +524,7 @@ CBiaochiForRQY::dxfOutFields(AcDbDxfFiler* filer) const
     filer->writeItem(kDxfLabel, static_cast<const TCHAR*>(m_label));
 	filer->writeItem(kDxfNumCount, static_cast<const TCHAR*>(m_strCount));
 	filer->writeItem(kDxfJieDian, static_cast<const TCHAR*>(m_strJiedian));
+	filer->writeItem(kDxfPipeType, static_cast<const TCHAR*>(m_strPipeType));
 	filer->writeItem(kDxfDesignDmx, m_dDesignDmx);
 	filer->writeItem(kDxfRealDmx, m_dRealDmx);
 	filer->writeItem(kDxfCurData, m_dcurData);

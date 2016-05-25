@@ -239,6 +239,29 @@ void CBaseDbReactor::objectErased(const AcDbDatabase * dwg, const AcDbObject * d
 	//		CBaseInfoInDwgFileUtils::setNumCount(strNumCount);
 	//	}
 	//}
+	if (pErased)
+	{
+		if (dbObj->isKindOf(AcDbBlockReference::desc()))
+		{
+			AcDbBlockReference* pBlkRef = AcDbBlockReference::cast(dbObj);
+			AcDbObjectId blockId = pBlkRef->blockTableRecord();
+			AcDbSymbolTableRecord* tblRec;
+			CString strName;
+			Acad::ErrorStatus es;
+			es = acdbOpenObject(tblRec, blockId, AcDb::kForRead);
+			if (es == Acad::eOk) 
+			{
+				const TCHAR* locName;
+				tblRec->getName(locName);
+				strName = locName;
+				tblRec->close();
+			}
+			if (strName.CompareNoCase(_T("zdmmq1")) == 0)
+			{
+				CDMXUtils::SetcreateBc(false);
+			}
+		}
+	}
 	AcDbDatabaseReactor::objectErased (dwg, dbObj, pErased) ;
 }
 

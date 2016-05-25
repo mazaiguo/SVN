@@ -131,7 +131,7 @@ AcDbObjectId CDrawBiaochi::DrawBiaoge()
 #endif
 	AcDbObjectId blkRecId = MyDrawEntity::GetBlkRef(strFileName);
 	AcDbBlockReference* pBlkRef = new AcDbBlockReference(m_basePt, blkRecId);
-	pBlkRef->setScaleFactors(AcGeScale3d(m_dXRatio/2, m_dYRatio/10, 1.0));
+	pBlkRef->setScaleFactors(AcGeScale3d(1.0, 1.0, 1.0));
 	MyBaseUtils::addToCurrentSpaceAndClose(pBlkRef);
 	AcDbObjectId blkRefId = pBlkRef->objectId();
 	ads_name blkName;
@@ -249,19 +249,21 @@ bool CDrawBiaochi::GetEndBG()
 
 bool CDrawBiaochi::GetStartZhuanghao()
 {
-	int nRet = acedGetReal(_T("\n布置地面线(现状及设计)...\n桩号基准<0>"), &m_dstartZhuanghao);
+	TCHAR tempBuf[133];
+	int nRet = acedGetString(1, _T("\n布置地面线(现状及设计)...\n桩号基准<0>"),  tempBuf);
 	if (nRet == RTNORM)
 	{
 		//return true;
 	}
 	else if (nRet == RTNONE)
 	{
-		m_dstartZhuanghao = 0;
+		m_dstartZhuanghao =_T("0");
 	}
 	else
 	{
 		return false;
 	}
+	m_dstartZhuanghao = tempBuf;
 	CDMXUtils::SetStartZH(m_dstartZhuanghao);
 	return true;
 }
@@ -292,7 +294,7 @@ AcDbObjectId CDrawBiaochi::DrawTextAndBC(AcGePoint3d pt, CString strText, bool b
 	acutPolar(asDblArray(pt), PI, m_dXRatio*1.5, asDblArray(textPt));
 
 	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXRatio);
-	textId = MyDrawEntity::DrawText(textPt, strText, 3.0*m_dYRatio/10, textStyleId, AcDb::kTextRight);
+	textId = MyDrawEntity::DrawText(textPt, strText, 3.0, textStyleId, AcDb::kTextRight);
 	objIds.append(textId);
 
 	acdbGetAdsName(textName, textId);

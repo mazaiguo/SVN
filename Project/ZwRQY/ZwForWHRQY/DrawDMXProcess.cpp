@@ -67,6 +67,18 @@ bool DrawDMXProcess::Draw()
 	{
 		return true;
 	}
+	else if (nRet == RTNONE)
+	{
+		//如果是rtnone就将最后一条直线补全
+		AcDbObjectId hxLayerId = MySymble::CreateNewLayer(_T("HX-TMP"), 7);
+		m_basePt = CDMXUtils::getbasePt();
+		m_dXScale = 1000/(CDMXUtils::getXScale());
+		AcGePoint3d startPt,endPt;
+		acutPolar(asDblArray(m_basePt), 0, 20 + m_dZhuanghao*m_dXScale, asDblArray(startPt));
+		acutPolar(asDblArray(startPt), 3*PI/2, 167, asDblArray(endPt));
+		MyDrawEntity::DrawLine(startPt, endPt, hxLayerId);
+		return false;
+	}
 	else
 	{
 		return false;
@@ -227,37 +239,62 @@ bool DrawDMXProcess::Mod()
 int DrawDMXProcess::GetZhuanghao()
 {
 	CString strPrompt;
-	if (m_nCout == 1)
+	int nRet = RTNORM;
+	bool bIsContinued = true;
+
+	while (bIsContinued)
 	{
-		strPrompt.Format(_T("\n起始桩号值<m> <%.2f>:"), m_dZhuanghao);
+		bIsContinued = false;
+		if (m_nCout == 1)
+		{
+			strPrompt.Format(_T("\n起始桩号值<m> <%.2f>:"), m_dZhuanghao);
+		}
+		else
+		{
+			acedInitGet(0, _T("Undo"));
+			strPrompt.Format(_T("\n回退一步(U)/<下一点桩号值> <m> <%.2f>:"), m_dZhuanghao);
+		}
+		double dResult = m_dZhuanghao;
+		int nResult = acedGetReal(strPrompt, &m_dZhuanghao);
+		if (nResult == RTNORM)
+		{
+			//return true;
+			if (dResult > m_dZhuanghao)
+			{
+				AfxMessageBox(_T("桩号不能比前面的小"));
+				bIsContinued = true;
+				m_dZhuanghao = dResult;
+				continue;
+			}
+		}
+		else if (nResult == RTNONE)
+		{
+			if (m_nCout == 1)
+			{
+				m_dZhuanghao = m_dZhuanghao;
+			}
+			else
+			{
+				nRet = RTNONE;
+			}
+			break;
+		}
+		else if (nResult == RTKWORD)
+		{
+			doUndo();
+			nRet = RTKWORD;
+			break;
+		}
+		else
+		{
+			nRet = RTERROR;
+		}
+		break;
 	}
-	else
-	{
-		acedInitGet(0, _T("Undo"));
-		strPrompt.Format(_T("\n回退一步(U)/<下一点桩号值> <m> <%.2f>:"), m_dZhuanghao);
-	}
-	int nRet = acedGetReal(strPrompt, &m_dZhuanghao);
-	if (nRet == RTNORM)
-	{
-		//return true;
-	}
-	else if (nRet == RTNONE)
-	{
-		//m_dZhuanghao = m_dZhuanghao;
-		return RTERROR;
-	}
-	else if (nRet == RTKWORD)
-	{
-		doUndo();
-		return RTKWORD;
-	}
-	else
-	{
-		return RTERROR;
-	}
+	
 	m_pZdmInfo->setcurData(m_dZhuanghao);
 
-	return RTNORM;
+	return nRet;
 }
 
 //是否节点
@@ -583,6 +620,8 @@ bool DrawDMXProcess::EntInteraction()
 
 CDrawGDProcess::CDrawGDProcess(void)
 {
+	CString strNumCount = CDMXUtils::getNumCount();
+	m_nNumCount = MyTransFunc::StringToDouble(strNumCount);
 	CString strCount = CDMXUtils::getCurNum();
 	m_nCout = MyTransFunc::StringToInt(strCount);
 	
@@ -622,6 +661,15 @@ CDrawGDProcess::~CDrawGDProcess(void)
 
 bool CDrawGDProcess::Draw()
 {
+	if (m_nCout > m_nNumCount - 1)
+	{
+		acutPrintf(_T("\n没有地面线数据"));
+		return false;
+	}
+	if (!GetPipeType())
+	{
+		return false;
+	}
 	if (!GetPipeDiameter())
 	{
 		return false;
@@ -631,10 +679,8 @@ bool CDrawGDProcess::Draw()
 		return false;
 	}
 	CDMXUtils::SetcreateGw(true);
-	CDrawZDM zdm;
-	//zdm.setDrawGd(true);
-	zdm.setData(&m_pZdmInfo);
-	zdm.add();
+	CDrawGd gd;
+	gd.add(m_pZdmInfo);
 	return true;
 }
 
@@ -660,6 +706,10 @@ bool CDrawGDProcess::Insert(CString strCur)
 		bcUtils.get(strTmpLabel, m_preZdmInfo);
 		m_dPipeDiameter = m_preZdmInfo.getPipeDiameter();
 		m_dGuandi = m_preZdmInfo.getGuanDi();
+	}
+	if (!GetPipeType())
+	{
+		return false;
 	}
 	if (!GetPipeDiameter())
 	{
@@ -870,7 +920,7 @@ bool CDrawGDProcess::GetWaShen()
 bool CDrawGDProcess::GetPodu()
 {
 	CString strPrompt;
-	strPrompt.Format(_T("\n坡度<m> <%.2f>:"), m_dPodu);
+	strPrompt.Format(_T("\n坡度<‰%.2f>:"), m_dPodu);
 
 	bool bRet = false;
 	while(!bRet)
@@ -915,7 +965,9 @@ bool CDrawGDProcess::GetPodu()
 
 bool CDrawGDProcess::GetVertical()
 {
-	CString strPrompt;
+	AfxMessageBox(_T("此功能还未实现"));
+	return false;
+	/*CString strPrompt;
 	strPrompt = _T("\n获取垂直间距");
 	double dReal;
 	int nRet = acedGetReal(strPrompt, &dReal);
@@ -927,7 +979,28 @@ bool CDrawGDProcess::GetVertical()
 	else
 	{
 		return false;
+	}*/
+}
+
+bool CDrawGDProcess::GetPipeType()
+{
+	TCHAR tempBuf[133];
+	int nRet = acedGetString(1, _T("\n管道类型<DN>:"),  tempBuf);
+	if (nRet == RTNORM)
+	{
+		//return true;
 	}
+	else if (nRet == RTNONE)
+	{
+		m_strPipeType =_T("DN");
+	}
+	else
+	{
+		return false;
+	}
+	m_strPipeType = tempBuf;
+	m_pZdmInfo.setPipeType(m_strPipeType);
+	return true;
 }
 
 bool CDrawGDProcess::doUndo()

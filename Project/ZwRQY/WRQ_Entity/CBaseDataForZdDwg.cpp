@@ -26,7 +26,8 @@ CBaseDataForZdDwg::CBaseDataForZdDwg()
 	m_strCurNum = _T("1");
 	m_strNumCount = _T("1");
 	m_strJdNum = _T("1");
-	m_dStartZH = 0;
+	m_strStartZH = _T("0");
+	m_strPipeType = _T("DN");
 }
 
 
@@ -40,7 +41,8 @@ CBaseDataForZdDwg::~CBaseDataForZdDwg()
 	m_strCurNum = _T("1");
 	m_strNumCount = _T("1");
 	m_strJdNum = _T("1");
-	m_dStartZH = 0;
+	m_strStartZH = _T("0");
+	m_strPipeType = _T("DN");
 }
 
 
@@ -126,16 +128,30 @@ Acad::ErrorStatus CBaseDataForZdDwg::setJdNum(CString nCount)
 	return Acad::eOk;
 }
 
-double CBaseDataForZdDwg::startZH() const
+CString CBaseDataForZdDwg::startZH() const
 {
 	assertReadEnabled();
-	return m_dStartZH;
+	return m_strStartZH;
 }
 
-Acad::ErrorStatus CBaseDataForZdDwg::setStartZH(double dHx)
+Acad::ErrorStatus CBaseDataForZdDwg::setStartZH(CString dHx)
 {
 	assertWriteEnabled();
-	m_dStartZH = dHx;
+	m_strStartZH = dHx;
+
+	return Acad::eOk;
+}
+
+CString CBaseDataForZdDwg::pipeType() const
+{
+	assertReadEnabled();
+	return m_strPipeType;
+}
+
+Acad::ErrorStatus CBaseDataForZdDwg::setPipeType(CString dHx)
+{
+	assertWriteEnabled();
+	m_strPipeType = dHx;
 
 	return Acad::eOk;
 }
@@ -283,6 +299,12 @@ CBaseDataForZdDwg::dwgInFields(AcDbDwgFiler* filer)
 	filer->readItem(&tmpStr);
 	m_strJdNum = tmpStr;
 	acutDelString(tmpStr);
+	filer->readItem(&tmpStr);
+	m_strStartZH = tmpStr;
+	acutDelString(tmpStr);
+	filer->readItem(&tmpStr);
+	m_strPipeType = tmpStr;
+	acutDelString(tmpStr);
 
 	filer->readItem(&m_dXScale);
 	filer->readItem(&m_dYScale);
@@ -292,7 +314,6 @@ CBaseDataForZdDwg::dwgInFields(AcDbDwgFiler* filer)
 	filer->readItem(&m_bDrawJiedian);
 	filer->readItem(&m_bDrawGW);
 	filer->readItem(&m_basePt);
-	filer->readItem(&m_dStartZH);
 	//filer->readItem(&m_nNumCount);
 	//filer->readItem(&m_nCurNum);
 	/*filer->readItem(&m_startPt);
@@ -320,6 +341,8 @@ CBaseDataForZdDwg::dwgOutFields(AcDbDwgFiler* filer) const
 	filer->writeItem(static_cast<const TCHAR*>(m_strNumCount));
 	filer->writeItem(static_cast<const TCHAR*>(m_strCurNum));
 	filer->writeItem(static_cast<const TCHAR*>(m_strJdNum));
+	filer->writeItem(static_cast<const TCHAR*>(m_strStartZH));
+	filer->writeItem(static_cast<const TCHAR*>(m_strPipeType));
 	filer->writeItem(m_dXScale);
 	filer->writeItem(m_dYScale);
 	filer->writeItem(m_dminElavation);
@@ -328,7 +351,6 @@ CBaseDataForZdDwg::dwgOutFields(AcDbDwgFiler* filer) const
 	filer->writeItem(m_bDrawJiedian);
 	filer->writeItem(m_bDrawGW);
 	filer->writeItem(m_basePt);
-	filer->writeItem(m_dStartZH);
 	/*filer->writeInt32(m_strNumCount);
 	filer->writeInt32(m_strCurNum);*/
 	/*filer->writeItem(m_nNumCount);
@@ -405,7 +427,11 @@ CBaseDataForZdDwg::dxfInFields(AcDbDxfFiler* filer)
 		}
 		else if (rb.restype == kDxfStartZH)
 		{
-			setStartZH(rb.resval.rreal);
+			setStartZH(rb.resval.rstring);
+		}
+		else if (rb.restype == kDxfPipeType)
+		{
+			setPipeType(rb.resval.rstring);
 		}
 		/*else if (rb.restype == kDxfStartPt)
 		{
@@ -460,7 +486,8 @@ CBaseDataForZdDwg::dxfOutFields(AcDbDxfFiler* filer) const
 	filer->writeItem(kDxfDrawJiedian, m_bDrawJiedian);
 	filer->writeItem(kDxfDrawGw, m_bDrawGW);
 	filer->writeItem(kDxfBasePt, m_basePt);
-	filer->writeItem(kDxfStartZH, m_dStartZH);
+	filer->writeItem(kDxfStartZH, m_strStartZH);
+	filer->writeItem(kDxfPipeType, m_strPipeType);
 	/*filer->writeItem(kDxfStartPt, m_startPt);
 	filer->writeItem(kDxfEndPt, m_endPt);
 	filer->writeItem(kDxfHengxiang, m_dHengxiang);

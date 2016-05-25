@@ -31,8 +31,11 @@ public:
 	CString					JdNum();
 	Acad::ErrorStatus	setJdNum(CString nCount);
 
-	double				startZH() const;
-	Acad::ErrorStatus	setStartZH(double dHx); 
+	CString				startZH() const;
+	Acad::ErrorStatus	setStartZH(CString dHx); 
+
+	CString				pipeType() const;
+	Acad::ErrorStatus	setPipeType(CString dHx); 
 
 	double				XScale() const;
 	Acad::ErrorStatus	setXScale(double dHx);
@@ -72,7 +75,8 @@ private:
 	CString				m_strCurNum;//当前图纸的数据
 	CString             m_strJdNum;//当前图纸的节点数
 
-	double				m_dStartZH;//起始桩号
+	CString				m_strStartZH;//起始桩号
+	CString				m_strPipeType;
 	double				m_dXScale;//x比例
 	double				m_dYScale;//y比例
 
@@ -103,7 +107,8 @@ private:
 		kDxfYScale			= 41,
 		kDxfminElavation 	= 42,
 		kDxfmaxElavation 	= 43,
-		kDxfStartZH			= 44,
+		kDxfStartZH			= 303,
+		kDxfPipeType		= 304,
 		kDxfDrawBc			= 290,//290-299 布尔标志值
 		kDxfDrawJiedian		= 291,
 		kDxfDrawGw			= 292,
