@@ -695,7 +695,6 @@ bool CDrawZDM::ModifyDictbyInt( int nCur , bool bIsAdded)
 			{
 				ChangeDictName(strGroupName, strPreGroupNam, i);
 			}
-
 		}
 	}
 	else

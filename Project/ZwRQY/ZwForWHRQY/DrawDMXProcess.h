@@ -23,7 +23,7 @@ public:
 	// Returns:   bool
 	// Qualifier: 在现有的图形上插入数据
 	//************************************
-	bool Insert();
+	bool Insert(bool bIsObstacle = false);
 
 
 	//************************************
@@ -45,6 +45,14 @@ public:
 	//************************************
 	bool Mod();
 
+	//************************************
+	// Method:    getLabelName
+	// FullName:  DrawDMXProcess::getLabelName
+	// Access:    public 
+	// Returns:   CString
+	// Qualifier: 专为插入障碍物的时候返回的label数据
+	//************************************
+	CString getLabelName();
 private:
 	//交互相关
 	int GetZhuanghao();
@@ -123,6 +131,7 @@ private:
 	double m_dminElavation;
 	double m_dmaxElavation;
 	bool m_bHasBugle;//是否有坡度
+	CString m_strLabel;
 	//AcDbObjectIdArray m_GroupIds;
 
 };

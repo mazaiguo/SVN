@@ -88,10 +88,17 @@ bool DrawDMXProcess::Draw()
 	return true;
 }
 
-bool DrawDMXProcess::Insert()
+bool DrawDMXProcess::Insert(bool bIsObstacle)
 {
 	CString strPrompt;
-	strPrompt.Format(_T("\n起始桩号值<m> <%.2f>:"), m_dZhuanghao);
+	if (bIsObstacle)
+	{
+		strPrompt.Format(_T("\n插入桩号值<m> <%.2f>:"), m_dZhuanghao);
+	}
+	else
+	{
+		strPrompt.Format(_T("\n起始桩号值<m> <%.2f>:"), m_dZhuanghao);
+	}
 	int nRet = acedGetReal(strPrompt, &m_dZhuanghao);
 	if (nRet == RTNORM)
 	{
@@ -110,38 +117,43 @@ bool DrawDMXProcess::Insert()
 	{
 		return false;
 	}
-	CString strLabel = BC_DICT + strCur;
-	m_pZdmInfo->setLabel(strLabel);
-	m_pZdmInfo->setCount(strCur);
-	m_pZdmInfo->setJiedian(strCur);
-	m_pZdmInfo->setcurData(m_dZhuanghao);
-
-	if (nRet == RTNORM)
+	m_strLabel = BC_DICT + strCur;
+	CBcUtils bc;
+	CZdmDataInfo tmpInfo;
+	if (!bc.get(m_strLabel, tmpInfo))
 	{
-		if (!EntInteraction())
+		m_pZdmInfo->setLabel(m_strLabel);
+		m_pZdmInfo->setCount(strCur);
+		m_pZdmInfo->setJiedian(strCur);
+		m_pZdmInfo->setcurData(m_dZhuanghao);
+		if (nRet == RTNORM)
+		{
+			if (!EntInteraction())
+			{
+				return false;
+			}
+			CDrawZDM zdm;
+			zdm.setData(m_pZdmInfo);
+			AcDbObjectId groupId = zdm.insert();
+
+			if (CDMXUtils::getcreateGw())
+			{
+				CDrawGDProcess gd;
+				gd.Insert(strCur);
+			}
+
+			return true;
+		}
+		else if (nRet == RTKWORD)
+		{
+			return true;
+		}
+		else
 		{
 			return false;
 		}
-		CDrawZDM zdm;
-		zdm.setData(m_pZdmInfo);
-		AcDbObjectId groupId = zdm.insert();
-
-		if (CDMXUtils::getcreateGw())
-		{
-			CDrawGDProcess gd;
-			gd.Insert(strCur);
-		}
-	
-		return true;
 	}
-	else if (nRet == RTKWORD)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return true;
 }
 
 bool DrawDMXProcess::Del()
@@ -231,6 +243,11 @@ bool DrawDMXProcess::Mod()
 	}
 
 	return false;
+}
+
+CString DrawDMXProcess::getLabelName()
+{
+	return m_strLabel;
 }
 
 //交互相关
@@ -549,7 +566,7 @@ CString DrawDMXProcess::CurNumPosition( double dValue )
 		CZdmDataInfo pData = iter->second;
 		dZhuanghao = pData.getcurData();
 		//当桩号比真实值大时，说明位置就在这个地方
-		if (dZhuanghao > dValue)
+		if (dZhuanghao >= dValue)
 		{
 			strCur = pData.getCount();
 			break;

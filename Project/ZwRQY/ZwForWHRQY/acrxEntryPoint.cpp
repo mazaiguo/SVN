@@ -13,6 +13,7 @@
 #include "DlgDrawJSD.h"
 #include "DlgInsertOther.h"
 #include "MakeBlkFile.h"
+#include "DlgObstacle.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("")
 //-----------------------------------------------------------------------------
@@ -203,6 +204,23 @@ public:
 		mFile.SetFileName(strFileName);
 		mFile.Save();
 	}
+
+	// - WRQ_ZDM._JC command (do not rename)
+	//************************************
+	// Method:    WRQ_ZDM_JC
+	// FullName:  CZwForWHRQYApp::WRQ_ZDM_JC
+	// Access:    public static 
+	// Returns:   void
+	// Qualifier: ≤Â»Î’œ∞≠ŒÔ
+	// Parameter: void
+	//************************************
+	static void WRQ_ZDM_JC(void)
+	{
+		// Add your code for command WRQ_ZDM._JC here
+		CAcModuleResourceOverride rs;
+		CDlgObstacle dlg;
+		dlg.DoModal();
+	}
 } ;
 
 //-----------------------------------------------------------------------------
@@ -217,3 +235,4 @@ ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _XJGD, XJGD, ACRX_CMD_TRANSP
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _ZJJSD, ZJJSD, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _CRQT, CRQT, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _SCTL, SCTL, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _JC, JC, ACRX_CMD_TRANSPARENT, NULL)
