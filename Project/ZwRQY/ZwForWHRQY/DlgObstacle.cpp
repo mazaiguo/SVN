@@ -5,6 +5,7 @@
 #include "resource.h"
 #include "DlgObstacle.h"
 #include "DlgDisplayText.h"
+#include "DrawObstacle.h"
 //-----------------------------------------------------------------------------
 IMPLEMENT_DYNAMIC (CDlgObstacle, CAcUiDialog)
 
@@ -85,11 +86,13 @@ void CDlgObstacle::OnBnClickedRadio24()
 void CDlgObstacle::OnBnClickedOk()
 {
 	// TODO: Add your control notification handler code here
+	BeginEditorCommand();
 	if (m_nRadio == 23)
 	{
 		if (m_strCurName.IsEmpty())
 		{
 			AfxMessageBox(_T("自定义管道名称不能为空"));
+			CancelEditorCommand();
 			return;
 		}
 	}
@@ -97,6 +100,14 @@ void CDlgObstacle::OnBnClickedOk()
 	{
 		m_strCurName = gSpecailPipeName[m_nRadio];
 	}
-
+	
+	CDrawObstacle ob(m_nRadio, m_strCurName);
+	if (!ob.doIt())
+	{
+		CancelEditorCommand();
+		return;
+	}
+	
 	CAcUiDialog::OnOK();
+	CompleteEditorCommand();
 }

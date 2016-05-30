@@ -20,6 +20,9 @@ public:
 	static void SetJdNum(CString strCount);
 	static CString getJdNum();
 
+	static void SetJcNum(CString strCount);
+	static CString getJcNum();
+
 	static void SetStartZH(CString dStartZH);
 	static CString getStartZH();
 

@@ -26,6 +26,7 @@ CBaseDataForZdDwg::CBaseDataForZdDwg()
 	m_strCurNum = _T("1");
 	m_strNumCount = _T("1");
 	m_strJdNum = _T("1");
+	m_strJcNum = _T("1");
 	m_strStartZH = _T("0");
 	m_strPipeType = _T("DN");
 }
@@ -127,6 +128,21 @@ Acad::ErrorStatus CBaseDataForZdDwg::setJdNum(CString nCount)
 
 	return Acad::eOk;
 }
+
+CString CBaseDataForZdDwg::JcNum()
+{
+	assertReadEnabled();
+	return m_strJcNum;
+}
+
+Acad::ErrorStatus CBaseDataForZdDwg::setJcNum(CString nCount)
+{
+	assertWriteEnabled();
+	m_strJcNum = nCount;
+
+	return Acad::eOk;
+}
+
 
 CString CBaseDataForZdDwg::startZH() const
 {
@@ -300,6 +316,9 @@ CBaseDataForZdDwg::dwgInFields(AcDbDwgFiler* filer)
 	m_strJdNum = tmpStr;
 	acutDelString(tmpStr);
 	filer->readItem(&tmpStr);
+	m_strJcNum = tmpStr;
+	acutDelString(tmpStr);
+	filer->readItem(&tmpStr);
 	m_strStartZH = tmpStr;
 	acutDelString(tmpStr);
 	filer->readItem(&tmpStr);
@@ -341,6 +360,7 @@ CBaseDataForZdDwg::dwgOutFields(AcDbDwgFiler* filer) const
 	filer->writeItem(static_cast<const TCHAR*>(m_strNumCount));
 	filer->writeItem(static_cast<const TCHAR*>(m_strCurNum));
 	filer->writeItem(static_cast<const TCHAR*>(m_strJdNum));
+	filer->writeItem(static_cast<const TCHAR*>(m_strJcNum));
 	filer->writeItem(static_cast<const TCHAR*>(m_strStartZH));
 	filer->writeItem(static_cast<const TCHAR*>(m_strPipeType));
 	filer->writeItem(m_dXScale);
@@ -392,6 +412,10 @@ CBaseDataForZdDwg::dxfInFields(AcDbDxfFiler* filer)
 		else if (rb.restype == kDxfJdNum)
 		{
 			setJdNum(rb.resval.rstring);
+		}
+		else if (rb.restype == kDxfJcNum)
+		{
+			setJcNum(rb.resval.rstring);
 		}
 		else if (rb.restype == kDxfXScale)
 		{
@@ -478,6 +502,7 @@ CBaseDataForZdDwg::dxfOutFields(AcDbDxfFiler* filer) const
 	filer->writeItem(kDxfNumCount, m_strNumCount);
 	filer->writeItem(kDxfCurNum, m_strCurNum);
 	filer->writeItem(kDxfJdNum, m_strJdNum);
+	filer->writeItem(kDxfJcNum, m_strJcNum);
 	filer->writeItem(kDxfXScale, m_dXScale);
 	filer->writeItem(kDxfYScale, m_dYScale);
 	filer->writeItem(kDxfminElavation, m_dminElavation);

@@ -374,10 +374,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\DrawObstacle.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\StdAfx.cpp"
 				>
 				<FileConfiguration
@@ -592,6 +588,14 @@
 					RelativePath=".\DlgObstacle.h"
 					>
 				</File>
+				<File
+					RelativePath=".\DrawObstacle.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DrawObstacle.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -600,10 +604,6 @@
 			>
 			<File
 				RelativePath=".\DocData.h"
-				>
-			</File>
-			<File
-				RelativePath=".\DrawObstacle.h"
 				>
 			</File>
 			<File

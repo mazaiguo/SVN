@@ -221,6 +221,32 @@ public:
 		CDlgObstacle dlg;
 		dlg.DoModal();
 	}
+
+	// - WRQ_ZDM._DELJC command (do not rename)
+	//************************************
+	// Method:    WRQ_ZDM_DELJC
+	// FullName:  CZwForWHRQYApp::WRQ_ZDM_DELJC
+	// Access:    public static 
+	// Returns:   void
+	// Qualifier:选择交管，然后删除交管
+	// Parameter: void
+	//************************************
+	static void WRQ_ZDM_DELJC(void)
+	{
+		// Add your code for command WRQ_ZDM._DELJC here
+		AcDbObjectId objId = AcDbObjectId::kNull;
+
+		ads_name ename;
+		AcGePoint3d pt;
+		int nRet = acedEntSel(_T("\n请选择要删除的交管："), ename, asDblArray(pt));
+		if (nRet != RTNORM)
+		{
+			return;
+		}
+		acdbGetObjectId(objId, ename);
+		CString strGroupName = MyEditEntity::openObjAndGetGroupName(objId);
+		MyEditEntity::EraseEntByGroupName(strGroupName);
+	}
 } ;
 
 //-----------------------------------------------------------------------------
@@ -236,3 +262,4 @@ ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _ZJJSD, ZJJSD, ACRX_CMD_TRAN
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _CRQT, CRQT, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _SCTL, SCTL, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _JC, JC, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _DELJC, SCJC, ACRX_CMD_TRANSPARENT, NULL)

@@ -31,6 +31,9 @@ public:
 	CString					JdNum();
 	Acad::ErrorStatus	setJdNum(CString nCount);
 
+	CString					JcNum();
+	Acad::ErrorStatus	setJcNum(CString nCount);
+
 	CString				startZH() const;
 	Acad::ErrorStatus	setStartZH(CString dHx); 
 
@@ -74,6 +77,7 @@ private:
 	CString				m_strNumCount;//图纸中数字的总数
 	CString				m_strCurNum;//当前图纸的数据
 	CString             m_strJdNum;//当前图纸的节点数
+	CString				m_strJcNum;//当前交管的数量
 
 	CString				m_strStartZH;//起始桩号
 	CString				m_strPipeType;
@@ -103,6 +107,7 @@ private:
 		kDxfNumCount		= 300,//90~99 32位整数值
 		kDxfCurNum			= 301,
 		kDxfJdNum			= 302,
+		kDxfJcNum			= 303,
 		kDxfXScale			= 40,//4~59
 		kDxfYScale			= 41,
 		kDxfminElavation 	= 42,
