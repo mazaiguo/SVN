@@ -112,15 +112,14 @@ bool DrawDMXProcess::Insert(bool bIsObstacle)
 	{
 		return false;
 	}
-	CString strCur = CurNumPosition(m_dZhuanghao);
+	bool bIsExisted = false;
+	CString strCur = CurNumPosition(m_dZhuanghao, bIsExisted);
 	if (strCur.CompareNoCase(_T("0")) == 0)
 	{
 		return false;
 	}
 	m_strLabel = BC_DICT + strCur;
-	CBcUtils bc;
-	CZdmDataInfo tmpInfo;
-	if (!bc.get(m_strLabel, tmpInfo))
+	if (!bIsExisted)
 	{
 		m_pZdmInfo->setLabel(m_strLabel);
 		m_pZdmInfo->setCount(strCur);
@@ -552,7 +551,7 @@ bool DrawDMXProcess::doUndo()
 	return true;
 }
 
-CString DrawDMXProcess::CurNumPosition( double dValue )
+CString DrawDMXProcess::CurNumPosition( double dValue, bool& bIsExisted)
 {
 	CString strCur = _T("0");
 	double dZhuanghao;
@@ -566,8 +565,14 @@ CString DrawDMXProcess::CurNumPosition( double dValue )
 		CZdmDataInfo pData = iter->second;
 		dZhuanghao = pData.getcurData();
 		//当桩号比真实值大时，说明位置就在这个地方
-		if (dZhuanghao >= dValue)
+		if (dZhuanghao > dValue)
 		{
+			strCur = pData.getCount();
+			break;
+		}
+		if (abs(dZhuanghao - dValue) < GeTol)
+		{
+			bIsExisted = true;
 			strCur = pData.getCount();
 			break;
 		}

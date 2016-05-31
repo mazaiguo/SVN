@@ -95,7 +95,7 @@ private:
 	// Qualifier: 计算当前桩号所在的位置
 	// Parameter: double dValue
 	//************************************
-	CString CurNumPosition(double dValue);
+	CString CurNumPosition(double dValue, bool& bIsExisted);
 
 
 	//************************************

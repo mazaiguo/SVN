@@ -55,6 +55,13 @@ private:
 	bool drawText();
 	bool drawCirlceOrEllipse();
 	void makeGroup();
+	bool GetUseBase();
+	bool getHeightOrWidth();
+	bool getRecHeight();
+	bool getRecWidth();
+	void drawRec(double dHeigth, double dWidth);
+	//bool GetBaseHeight();
+	//bool GetBaseWidth();
 	enum type
 	{
 		circleType,
@@ -70,7 +77,9 @@ private:
 	double m_dBase;//基础数据
 	double m_dHeight;//插入位置
 	double m_dPipeDiameter;//管径
-	bool m_bIsGdType;//管道类型，管顶或管底
+	double m_dBaseHeight;
+	//double m_dBaseWidth;
+	bool m_bIsGdingType;//管道类型，管顶或管底
 	AcDbObjectIdArray m_idArrs;
 	CString m_strText;//文字内容
 };

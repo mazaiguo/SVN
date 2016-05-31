@@ -86,6 +86,7 @@ void CDlgObstacle::OnBnClickedRadio24()
 void CDlgObstacle::OnBnClickedOk()
 {
 	// TODO: Add your control notification handler code here
+	UpdateData(TRUE);
 	BeginEditorCommand();
 	if (m_nRadio == 23)
 	{

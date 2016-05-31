@@ -6,7 +6,10 @@
 CDrawObstacle::CDrawObstacle(void)
 {
 	m_idArrs.removeAll();
-	m_bIsGdType = true;
+	m_dBase = 0;
+	m_idArrs.removeAll();
+	m_bIsGdingType = false;
+	m_dHeight = 0.0;
 }
 
 CDrawObstacle::CDrawObstacle(int nIndex, CString strName)
@@ -15,7 +18,8 @@ CDrawObstacle::CDrawObstacle(int nIndex, CString strName)
 	m_strName = strName;
 	m_dBase = 0;
 	m_idArrs.removeAll();
-	m_bIsGdType = true;
+	m_bIsGdingType = false;
+	m_dHeight = 0.0;
 }
 
 CDrawObstacle::~CDrawObstacle(void)
@@ -67,13 +71,7 @@ bool CDrawObstacle::getZhuanghao()
 
 	m_dMin = CDMXUtils::getMinElavation();
 	m_dMax	= m_zdmdata.getRealDmx();
-	//////////////////////////////////////////////////////////////////////////
-	/*if (!gethasBase())
-	{
-		return false;
-	}*/
-
-	//////////////////////////////////////////////////////////////////////////
+	
 	switch(m_nIndex)
 	{
 	case 0:
@@ -103,25 +101,24 @@ bool CDrawObstacle::gethasBase()
 	CString strPrompt;	
 	bool bRet = true;
 
-	acedInitGet(0, _T("A B"));
-	strPrompt = _T("\n输入顶高(A)/低高（B）/<管底>:");
-
+	acedInitGet(0, _T("Yes No"));
+	strPrompt = _T("\n有基础(Y)/无基础(N)<无基础>:");
 	TCHAR val[512];
 	int nRet = acedGetKword(strPrompt, val);
 	if (nRet == RTNORM)
 	{
-		if (_tcscmp(val, _T("A")) == 0)
+		if (_tcscmp(val, _T("Yes")) == 0)
 		{
-			bRet = GetGuanDing();
+			bRet = GetUseBase();
 		}
-		else if (_tcscmp(val, _T("B")) == 0)
+		else if (_tcscmp(val, _T("No")) == 0)
 		{
-			bRet = GetGuandi();
+			bRet = true;
 		}		
 	}
 	else if (nRet == RTNONE)
 	{
-		bRet = GetGuandi();
+		bRet = true;
 	}
 	else
 	{
@@ -191,8 +188,9 @@ bool CDrawObstacle::GetGuanDing()
 	{
 		CString strTmp;
 		strTmp.Format(_T("  管顶%.2f"), dResult);
-		m_strText = m_strName + strTmp;
+		m_strText = m_strText + m_strName + strTmp;
 		m_dHeight = dResult;
+		m_bIsGdingType = true;
 	}
 	
 	return bRet;
@@ -227,8 +225,8 @@ bool CDrawObstacle::GetGuandi()
 	{
 		CString strTmp;
 		strTmp.Format(_T("  管底%.2f"), dResult);
-		m_strText = m_strName + strTmp;
-		m_bIsGdType = false;
+		m_strText = m_strText + m_strName + strTmp;
+		m_bIsGdingType = false;
 		m_dHeight = dResult;
 	}
 	
@@ -238,6 +236,13 @@ bool CDrawObstacle::GetGuandi()
 bool CDrawObstacle::drawCircle()
 {
 	//throw std::logic_error("The method or operation is not implemented.");
+	//////////////////////////////////////////////////////////////////////////
+	if (!gethasBase())
+	{
+		return false;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
 	if (!getTopOrBottom())
 	{
 		return false;
@@ -258,13 +263,13 @@ bool CDrawObstacle::drawCircle()
 		return false;
 	}
 	CString strTmp;
-	strTmp.Format(_T(" 管径%fmm"), dResult);
+	strTmp.Format(_T(" 管径%.fmm"), dResult);
 	m_strText += strTmp;
 	
 
-	drawText();
 	drawCirlceOrEllipse();
-	
+	drawText();
+
 	makeGroup();
 	return true;
 }
@@ -276,17 +281,23 @@ bool CDrawObstacle::drawRectangle()
 	{
 		return false;
 	}
+
+	if (!getHeightOrWidth())
+	{
+		return false;
+	}
+
+	drawText();
+
+	makeGroup();
 	return true;
 }
 
 bool CDrawObstacle::drawOther()
 {
 	//throw std::logic_error("The method or operation is not implemented.");
-	if (!getTopOrBottom())
-	{
-		return false;
-	}
-	return true;
+	bool bRet = drawCircle();
+	return bRet;
 }
 
 bool CDrawObstacle::verifyValue(double dValue)
@@ -331,8 +342,8 @@ bool CDrawObstacle::drawText()
 	AcGePoint3d basePt = CDMXUtils::getbasePt();
 
 	acutPolar(asDblArray(basePt), 0, 20 + m_zdmdata.getcurData()*1000/(CDMXUtils::getXScale()), asDblArray(insertPt));
-	acutPolar(asDblArray(insertPt), PI/2, 10, asDblArray(insertPt));
-	AcDbObjectId textId = MyDrawEntity::DrawText(insertPt, m_strText);
+	acutPolar(asDblArray(insertPt), PI/2, 5, asDblArray(insertPt));
+	AcDbObjectId textId = MyDrawEntity::DrawText(insertPt, m_strText, 3.0, AcDbObjectId::kNull, AcDb::kTextLeft, AcDb::kTextBottom);
 	textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 	m_idArrs.append(textId);
 
@@ -342,22 +353,41 @@ bool CDrawObstacle::drawText()
 bool CDrawObstacle::drawCirlceOrEllipse()
 {
 	AcGePoint3d tmpPt,guandiPt,guandiTopPt,cenPt;
-	double dRadius =m_dPipeDiameter/2;
 	AcGePoint3d basePt = CDMXUtils::getbasePt();
 	double dXScale = 1000/(CDMXUtils::getXScale());
-	double dYScale = 1000/(CDMXUtils::getYScale());
+	double dYScale = 1000/(CDMXUtils::getYScale());	
+	double dRadius = m_dPipeDiameter/2;
+
 	acutPolar(asDblArray(basePt), 0, 20 + m_zdmdata.getcurData()*dXScale, asDblArray(tmpPt));
-	if (m_bIsGdType)
+	//////////////////////////////////////////////////////////////////////////
+	//绘制base
+	if (m_dBase)
 	{
-		m_dHeight += dRadius;
+		if (!m_bIsGdingType)
+		{
+			m_dHeight = m_dHeight + dRadius + m_dBase/1000;
+		}
+		else
+		{
+			m_dHeight = m_dHeight - dRadius;
+		}
 	}
 	else
 	{
-		m_dHeight -= dRadius;
+		if (!m_bIsGdingType)
+		{
+			m_dHeight += dRadius;
+		}
+		else
+		{
+			m_dHeight -= dRadius;
+		}
 	}
-	acutPolar(asDblArray(tmpPt), PI/2, (m_dHeight - CDMXUtils::getMinElavation())*dYScale, asDblArray(guandiPt));
-	acutPolar(asDblArray(guandiPt), PI/2, 2*dRadius, asDblArray(guandiTopPt));
-	acutPolar(asDblArray(guandiPt), PI/2, dRadius, asDblArray(cenPt));
+	
+	dRadius *= dYScale;
+	acutPolar(asDblArray(tmpPt), PI/2, (m_dHeight - CDMXUtils::getMinElavation())*dYScale, asDblArray(cenPt));
+	acutPolar(asDblArray(cenPt), PI/2, dRadius, asDblArray(guandiTopPt));
+	acutPolar(asDblArray(cenPt), 3*PI/2, dRadius, asDblArray(guandiPt));
 	AcDbObjectId objId = AcDbObjectId::kNull;
 	AcDbObjectId ZxLayerId = MySymble::CreateNewLayer(_T("JC-TMP"), 7);
 	AcDbObjectIdArray objIdArr;
@@ -367,7 +397,7 @@ bool CDrawObstacle::drawCirlceOrEllipse()
 		//绘制椭圆
 		double dRadio = dXScale/dYScale;
 		AcGeVector3d unitVec;
-		unitVec = guandiTopPt - guandiPt;
+		unitVec = guandiTopPt - cenPt;
 		objId = MyDrawEntity::DrawEllipse(cenPt, AcGeVector3d::kZAxis, unitVec, dRadio);
 		objId = MyEditEntity::openEntChangeLayer(objId, ZxLayerId);
 		objId = MyEditEntity::openEntChangeColor(objId, 3);
@@ -380,6 +410,16 @@ bool CDrawObstacle::drawCirlceOrEllipse()
 		objId = MyDrawEntity::DrawCircle(cenPt, dRadius, ZxLayerId);
 		objId = MyEditEntity::openEntChangeColor(objId, 3);
 		m_idArrs.append(objId);
+	}
+	if (m_dBase > 0)
+	{
+		AcGePoint3d baseDiPt,baseminPt,baseMaxPt;
+		acutPolar(asDblArray(guandiPt), 3*PI/2, dYScale*m_dBase/1000, asDblArray(baseDiPt));
+		acutPolar(asDblArray(baseDiPt), PI, dXScale*m_dBase/1000, asDblArray(baseminPt));
+		acutPolar(asDblArray(guandiPt), 0, dXScale*m_dBase/1000, asDblArray(baseMaxPt));
+		AcGePoint3dArray ptArr = MyTransFunc::OperateTwoPointsAndGetPoints(baseminPt, baseMaxPt);
+		AcDbObjectId plineId = MyDrawEntity::DrawPlineByPoints(ptArr);
+		m_idArrs.append(plineId);
 	}
 	return true;
 }
@@ -394,3 +434,157 @@ void CDrawObstacle::makeGroup()
 	strJcNum.Format(_T("%d"), nCount);
 	CDMXUtils::SetJcNum(strJcNum);
 }
+
+bool CDrawObstacle::GetUseBase()
+{
+	//throw std::logic_error("The method or operation is not implemented.");
+	CString strPrompt;	
+	bool bRet = true;
+	double dHeigth = 0.0;
+	int nResult = acedGetReal(_T("\n请输入基础高度<mm>:"), &dHeigth);
+	if (nResult != RTNORM)
+	{
+		return false;
+	}
+	m_dBase = dHeigth;
+	CString strTmp;
+	strTmp.Format(_T("带基础%.f"), m_dBase);
+	m_strText += strTmp;
+	return bRet;
+}
+
+bool CDrawObstacle::getHeightOrWidth()
+{
+	//throw std::logic_error("The method or operation is not implemented.");
+	CString strPrompt;	
+	bool bRet = true;
+
+	acedInitGet(0, _T("H W"));
+	strPrompt = _T("\n输入高度(H)/宽度（W）/<高度>:");
+
+	TCHAR val[512];
+	int nRet = acedGetKword(strPrompt, val);
+	if (nRet == RTNORM)
+	{
+		if (_tcscmp(val, _T("H")) == 0)
+		{
+			bRet = getRecHeight();
+		}
+		else if (_tcscmp(val, _T("W")) == 0)
+		{
+			bRet = getRecWidth();
+		}		
+	}
+	else if (nRet == RTNONE)
+	{
+		bRet = getRecHeight();
+	}
+	else
+	{
+		return false;
+	}
+	return bRet;
+}
+
+bool CDrawObstacle::getRecHeight()
+{
+	double dHeigth = 0.0;
+	double dWidth = 0.0;
+	int nResult = acedGetReal(_T("\n请输入高度<mm>:"), &dHeigth);
+	if (nResult != RTNORM)
+	{
+		return false;
+	}
+
+	nResult = acedGetReal(_T("\n请输入宽度<mm>:"), &dWidth);
+	if (nResult != RTNORM)
+	{
+		return false;
+	}
+	CString strTmp;
+	strTmp.Format(_T(" %.fX%.f"), dHeigth, dWidth);
+	m_strText += strTmp;
+	drawRec(dHeigth, dWidth);
+	return true;
+}
+
+bool CDrawObstacle::getRecWidth()
+{
+	//throw std::logic_error("The method or operation is not implemented.");
+	double dHeigth = 0.0;
+	double dWidth = 0.0;
+	int nResult = acedGetReal(_T("\n请输入宽度<mm>:"), &dHeigth);
+	if (nResult != RTNORM)
+	{
+		return false;
+	}
+	
+	nResult = acedGetReal(_T("\n请输入高度<mm>:"), &dHeigth);
+	if (nResult != RTNORM)
+	{
+		return false;
+	}
+	CString strTmp;
+	strTmp.Format(_T(" %.fX%.f"), dHeigth, dWidth);
+	m_strText += strTmp;
+	drawRec(dHeigth, dWidth);
+	return true;
+}
+
+void CDrawObstacle::drawRec(double dHeigth, double dWidth)
+{
+	AcGePoint3d tmpPt,minPt,maxPt;
+	AcGePoint3d basePt = CDMXUtils::getbasePt();
+	double dXScale = 1000/(CDMXUtils::getXScale());
+	double dYScale = 1000/(CDMXUtils::getYScale());
+	acutPolar(asDblArray(basePt), 0, 20 + m_zdmdata.getcurData()*dXScale, asDblArray(tmpPt));
+
+	acutPolar(asDblArray(tmpPt), PI/2, (m_dHeight - CDMXUtils::getMinElavation())*dYScale, asDblArray(tmpPt));
+
+	//////////////////////////////////////////////////////////////////////////
+	if (!m_bIsGdingType)//管底
+	{
+		acutPolar(asDblArray(tmpPt), PI, dXScale*dWidth/2000, asDblArray(minPt));
+		acutPolar(asDblArray(tmpPt), PI/2,dYScale*dHeigth/1000, asDblArray(maxPt));
+		acutPolar(asDblArray(maxPt), 0, dXScale*dWidth/2000, asDblArray(maxPt));
+		AcGePoint3dArray ptArr = MyTransFunc::OperateTwoPointsAndGetPoints(minPt, maxPt);
+		AcDbObjectId plineId = MyDrawEntity::DrawPlineByPoints(ptArr);
+		m_idArrs.append(plineId);
+	}
+	else
+	{
+		acutPolar(asDblArray(tmpPt), 0, dXScale*dWidth/2000, asDblArray(maxPt));
+		acutPolar(asDblArray(tmpPt), 3*PI/2,dYScale*dHeigth/1000, asDblArray(minPt));
+		acutPolar(asDblArray(minPt), PI, dXScale*dWidth/2000, asDblArray(minPt));
+		AcGePoint3dArray ptArr = MyTransFunc::OperateTwoPointsAndGetPoints(minPt, maxPt);
+		AcDbObjectId plineId = MyDrawEntity::DrawPlineByPoints(ptArr);
+		m_idArrs.append(plineId);
+	}
+
+}
+
+//bool CDrawObstacle::GetBaseHeight()
+//{
+//	//throw std::logic_error("The method or operation is not implemented.");
+//	//获取管径
+//	double dHeigth = 0.0;
+//	double dWidth = 0.0;
+//	int nResult = acedGetReal(_T("\n请输入高度<mm>:"), &dHeigth);
+//	if (nResult != RTNORM)
+//	{
+//		return false;
+//	}
+//	
+//}
+//
+//bool CDrawObstacle::GetBaseWidth()
+//{
+//	//throw std::logic_error("The method or operation is not implemented.");
+//	double dResult = 0.0;
+//	int nResult = acedGetReal(_T("\n请输入宽度<mm>:"), &dResult);
+//	if (nResult != RTNORM)
+//	{
+//		return false;
+//	}
+//
+//}
