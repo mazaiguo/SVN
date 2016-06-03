@@ -91,7 +91,11 @@ bool CDrawObstacle::getZhuanghao()
 		bRet = drawOther();
 		break;
 	}
-
+	if (!bRet)
+	{
+		dm.del(strLabel);
+		makeGroup(false);
+	}
 
 	return bRet;
 }
@@ -424,14 +428,23 @@ bool CDrawObstacle::drawCirlceOrEllipse()
 	return true;
 }
 
-void CDrawObstacle::makeGroup()
+void CDrawObstacle::makeGroup(bool bIsAdded)
 {
 	CString strJcNum = CDMXUtils::getJcNum();
 	int nCount = MyTransFunc::StringToInt(strJcNum);
 	CString strGroupName = JC_DICT + strJcNum;
-	AcDbObjectId groupId = MyDrawEntity::MakeGroup(m_idArrs, false, strGroupName);
-	nCount++;
-	strJcNum.Format(_T("%d"), nCount);
+	if (bIsAdded)
+	{
+		AcDbObjectId groupId = MyDrawEntity::MakeGroup(m_idArrs, false, strGroupName);
+		nCount++;
+		strJcNum.Format(_T("%d"), nCount);
+	}
+	else
+	{
+		MyEditEntity::EraseEntByGroupName(strGroupName);
+		nCount--;
+		strJcNum.Format(_T("%d"), nCount);
+	}
 	CDMXUtils::SetJcNum(strJcNum);
 }
 

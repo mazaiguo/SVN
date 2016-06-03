@@ -159,50 +159,7 @@ bool DrawDMXProcess::Del()
 {
 	AcDbObjectId objId = setlectEnt(_T("\n选择要删除的桩号"));
 	CString strGroupName = MyEditEntity::openObjAndGetGroupName(objId);
-	
-	CString strCur = CurNumPosition(strGroupName);
-	int nCount = MyTransFunc::StringToInt(strCur);
-	if (nCount == 1)
-	{
-		AfxMessageBox(_T("不能删除第一个桩号"));
-		return false;
-	}
-	else if (nCount == 0)
-	{
-		AfxMessageBox(_T("没有选中桩号"));
-		return false;
-	}
-	
-	//删除dictionary
-	CBcUtils utils;
-	CString strNextGroupName;
-	nCount++;
-	CString strTmpCur;
-	strTmpCur.Format(_T("%d"), nCount);
-	strNextGroupName = BC_DICT + strTmpCur;
-	CZdmDataInfo data;
-	utils.get(strNextGroupName, data);
-	data.setLabel(strGroupName);
-	data.setCount(strCur);
-	data.setJiedian(strCur);
-
-	MyEditEntity::EraseEntByGroupName(strGroupName);
-
-	CDrawZDM zdm;
-	zdm.setData(&data);
-	bool bRet = zdm.del(strGroupName);
-
-	if (CDMXUtils::getcreateGw())
-	{
-		//删除管道线
-		CString strGdGroupName;
-		strGdGroupName = BC_DICT_GD + strCur;
-		MyEditEntity::EraseEntByGroupName(strGdGroupName);
-
-		CDrawGd gd;
-		gd.del(data);
-	}
-	
+	bool bRet =	del(strGroupName);
 	return bRet;
 }
 
@@ -639,6 +596,53 @@ bool DrawDMXProcess::EntInteraction()
 	return true;
 }	
 
+
+bool DrawDMXProcess::del(CString strGroupName)
+{
+	CString strCur = CurNumPosition(strGroupName);
+	int nCount = MyTransFunc::StringToInt(strCur);
+	if (nCount == 1)
+	{
+		AfxMessageBox(_T("不能删除第一个桩号"));
+		return false;
+	}
+	else if (nCount == 0)
+	{
+		AfxMessageBox(_T("没有选中桩号"));
+		return false;
+	}
+
+	//删除dictionary
+	CBcUtils utils;
+	CString strNextGroupName;
+	nCount++;
+	CString strTmpCur;
+	strTmpCur.Format(_T("%d"), nCount);
+	strNextGroupName = BC_DICT + strTmpCur;
+	CZdmDataInfo data;
+	utils.get(strNextGroupName, data);
+	data.setLabel(strGroupName);
+	data.setCount(strCur);
+	data.setJiedian(strCur);
+
+	MyEditEntity::EraseEntByGroupName(strGroupName);
+
+	CDrawZDM zdm;
+	zdm.setData(&data);
+	bool bRet = zdm.del(strGroupName);
+
+	if (CDMXUtils::getcreateGw())
+	{
+		//删除管道线
+		CString strGdGroupName;
+		strGdGroupName = BC_DICT_GD + strCur;
+		MyEditEntity::EraseEntByGroupName(strGdGroupName);
+
+		CDrawGd gd;
+		gd.del(data);
+	}
+	return bRet;
+}
 
 CDrawGDProcess::CDrawGDProcess(void)
 {

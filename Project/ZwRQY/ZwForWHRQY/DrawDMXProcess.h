@@ -35,6 +35,7 @@ public:
 	//************************************
 	bool Del();
 
+	bool del(CString strGroupName);
 
 	//************************************
 	// Method:    Mod
@@ -112,7 +113,6 @@ private:
 	
 	//实体交互
 	bool EntInteraction();
-
 
 private:
 	double m_dXScale;//x比例
