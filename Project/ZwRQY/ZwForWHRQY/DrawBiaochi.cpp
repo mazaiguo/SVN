@@ -125,9 +125,9 @@ bool CDrawBiaochi::startDraw()
 AcDbObjectId CDrawBiaochi::DrawBiaoge()
 {
 #if 0
-	CString strFileName = MyBaseUtils::GetAppPath() + _T("bc\\zdmmq.dwg");
+	CString strFileName = MyBaseUtils::GetAppPath() + _T("zdm\\bc\\zdmmq.dwg");
 #else
-	CString strFileName = MyBaseUtils::GetAppPath() + _T("bc\\zdmmq1.dwg");
+	CString strFileName = MyBaseUtils::GetAppPath() + _T("zdm\\bc\\zdmmq1.dwg");
 #endif
 	AcDbObjectId blkRecId = MyDrawEntity::GetBlkRef(strFileName);
 	AcDbBlockReference* pBlkRef = new AcDbBlockReference(m_basePt, blkRecId);
@@ -303,11 +303,11 @@ AcDbObjectId CDrawBiaochi::DrawTextAndBC(AcGePoint3d pt, CString strText, bool b
 	CString strFileName;
 	if (bFull)
 	{
-		strFileName = MyBaseUtils::GetAppPath() + _T("bc\\ZDMB1.dwg");
+		strFileName = MyBaseUtils::GetAppPath() + _T("zdm\\bc\\ZDMB1.dwg");
 	}
 	else
 	{
-		strFileName = MyBaseUtils::GetAppPath() + _T("bc\\ZDMB2.dwg");
+		strFileName = MyBaseUtils::GetAppPath() + _T("zdm\\bc\\ZDMB2.dwg");
 	}
 
 	AcDbObjectId blkRecId = MyDrawEntity::GetBlkRef(strFileName);

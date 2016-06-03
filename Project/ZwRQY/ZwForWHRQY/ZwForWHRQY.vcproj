@@ -597,6 +597,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="·§ÃÅ"
+				>
+				<File
+					RelativePath=".\DrawFM.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DrawFM.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Include Files"

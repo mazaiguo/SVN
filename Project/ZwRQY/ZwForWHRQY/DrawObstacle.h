@@ -54,7 +54,7 @@ private:
 	bool insertRef();
 	bool drawText();
 	bool drawCirlceOrEllipse();
-	void makeGroup();
+	void makeGroup(bool bIsAdded = true);
 	bool GetUseBase();
 	bool getHeightOrWidth();
 	bool getRecHeight();
