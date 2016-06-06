@@ -1,40 +1,101 @@
 #include "StdAfx.h"
 #include "DrawFM.h"
+#include "dbwipe.h"
+#include "BlkInfo.h"
+#include "BcUtils.h"
 
 CDrawFM::CDrawFM(void)
 {
+	m_layerId = MySymble::CreateNewLayer(_T("FM-RQ"), 1);
 }
 
 CDrawFM::~CDrawFM(void)
 {
+
 }
 
 
-bool CDrawFM::GetZhuanghao()
+bool CDrawFM::doIt()
 {
-	CString strPrompt;
-	double dZhuanghao;
-	strPrompt.Format(_T("\n指定插入桩号值<m> <%.2f>:"), dZhuanghao);
-	
-	int nRet = acedGetReal(strPrompt, &dZhuanghao);
-	if (nRet != RTNORM)
+	if (!GetZhuanghao())
 	{
 		return false;
 	}
 
+	if (!GetDescription())
+	{
+		return false;
+	}
+	
+	if (!insert())
+	{
+		return false;
+	}
+
+
+	drawLineAndText();
+
+	int nBlkRefCount = 0;
+	MyBaseUtils::GetVar(_T("USERI2"), &nBlkRefCount);
+	CString strName;
+	strName.Format(_T("%s%d"), FM_DICT, nBlkRefCount);
+	MyDrawEntity::MakeGroup(m_idArrs, false, strName);
+	nBlkRefCount++;
+	MyBaseUtils::SetVar(_T("USERI2"), nBlkRefCount);
+	return true;
+}
+
+bool CDrawFM::del()
+{
+	AcDbObjectId objId = AcDbObjectId::kNull;
+
+	ads_name ename;
+	AcGePoint3d pt;
+	int nRet = acedEntSel(_T("\n请选择要删除的阀门："), ename, asDblArray(pt));
+	if (nRet != RTNORM)
+	{
+		return false;
+	}
+	acdbGetObjectId(objId, ename);
+	CString strGroupName = MyEditEntity::openObjAndGetGroupName(objId);
+	if (strGroupName.Find(FM_DICT) != -1)
+	{
+		MyEditEntity::EraseEntByGroupName(strGroupName);
+		int nBlkRefCount = 0;
+		MyBaseUtils::GetVar(_T("USERI2"), &nBlkRefCount);
+		nBlkRefCount--;
+		MyBaseUtils::SetVar(_T("USERI2"), nBlkRefCount);
+	}
+	else
+	{
+		AfxMessageBox(_T("请选择阀门"));
+	}
+	return true;
+}
+
+bool CDrawFM::GetZhuanghao()
+{
+	CString strPrompt;
+	//strPrompt.Format(_T("\n指定插入桩号值<m> <%.2f>:"), m_dZhuanghao);
+	
+	int nRet = acedGetReal(_T("\n指定插入桩号值<m>:"), &m_dZhuanghao);
+	if (nRet != RTNORM)
+	{
+		return false;
+	}
+	return true;
 }
 
 bool CDrawFM::GetDescription()
 {
 	TCHAR tempBuf[133];
-	CString strNo;
 
-	int nRet = acedGetString(1.  _T("\n请输入编号:"),tempBuf);
+	int nRet = acedGetString(1, _T("\n请输入编号:"),tempBuf);
 	if (nRet != RTNORM)
 	{
 		return false;
 	}
-	strNo = tempBuf;
+	m_strNo = tempBuf;
 	
 	return true;
 }
@@ -87,4 +148,164 @@ Acad::ErrorStatus CDrawFM::CreateWipeout (AcDbObjectId &wipeoutId,AcGePoint3dArr
 	wipeoutId = pWipeout->objectId();
 	pWipeout->close();
 	return Acad::eOk;
+}
+
+bool CDrawFM::insertGdBlk(AcGePoint3d insertPt)
+{
+	CBlkBaseInFo blkInfo;
+	CString strPath = MyBaseUtils::GetAppPath() + _T("zdm\\fm\\RFM1.dwg");
+	blkInfo.SetBlkName(_T("RFM1"));
+	blkInfo.SetFileName(strPath);
+	blkInfo.SetInsertPt(insertPt);
+	//blkInfo.SetInsertPt();
+	CBlkInsert blkInsert;
+	blkInsert.SetBlkInfo(blkInfo);
+	blkInsert.SetModified(true);
+	if (blkInsert.Insert())
+	{
+		AcDbObjectId blkId = blkInsert.GetObjectId();
+		blkId = MyEditEntity::openEntChangeLayer(blkId, m_layerId);
+		m_idArrs.append(blkId);
+	}
+	else
+	{
+		return false;
+	}
+	return true;
+}
+CString CDrawFM::CurNumPosition( double dValue, bool& bIsExisted)
+{
+	CString strCur = _T("0");
+	double dZhuanghao;
+	CBcUtils bcUtils;
+	map<CString, CZdmDataInfo> data = bcUtils.getAllData();
+
+	for (map<CString, CZdmDataInfo>::iterator iter = data.begin();
+		iter != data.end();
+		++iter)
+	{
+		CZdmDataInfo pData = iter->second;
+		dZhuanghao = pData.getcurData();
+		//当桩号比真实值大时，说明位置就在这个地方
+		if (dZhuanghao > dValue)
+		{
+			strCur = pData.getCount();
+			break;
+		}
+		if (abs(dZhuanghao - dValue) < GeTol)
+		{
+			bIsExisted = true;
+			strCur = pData.getCount();
+			break;
+		}
+	}
+	return strCur;
+}
+
+bool CDrawFM::insert()
+{
+	bool bIsExisted = false;
+	CString strCur = CurNumPosition(m_dZhuanghao, bIsExisted);
+	CString strLabel = BC_DICT + strCur;
+	double dXScale = 1000/(CDMXUtils::getXScale());
+	double dYScale = 1000/(CDMXUtils::getYScale());
+	AcGePoint3d basePt = CDMXUtils::getbasePt();
+	AcGePoint3d tmpPt,insertPt;
+	acutPolar(asDblArray(basePt), 0, 20 + m_dZhuanghao*dXScale, asDblArray(tmpPt));
+	acutPolar(asDblArray(tmpPt), 3*PI/2, 91, asDblArray(insertPt));
+	CBcUtils bc;
+	CZdmDataInfo zdm;
+	bc.get(strLabel, zdm);
+	double dRotate = 0.0;
+	if (!bIsExisted)//如果没有找到，说明在strCur与strCur+1之间
+	{
+		CBcUtils nextBc;
+		CZdmDataInfo preZdm;
+		int nCount = MyTransFunc::StringToInt(strCur);
+		nCount--;
+		strCur.Format(_T("%d"), nCount);
+		CString strNext = BC_DICT + strCur;
+		bc.get(strNext, preZdm);
+		double dDist1,dDist2,dDist3,dDist4;
+// 		dDist1 = (zdm.getRealDmx() - CDMXUtils::getMinElavation())*dYScale;
+// 		dDist2 = (preZdm.getRealDmx() - CDMXUtils::getMinElavation())*dYScale;
+// 		dDist3 = (m_dZhuanghao - preZdm.getcurData())*dXScale;
+// 		dDist4 = (zdm.getcurData() - preZdm.getcurData())*dXScale;
+// 
+// 		m_blkInsert.x = (m_dZhuanghao - preZdm.getRealDmx())*dXScale + tmpPt.x;
+// 		m_blkInsert.y = (dDist1*dDist4 + dDist2*dDist3)/(dDist3+dDist4) + tmpPt.y;
+// 		m_blkInsert.z = tmpPt.z;
+		AcGePoint3d startPt,endPt;
+		acutPolar(asDblArray(basePt), 0, 20 + preZdm.getcurData()*dXScale, asDblArray(startPt));
+		acutPolar(asDblArray(startPt), PI/2, (preZdm.getRealDmx() - CDMXUtils::getMinElavation())*dYScale, asDblArray(startPt));
+		acutPolar(asDblArray(basePt), 0, 20 + zdm.getcurData()*dXScale, asDblArray(endPt));
+		acutPolar(asDblArray(endPt), PI/2, (zdm.getRealDmx() - CDMXUtils::getMinElavation())*dYScale, asDblArray(endPt));
+		
+		AcGePoint3d rayPt = tmpPt;
+		rayPt.y += 1000*dYScale;
+		AcGeLine3d line1(startPt, endPt);
+		AcGeLine3d line2(rayPt, tmpPt);
+		line1.intersectWith(line2, m_blkInsert);
+	
+		AcGeVector3d vec;
+		vec.set((zdm.getcurData() - preZdm.getcurData())*dXScale, (zdm.getRealDmx() - preZdm.getRealDmx())*dYScale, 0);
+		dRotate = vec.angleOnPlane(AcGePlane::kXYPlane);
+	}
+	else
+	{
+		acutPolar(asDblArray(tmpPt), PI/2, (zdm.getRealDmx() - CDMXUtils::getMinElavation())*dYScale, asDblArray(m_blkInsert));
+	}
+	
+	insertGdBlk(insertPt);
+	insertUp(m_blkInsert, dRotate);
+	return true;
+}
+
+void CDrawFM::insertUp(AcGePoint3d insertPt, double dRotate)
+{
+	CBlkBaseInFo blkInfo;
+	CString strPath = MyBaseUtils::GetAppPath() + _T("zdm\\fm\\up.dwg");
+	blkInfo.SetBlkName(_T("up"));
+	blkInfo.SetFileName(strPath);
+	blkInfo.SetInsertPt(insertPt);
+	blkInfo.SetRotate(dRotate);
+	//blkInfo.SetInsertPt();
+	CBlkInsert blkInsert;
+	blkInsert.SetBlkInfo(blkInfo);
+	blkInsert.SetModified(true);
+	if (blkInsert.Insert())
+	{
+		AcDbObjectId blkId = blkInsert.GetObjectId();
+		blkId = MyEditEntity::openEntChangeLayer(blkId, m_layerId);
+		m_idArrs.append(blkId);
+	}
+	else
+	{
+		return;
+	}
+	return;
+}
+
+void CDrawFM::drawLineAndText()
+{
+	AcGePoint3d midPt,endPt;
+	int nRet = acedGetPoint(asDblArray(m_blkInsert), _T("\n请指定终点"), asDblArray(midPt));
+	if (nRet != RTNORM)
+	{
+		return;
+	}
+	CString strText = _T("阀") + m_strNo;
+	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3000.0/(CDMXUtils::getXScale()));
+
+	AcDbObjectId textId = MyDrawEntity::DrawText(midPt, strText,3.0, textStyleId);
+	m_idArrs.append(textId);
+
+	double dlen = MyEditEntity::OpenObjAndGetLength(textId);
+	acutPolar(asDblArray(midPt), 0, dlen, asDblArray(endPt));
+	AcGePoint3dArray points;
+	points.append(m_blkInsert);
+	points.append(midPt);
+	points.append(endPt);
+	AcDbObjectId plineId = MyDrawEntity::DrawPlineByPoints(points);
+	m_idArrs.append(plineId);
 }

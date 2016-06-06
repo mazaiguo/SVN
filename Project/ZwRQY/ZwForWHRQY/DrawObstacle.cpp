@@ -321,7 +321,7 @@ bool CDrawObstacle::insertRef()
 {
 	CString strAppName = MyBaseUtils::GetAppPath();
 	CString strFile,strTmp;
-	strTmp.Format(_T("jc\\JCFH%d.dwg"), m_nIndex + 1);
+	strTmp.Format(_T("zdm\\jc\\JCFH%d.dwg"), m_nIndex + 1);
 	strFile = strAppName + strTmp;
 	AcGePoint3d basePt = CDMXUtils::getbasePt();
 	AcGePoint3d insertPt;

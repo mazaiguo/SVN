@@ -113,11 +113,11 @@ bool CDrawBiaochi::startDraw()
 		acedSSFree(m_ssname);
 		return false;
 	}
+	SaveDataToDwg();
 	if (!GetStartZhuanghao())
 	{
 		return false;
 	}
-	SaveDataToDwg();
 	return true;
 }
 
@@ -254,6 +254,11 @@ bool CDrawBiaochi::GetStartZhuanghao()
 	if (nRet == RTNORM)
 	{
 		//return true;
+		m_dstartZhuanghao = tempBuf;
+		if (m_dstartZhuanghao.IsEmpty())
+		{
+			m_dstartZhuanghao =_T("0");
+		}
 	}
 	else if (nRet == RTNONE)
 	{
@@ -263,7 +268,6 @@ bool CDrawBiaochi::GetStartZhuanghao()
 	{
 		return false;
 	}
-	m_dstartZhuanghao = tempBuf;
 	CDMXUtils::SetStartZH(m_dstartZhuanghao);
 	return true;
 }

@@ -1471,6 +1471,26 @@ bool MyEditEntity::EraseObj(AcDbObjectId objId)
 	return true;
 }
 
+bool MyEditEntity::EraseSSName(ads_name ssname)
+{
+	long sslen;
+	acedSSLength(ssname, &sslen);
+	if (sslen < 1)
+	{
+		return false;
+	}
+	AcDbObjectId objId = AcDbObjectId::kNull;
+
+	ads_name ename;
+	for (int i=0; i<sslen; i++)
+	{
+		acedSSName(ssname, i, ename);
+		acdbGetObjectId(objId, ename);
+		EraseObj(objId);
+	}
+	return true;
+}
+
 CString MyEditEntity::openObjAndGetGroupName(AcDbObjectId objId)
 {
 	CString strGroupName(_T(""));

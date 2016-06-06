@@ -102,8 +102,8 @@ public:
 
 	//删除实体
 	static bool EraseObj(AcDbObjectId);
-	
-
+	//删除选择集
+	static bool EraseSSName(ads_name ssname);
 	//组相关的操作
 	static CString openObjAndGetGroupName(AcDbObjectId objId);
 

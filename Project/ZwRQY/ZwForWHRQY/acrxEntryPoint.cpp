@@ -14,6 +14,8 @@
 #include "DlgInsertOther.h"
 #include "MakeBlkFile.h"
 #include "DlgObstacle.h"
+#include "DrawFM.h"
+#include "ObjectToNotify.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("")
 //-----------------------------------------------------------------------------
@@ -34,7 +36,8 @@ public:
 		// TODO: Add your initialization code here
 		gGlobal.SetIni(gGlobal.GetIniPath());
 
-		//acrxBuildClassHierarchy();	
+		CObjectToNotify::rxInit();
+		acrxBuildClassHierarchy();	
 		
 		
 
@@ -49,6 +52,7 @@ public:
 		AcRx::AppRetCode retCode =AcRxArxApp::On_kUnloadAppMsg (pkt) ;
 
 		// TODO: Unload dependencies here
+		deleteAcRxClass(CObjectToNotify::desc());
 		return (retCode) ;
 	}
 
@@ -245,7 +249,15 @@ public:
 		}
 		acdbGetObjectId(objId, ename);
 		CString strGroupName = MyEditEntity::openObjAndGetGroupName(objId);
-		MyEditEntity::EraseEntByGroupName(strGroupName);
+		if (strGroupName.Find(JC_DICT) != -1)
+		{	
+			MyEditEntity::EraseEntByGroupName(strGroupName);
+
+		}
+		else
+		{
+			AfxMessageBox(_T("请选择交管"));
+		}
 	}
 
 	// - WRQ_ZDM._ZJFM command (do not rename)
@@ -260,62 +272,16 @@ public:
 	static void WRQ_ZDM_ZJFM(void)
 	{
 		// Add your code for command WRQ_ZDM._ZJFM here
-		bool bDrawBc = CDMXUtils::getcreateBc();
-		if (!bDrawBc)
-		{
-			AfxMessageBox(_T("\n请先增加地面线"));
-			return;
-		}
+		CDrawFM fm;
+		fm.doIt();
+	}
 
-		if (!CDMXUtils::getcreateGw())
-		{
-			AfxMessageBox(_T("\n请先绘制管道"));
-			return;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		AcGePoint3d startPt,midPt,endPt;
-		int nRet = acedGetPoint(NULL, _T("\n请指定警示带起点"), asDblArray(startPt));
-		if (nRet != RTNORM)
-		{
-			return;
-		}
-		nRet = acedGetPoint(asDblArray(startPt), _T("\n请指定警示带终点"), asDblArray(midPt));
-		if (nRet != RTNORM)
-		{
-			return;
-		}
-		acedGrDraw(asDblArray(startPt), asDblArray(midPt), 7, 1);
-		int nOrtho;
-		MyBaseUtils::GetVar(_T("ORTHOMODE"), &nOrtho);
-		if (nOrtho == 0)
-		{
-			MyBaseUtils::SetVar(_T("ORTHOMODE"), 1);
-		}
-		nRet = acedGetPoint(asDblArray(midPt), _T("\n请指定方向"), asDblArray(endPt));
-		if (nRet != RTNORM)
-		{
-			MyBaseUtils::SetVar(_T("ORTHOMODE"), nOrtho);
-			return;
-		}
-		MyBaseUtils::SetVar(_T("ORTHOMODE"), nOrtho);
-
-		AcGeVector3d vec = endPt - midPt;
-		double dAng = vec.angleOnPlane(AcGePlane::kXYPlane);
-		AcDbObjectId textId = AcDbObjectId::kNull;
-		AcDbObjectId plineId = AcDbObjectId::kNull;
-		AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3000.0/(CDMXUtils::getXScale()));
-		AcGePoint3dArray points;
-		double dLen;
-		/*if (vec.x > 0)
-		{*/
-			//textId = MyDrawEntity::DrawText(midPt, m_strType, 3.0, textStyleId, AcDb::kTextLeft);
-			textId = MyEditEntity::openEntChangeRotation(textId, dAng);
-			dLen = MyEditEntity::OpenObjAndGetLength(textId);
-			acutPolar(asDblArray(midPt), dAng, dLen, asDblArray(endPt));
-			points.append(startPt);
-			points.append(midPt);
-			points.append(endPt);
-			plineId = MyDrawEntity::DrawPlineByPoints(points);
+	// - WRQ_ZDM._SCFM command (do not rename)
+	static void WRQ_ZDM_SCFM(void)
+	{
+		// Add your code for command WRQ_ZDM._SCFM here
+		CDrawFM fm;
+		fm.del();
 	}
 } ;
 
@@ -334,3 +300,4 @@ ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _SCTL, SCTL, ACRX_CMD_TRANSP
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _JC, JC, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _DELJC, SCJC, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _ZJFM, ZJFM, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _SCFM, SCFM, ACRX_CMD_TRANSPARENT, NULL)

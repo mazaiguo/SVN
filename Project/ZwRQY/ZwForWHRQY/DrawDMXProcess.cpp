@@ -1015,6 +1015,11 @@ bool CDrawGDProcess::GetPipeType()
 	if (nRet == RTNORM)
 	{
 		//return true;
+		m_strPipeType = tempBuf;
+		if (m_strPipeType.IsEmpty())
+		{
+			m_strPipeType =_T("DN");
+		}
 	}
 	else if (nRet == RTNONE)
 	{
@@ -1024,7 +1029,6 @@ bool CDrawGDProcess::GetPipeType()
 	{
 		return false;
 	}
-	m_strPipeType = tempBuf;
 	m_pZdmInfo.setPipeType(m_strPipeType);
 	return true;
 }

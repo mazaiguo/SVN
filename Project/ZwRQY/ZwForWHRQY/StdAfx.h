@@ -59,6 +59,8 @@
 #define BC_DICT _T("ZW_FOR_WHRQY_")
 #define BC_DICT_GD _T("ZW_FOR_WHRQY_GD_")
 #define JC_DICT		_T("ZW_FOR_WHRQY_JC_")
+#define FM_DICT _T("ZW_FOR_WHRQY_FM_")
+#define WP_DICT _T("OBJECT_TO_NOTIFY_")
 
 //- Declare it as an extern here so that it becomes available in all modules
 extern AcApDataManager<CDocData> DocVars ;

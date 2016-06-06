@@ -7,101 +7,7 @@
 #include "BlkJig.h"
 #include "Global.h"
 #include "MyDrag.h"
-
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-
-CBlkInfo::CBlkInfo(void)
-{	
-	m_insertPt.set(0, 0, 0);
-	m_scale.set(1.0, 1.0, 1.0);
-	m_dRotate = 0.0;
-}
-
-CBlkInfo::CBlkInfo(const CBlkInfo& scl)
-{
-	*this = scl;
-}
-
-
-CBlkInfo::~CBlkInfo(void)
-{
-}
-
-//基本数据
-CString CBlkInfo::GetBlkType() const
-{
-	return m_strBlkType;
-}
-
-AcGePoint3d CBlkInfo::GetInsertPt() const
-{
-	return m_insertPt;
-}
-
-AcGeScale3d CBlkInfo::GetScale() const
-{
-	return m_scale;
-}
-
-double CBlkInfo::GetRotate() const
-{
-	return m_dRotate;
-}
-
-LPCTSTR CBlkInfo::GetBlkName() const
-{
-	return m_strBlkName;
-}
-
-LPCTSTR CBlkInfo::GetFilePath() const
-{
-	return m_strFileName;
-}
-//基本数据
-void CBlkInfo::SetBlkType(LPCTSTR str)
-{
-	m_strBlkType = str;
-}
-void CBlkInfo::SetInsertPt(AcGePoint3d pt)
-{
-	m_insertPt = pt;
-}
-
-void CBlkInfo::SetScale(AcGeScale3d sc)
-{
-	m_scale = sc;
-}
-
-void CBlkInfo::SetRotate(double dRotate)
-{
-	m_dRotate = dRotate;
-}
-
-void CBlkInfo::SetBlkName(LPCTSTR strBlkName)
-{
-	m_strBlkName = strBlkName;
-}
-
-void CBlkInfo::SetFilePath(LPCTSTR strFileName)
-{
-	m_strFileName = strFileName;
-}
-
-CBlkInfo&   CBlkInfo::operator = (const CBlkInfo& scl)
-{
-	m_strBlkType = scl.GetBlkType();
-	//块的基本信息
-	m_insertPt = scl.GetInsertPt();//插入点
-	m_scale = scl.GetScale();//比例
-	m_dRotate = scl.GetRotate();//旋转
-	m_strBlkName = scl.GetBlkName();
-	m_strFileName = scl.GetFilePath();
-	return *this;
-}
-
+#include "ObjectToNotify.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -116,34 +22,17 @@ CBlkInsert::CBlkInsert(void)
 	m_bIsModified = false;
 
 	//////////////////////////////////////////////////////////////////////////
-	m_strDefine = _T("");
-	m_strStandard = _T("");
-	m_nPosition = 2;
-	m_textId2 = AcDbObjectId::kNull;
-	m_textId3 = AcDbObjectId::kNull;
-	m_textId4 = AcDbObjectId::kNull;
-	m_textId5 = AcDbObjectId::kNull;
 	m_blkId = AcDbObjectId::kNull;
-	m_lineId = AcDbObjectId::kNull;
 	
 }
 
-CBlkInsert::CBlkInsert(CBlkInfo blkInfo/*, CDataBaseInfo dataInfo*/)
+CBlkInsert::CBlkInsert(CBlkBaseInFo blkInfo)
 {
 	m_bDrawWP = true;
 	m_Info = blkInfo;
-	//m_DataInfo = dataInfo;
 	m_bIsModified = false;
 	//////////////////////////////////////////////////////////////////////////
-	m_strDefine = _T("");
-	m_strStandard = _T("");
-	m_nPosition = 2;
-	m_textId2 = AcDbObjectId::kNull;
-	m_textId3 = AcDbObjectId::kNull;
-	m_textId4 = AcDbObjectId::kNull;
-	m_textId5 = AcDbObjectId::kNull;
 	m_blkId = AcDbObjectId::kNull;
-	m_lineId = AcDbObjectId::kNull;
 }
 
 CBlkInsert::~CBlkInsert(void)
@@ -151,10 +40,11 @@ CBlkInsert::~CBlkInsert(void)
 	m_bDrawWP = true;
 }
 
-void CBlkInsert::SetBlkInfo(CBlkInfo blkInfo)
+void CBlkInsert::SetBlkInfo(CBlkBaseInFo blkInfo)
 {
 	m_Info = blkInfo;
 }
+
 
 bool CBlkInsert::Insert()
 {
@@ -163,16 +53,16 @@ bool CBlkInsert::Insert()
 	{
 		return false;
 	}
-	/*if (m_bDrawWP)
+	if (m_bDrawWP)
 	{
 		bRet = DoEntData();
 		if (!bRet)
 		{
 			return false;
 		}
-	}*/
+	}
 	//AddDataToBlk();
-	//setImageFrameOff();
+	setImageFrameOff();
 	return true;
 }
 
@@ -186,16 +76,36 @@ void CBlkInsert::SetModified(bool bModified)
 	m_bIsModified = bModified;
 }
 
+//void CBlkInsert::AddDataToBlk()
+//{
+//
+//}
 
-
-bool CBlkInsert::InsertBlk()
+bool CBlkInsert::DoEntData()
 {
-	AcDbObjectId LayerId;
-	AcDbObjectId objId = MyDrawEntity::GetBlkRef(m_Info.GetFilePath());
-	if (objId.isNull())
+	AcGePoint3dArray ptArr;
+	ptArr.removeAll();
+	ptArr = MyTransFunc::OperateTwoPointsAndGetPoints(m_Exts.minPoint(), m_Exts.maxPoint());
+	//AcDbObjectId objId = AcDbObjectId::kNull;
+	AcDbObjectId wipeoutId = AcDbObjectId::kNull;
+	if (CreateWipeout(wipeoutId, ptArr)!= Acad::eOk)
 	{
 		return false;
 	}
+
+	MyTransFunc::DuiXiangPaiXu(wipeoutId, true);	
+	MyTransFunc::DuiXiangPaiXu(m_blockId, true);
+
+	assocWipeOut(m_blockId, wipeoutId);
+	return true;
+}
+
+//主要操作数据的函数
+bool CBlkInsert::InsertBlk()
+{
+	AcDbObjectId LayerId;
+	
+	AcDbObjectId objId = MyDrawEntity::GetBlkRef(m_Info.GetFileName());
 	if (!m_bIsModified)
 	{
 		//jig效果不好，换用dragen
@@ -241,47 +151,121 @@ bool CBlkInsert::InsertBlk()
 	return true;
 }
 
-
-void CBlkInsert::SetName(LPCTSTR strName)
+//创建WipeOut对象
+Acad::ErrorStatus CBlkInsert::CreateWipeout (AcDbObjectId &wipeoutId,AcGePoint3dArray point3ds)
 {
-	m_strName = strName;
+	Acad::ErrorStatus es;
+#ifdef ARX
+	if (RTNORM != acedArxLoad(_T("AcWipeoutObj18.dbx"))) return Acad::eNotImplementedYet;
+	es = AcDbWipeout::createImageDefinition();
+	if (es != Acad::eOk)
+	{
+		return es;
+	}
+#else
+	if (RTNORM != acedArxLoad(_T("ZrxDraw.zrx")))
+	{
+		return Acad::eNotImplementedYet;
+	}
+#endif	
+	if (!point3ds.at(0).isEqualTo(point3ds.last()))
+	{
+		point3ds.append(point3ds.at(0));
+	}
+	AcDbWipeout *pWipeout = new AcDbWipeout;
+	if(pWipeout == NULL) return Acad::eNotImplementedYet;
+	pWipeout->setDatabaseDefaults();
+	AcGePoint3d originPnt(AcGePoint3d::kOrigin);
+	AcGeVector3d Udirection(1,0,0);
+	AcGeVector3d Vdirection(0,-1,0);
+	pWipeout->setOrientation(originPnt,Udirection, Vdirection); 
+
+	pWipeout->setDisplayOpt(AcDbRasterImage::kTransparent,Adesk::kTrue);
+	pWipeout->setDisplayOpt(AcDbRasterImage::kShow, false);
+	es = pWipeout->setClipBoundaryToWholeImage();
+	AcGeMatrix3d PixelToModel,ModelToPixel;
+	pWipeout->getPixelToModelTransform(PixelToModel);
+	ModelToPixel=PixelToModel.invert();
+	for(int i=0;i< point3ds.length();i++)
+	{
+		point3ds.at(i).transformBy(ModelToPixel);
+	}   
+	AcGePoint2dArray point2ds = MyTransFunc::My3d22d(point3ds);
+	es = pWipeout->setClipBoundary(AcDbRasterImage::kPoly,point2ds);
+	AcGePoint2d pt2d;
+	double scale;
+	AcDbObjectId id;
+	pWipeout->append(id);
+	wipeoutId = pWipeout->objectId();
+	pWipeout->close();
+	return Acad::eOk;
 }
 
-void CBlkInsert::SetNo(LPCTSTR strNo)
-{
-	m_strNo = strNo;
-}
 
-void CBlkInsert::SetText(LPCTSTR strText)
+void CBlkInsert::assocWipeOut(AcDbObjectId blkId, AcDbObjectId wipeoutId)
 {
-	m_strText = strText;
-}
-
-void CBlkInsert::SetZongxiang(BOOL bZongxiang)
-{
-	m_bZongxiang = bZongxiang;
-}
-
-void CBlkInsert::SetDefine(LPCTSTR strDefine)
-{
-	m_strDefine = strDefine;
-}
-
-void CBlkInsert::SetStandard(LPCTSTR strStandard)
-{
-	m_strStandard = strStandard;
-}
-
-void CBlkInsert::SetPosition(int nPosition)
-{
-	m_nPosition = nPosition;
-}
+	//处理blkref
+	AcDbBlockReference* pBlkRef = NULL;
+	if (acdbOpenAcDbEntity((AcDbEntity*&)pBlkRef, blkId, AcDb::kForWrite) != Acad::eOk)
+	{
+		return;
+	}
+	AcGePoint3d basePt = pBlkRef->position();
+	double dScale = pBlkRef->scaleFactors().sx;
+	double dRotate = pBlkRef->rotation();
 
 
-void CBlkInsert::SetDrawText(bool bIsDrawText)
-{
-	m_bIsDrawText = bIsDrawText;
+	///////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////
+	//反应器操作
+	AcDbDictionary *pNamedObj;
+	AcDbDictionary *pNameList;    
+	AcDbDatabase *pDb = acdbHostApplicationServices()->workingDatabase();
+	pDb->getNamedObjectsDictionary(pNamedObj,
+		AcDb::kForWrite);
+	if (pNamedObj->getAt(_T("ZW_DICT_WIPEOUT"),
+		(AcDbObject*&)pNameList, AcDb::kForWrite)
+		== Acad::eKeyNotFound)
+	{
+		pNameList = new AcDbDictionary;
+		AcDbObjectId DictId;
+		pNamedObj->setAt(_T("ZW_DICT_WIPEOUT"), pNameList, DictId);
+	}
+	pNamedObj->close();
+
+	// Create the AsdkObjectToNotify for lineA
+	//
+	CObjectToNotify *pObj = new CObjectToNotify();
+	pObj->link(wipeoutId, m_blkId);
+
+	AcDbObjectId objId;
+	int nBlkRefCount = 0;
+	MyBaseUtils::GetVar(_T("USERI1"), &nBlkRefCount);
+	CString strName;
+	strName.Format(_T("OBJECT_TO_NOTIFY_%d"), nBlkRefCount);
+	if ((pNameList->getAt(strName, objId))
+		== Acad::eKeyNotFound)
+	{
+		pNameList->setAt(strName, pObj, objId);
+		pObj->close();
+	} 
+	else 
+	{
+		delete pObj;
+	}
+	pNameList->close();
+
+	// Set up persistent reactor link between line a
+	// and AsdkObjectToNotify
+	//
+	pBlkRef->addPersistentReactor(objId);
+	pBlkRef->close();
+	nBlkRefCount++;
+
+	MyBaseUtils::SetVar(_T("USERI1"), nBlkRefCount);
 }
+
+
 
 AcDbExtents CBlkInsert::GetObjExts()
 {
@@ -298,11 +282,11 @@ AcGePoint3d CBlkInsert::GetPosition()
 	return m_insertPt;
 }
 
-
-void CBlkInsert::SetTmpPoint(AcGePoint3d pt)
+void CBlkInsert::setImageFrameOff()
 {
-	m_tmpPoint = pt;
+	acedCommand(RTSTR, _T("wipeout"), RTSTR, _T("F"), RTSTR, _T("Off"), RTNONE);
 }
+
 
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
@@ -317,7 +301,9 @@ CBlkBaseInFo::CBlkBaseInFo(void)
 
 CBlkBaseInFo::~CBlkBaseInFo()
 {
-
+	m_insertPt.set(0, 0, 0);
+	m_scale.set(1.0, 1.0, 1.0);
+	m_dRotate = 0.0;
 }
 
 AcGePoint3d CBlkBaseInFo::GetInsertPt() const

@@ -157,11 +157,12 @@ void CDlgInsertOther::OnOK()
 		CancelEditorCommand();
 		return;
 	}*/
-	CBlkInfo blkInfo;
+	CBlkBaseInFo blkInfo;
 	blkInfo.SetInsertPt(insertPt);
 	blkInfo.SetBlkName(strBlkName);
-	blkInfo.SetFilePath(strFileName);
-	blkInfo.SetBlkType(_T("其它"));
+	blkInfo.SetFileName(strFileName);
+	//blkInfo.SetFilePath(strFileName);
+	//blkInfo.SetBlkType(_T("其它"));
 
 	//CDataBaseInfo baseInfo;
 	CBlkInsert blkInsert(blkInfo/*, baseInfo*/);
@@ -179,7 +180,7 @@ BOOL CDlgInsertOther::OnInitDialog()
 	GetDlgItem(IDOK)->EnableWindow(FALSE);
 	m_strFileNameArr.RemoveAll();
 	CString strAppPath = MyBaseUtils::GetAppPath();
-	CString strPath = strAppPath + _T("附属配件\\*.*");
+	CString strPath = strAppPath + _T("zdm\\附属配件\\*.*");
 	MyOperateFile::GetFileNameFromThePath(strPath, m_strAllFileNameArr, _T(".DWG"), true);
 	m_nCount = m_strAllFileNameArr.GetSize();
 	CString strTitle;

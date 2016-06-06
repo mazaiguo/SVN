@@ -156,7 +156,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MyBaseDLL.lib WRQ_Entity.lib"
+				AdditionalDependencies="MyBaseDLL.lib WRQ_Entity.lib AcWipeoutObj18.lib"
 				OutputFile="E:\GitHub\SVN\Project\ZwRQY\ZWRQY_ACAD\WRQ_ZDM.arx"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="E:\GitHub\SVN\Project\ZwRQY\lib\acad"
@@ -606,6 +606,14 @@
 				</File>
 				<File
 					RelativePath=".\DrawFM.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ObjectToNotify.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ObjectToNotify.h"
 					>
 				</File>
 			</Filter>
