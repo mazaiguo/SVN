@@ -78,6 +78,7 @@ private:
 	bool EditDict(int nCur);
 
 	CString doZhuanghaoText(CString strTmp);
+	CString GetTFlinag();
 private:
 	CZdmDataInfo m_pZDM;
 	CZdmDataInfo m_preData;

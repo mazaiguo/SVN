@@ -277,6 +277,14 @@ public:
 	}
 
 	// - WRQ_ZDM._SCFM command (do not rename)
+	//************************************
+	// Method:    WRQ_ZDM_SCFM
+	// FullName:  CZwForWHRQYApp::WRQ_ZDM_SCFM
+	// Access:    public static 
+	// Returns:   void
+	// Qualifier:É¾³ý·§ÃÅ
+	// Parameter: void
+	//************************************
 	static void WRQ_ZDM_SCFM(void)
 	{
 		// Add your code for command WRQ_ZDM._SCFM here

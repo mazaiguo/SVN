@@ -424,6 +424,22 @@ bool CDrawZDM::DrawDMText()
 	//	textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 	//	m_idArrs.append(textId);
 	//}
+	//绘制土方
+	CString strCount = m_pZDM.getCount();	
+	int nCount = MyTransFunc::StringToInt(strCount);	
+
+	if (nCount > 1)
+	{
+		CString strTfText;
+		AcGePoint3d tmpPt,txtPt;
+		acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(tmpPt));
+		acutPolar(asDblArray(tmpPt), 3*PI/2, 67.5, asDblArray(txtPt));
+		strTfText = GetTFlinag();
+		textId = MyDrawEntity::DrawText(txtPt, strTfText, 3, textStyleId, AcDb::kTextCenter);
+		textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
+		textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
+		m_idArrs.append(textId);
+	}
 	//绘制桩号
 	strZhuanghao = doZhuanghaoText(strZhuanghao);
 	acutPolar(asDblArray(textPt), 3*PI/2, 30, asDblArray(textPt));
@@ -856,6 +872,17 @@ CString CDrawZDM::doZhuanghaoText(CString strTmp)
 
 }
 
+CString CDrawZDM::GetTFlinag()
+{
+	CString strText;
+	strText = _T("abcd");
+	return strText;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 CDrawGd::CDrawGd(void)
 {
 	initdata();

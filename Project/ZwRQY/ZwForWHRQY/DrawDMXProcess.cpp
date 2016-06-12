@@ -890,7 +890,7 @@ bool CDrawGDProcess::GetGuanDi()
 	{
 		double dGuandi = m_preZdmInfo.getGuanDi();
 		double dDist = m_pZdmInfo.getcurData() - m_preZdmInfo.getcurData();
-		m_dPodu = (m_dGuandi - dGuandi)/dDist;
+		m_dPodu = 1000*(m_dGuandi - dGuandi)/dDist;
 		m_pZdmInfo.setPoDu(m_dPodu);
 	}
 	return true;
@@ -937,7 +937,7 @@ bool CDrawGDProcess::GetWaShen()
 	{
 		double dGuandi = m_preZdmInfo.getGuanDi();
 		double dDist = m_pZdmInfo.getcurData() - m_preZdmInfo.getcurData();
-		m_dPodu = (m_dGuandi - dGuandi)/dDist;
+		m_dPodu = 1000*(m_dGuandi - dGuandi)/dDist;
 		m_pZdmInfo.setPoDu(m_dPodu);
 	}
 	return true;
@@ -959,11 +959,12 @@ bool CDrawGDProcess::GetPodu()
 			{
 				
 			}*/
+			m_dPodu = m_dPodu/1000;
 			bRet = true;
 		}
 		else if (nRet == RTNONE)
 		{
-			m_dGuandi = m_dPodu;
+			m_dPodu = m_dPodu;
 			/*if (verifyHeight(m_dPodu))
 			{
 				

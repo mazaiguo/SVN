@@ -70,7 +70,8 @@ void CDlgDrawJSD::OnCbnSelchangeComboType()
 
 void CDlgDrawJSD::OnBnClickedOk()
 {
-	// TODO: Add your control notification handler code here
+	// TODO: Add your control notification handler code here.
+	UpdateData(TRUE);
 	BeginEditorCommand();
 	AcGePoint3d startPt,midPt,endPt;
 	int nRet = acedGetPoint(NULL, _T("\n请指定警示带起点"), asDblArray(startPt));
@@ -86,49 +87,21 @@ void CDlgDrawJSD::OnBnClickedOk()
 		return;
 	}
 	acedGrDraw(asDblArray(startPt), asDblArray(midPt), 7, 1);
-	int nOrtho;
-	MyBaseUtils::GetVar(_T("ORTHOMODE"), &nOrtho);
-	if (nOrtho == 0)
-	{
-		MyBaseUtils::SetVar(_T("ORTHOMODE"), 1);
-	}
-	nRet = acedGetPoint(asDblArray(midPt), _T("\n请指定方向"), asDblArray(endPt));
-	if (nRet != RTNORM)
-	{
-		MyBaseUtils::SetVar(_T("ORTHOMODE"), nOrtho);
-		CancelEditorCommand();
-		return;
-	}
-	MyBaseUtils::SetVar(_T("ORTHOMODE"), nOrtho);
-
-	AcGeVector3d vec = endPt - midPt;
-	double dAng = vec.angleOnPlane(AcGePlane::kXYPlane);
 	AcDbObjectId textId = AcDbObjectId::kNull;
 	AcDbObjectId plineId = AcDbObjectId::kNull;
 	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3000.0/(CDMXUtils::getXScale()));
 	AcGePoint3dArray points;
 	double dLen;
-	/*if (vec.x > 0)
-	{*/
-		textId = MyDrawEntity::DrawText(midPt, m_strType, 3.0, textStyleId, AcDb::kTextLeft);
-		textId = MyEditEntity::openEntChangeRotation(textId, dAng);
-		dLen = MyEditEntity::OpenObjAndGetLength(textId);
-		acutPolar(asDblArray(midPt), dAng, dLen, asDblArray(endPt));
-		points.append(startPt);
-		points.append(midPt);
-		points.append(endPt);
-		plineId = MyDrawEntity::DrawPlineByPoints(points);
-	/*}
-	else
-	{
-		textId = MyDrawEntity::DrawText(midPt, m_strType, 3.0, textStyleId, AcDb::kTextRight);
-		dLen = MyEditEntity::OpenObjAndGetLength(textId);
-		acutPolar(asDblArray(midPt), dAng, dLen, asDblArray(endPt));
-		points.append(startPt);
-		points.append(midPt);
-		points.append(endPt);
-		plineId = MyDrawEntity::DrawPlineByPoints(points);
-	}*/
+	AcGePoint3d textPt;
+	acutPolar(asDblArray(midPt), PI/2, 1, asDblArray(textPt));
+	textId = MyDrawEntity::DrawText(textPt, m_strType, 3.0, textStyleId, AcDb::kTextLeft);
+	dLen = MyEditEntity::OpenObjAndGetLength(textId);
+	acutPolar(asDblArray(midPt), 0, dLen, asDblArray(endPt));
+	points.append(startPt);
+	points.append(midPt);
+	points.append(endPt);
+	plineId = MyDrawEntity::DrawPlineByPoints(points);
+	
 	CAcUiDialog::OnOK();
 	CompleteEditorCommand();
 }
