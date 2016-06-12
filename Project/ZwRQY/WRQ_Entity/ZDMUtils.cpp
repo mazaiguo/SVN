@@ -1111,6 +1111,18 @@ AcGePoint3d CDMXUtils::getbasePt()
 	return nBlkRefCount;
 }
 
+double CDMXUtils::globalXScale()
+{
+	double dXScale = 1000/(getXScale());
+	return dXScale;
+}
+
+double CDMXUtils::globalYScale()
+{
+	double dYScale = 1000/(getYScale());
+	return dYScale;
+}
+
 void CDMXUtils::SetMinElavation(double dValue)
 {
 	AcDbObjectId StyleId;

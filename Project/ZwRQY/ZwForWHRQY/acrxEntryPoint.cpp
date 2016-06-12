@@ -291,6 +291,14 @@ public:
 		CDrawFM fm;
 		fm.del();
 	}
+
+	// - WRQ_ZDM._EDZDM command (do not rename)
+	static void WRQ_ZDM_EDZDM(void)
+	{
+		// Add your code for command WRQ_ZDM._EDZDM here
+		DrawDMXProcess dm;
+		dm.modify();
+	}
 } ;
 
 //-----------------------------------------------------------------------------
@@ -309,3 +317,4 @@ ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _JC, JC, ACRX_CMD_TRANSPAREN
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _DELJC, SCJC, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _ZJFM, ZJFM, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _SCFM, SCFM, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _EDZDM, EDZDM, ACRX_CMD_TRANSPARENT, NULL)

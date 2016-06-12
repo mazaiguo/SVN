@@ -54,6 +54,15 @@ public:
 	// Qualifier: 专为插入障碍物的时候返回的label数据
 	//************************************
 	CString getLabelName();
+
+	//************************************
+	// Method:    modify
+	// FullName:  DrawDMXProcess::modify
+	// Access:    public 
+	// Returns:   bool
+	// Qualifier:
+	//************************************
+	bool modify();
 private:
 	//交互相关
 	int GetZhuanghao();
@@ -114,6 +123,10 @@ private:
 	//实体交互
 	bool EntInteraction();
 
+	//处理数据
+
+	bool doXdata(AcDbObjectId objId, CString strTMp, CZdmDataInfo& tmpData);
+	bool GetObjDoubleXdata(AcDbObjectId objId, CString strTmp);
 private:
 	double m_dXScale;//x比例
 	double m_dYScale;//y比例
@@ -132,6 +145,7 @@ private:
 	double m_dmaxElavation;
 	bool m_bHasBugle;//是否有坡度
 	CString m_strLabel;
+	double m_dValue;
 	//AcDbObjectIdArray m_GroupIds;
 
 };

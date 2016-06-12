@@ -62,6 +62,42 @@
 #define FM_DICT _T("ZW_FOR_WHRQY_FM_")
 #define WP_DICT _T("OBJECT_TO_NOTIFY_")
 
+//////////////////////////////////////////////////////////////////////////
+//xdata
+#define ZDM_DESIGNDMX						_T("设计地面线")
+#define ZDM_REALDMX							_T("实际地面线")
+#define ZDM_JIEDIAN							_T("节点")
+#define ZDM_PIPETYPE						_T("管道类型")
+#define ZDM_CURDATA							_T("当前桩号")
+#define ZDM_GUANDI							_T("管底")
+#define ZDM_WASHEN							_T("挖深")
+#define ZDM_PODU							_T("坡度")
+#define	ZDM_JULI							_T("距离")
+#define ZDM_DESINGDMXS						_T("第二个设计地面线")
+#define ZDM_REALS							_T("第二个实际地面线")
+#define ZDM_PIPEDIAMETER					_T("管径")
+
+//double m_dDesignDmx;//设计地面线
+//double m_dRealDmx;//实际地面线
+//CString m_strJiedian;//节点
+//CString m_strPipeType;//管道类型
+//double m_dcurData;//当前桩号数据
+//double m_dGuanDi;//管底
+//double m_dWaShen;//挖深
+//double m_dPoDu;//坡度
+//double m_dJuli;//距离
+////////////////////////////////////////////////////////////////////////////
+////在同一处凸起
+//bool   m_bHasBulge;//是否有凸起
+//double m_dDesignDmxS;//第二个设计地面线
+//double m_dRealDmxS;//第二个实际地面线
+//double m_dJiedianS;
+#define XDT_XG_CSTRING			20000
+#define XDT_XG_INT				20001
+#define XDT_XG_DOUBLE			20002
+#define XDT_XG_HANDLE			20003
+#define XDT_XG_POINT			20004
+
 //- Declare it as an extern here so that it becomes available in all modules
 extern AcApDataManager<CDocData> DocVars ;
 

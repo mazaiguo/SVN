@@ -52,5 +52,11 @@ public:
 
 	static void SetbasePt(AcGePoint3d basePt);
 	static AcGePoint3d getbasePt();
+
+
+	//////////////////////////////////////////////////////////////////////////
+	//全局调用
+	static double globalXScale();
+	static double globalYScale();
 };
 

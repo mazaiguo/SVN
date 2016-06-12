@@ -75,7 +75,8 @@ bool DrawDMXProcess::Draw()
 		m_dXScale = 1000/(CDMXUtils::getXScale());
 		AcGePoint3d startPt,endPt;
 		acutPolar(asDblArray(m_basePt), 0, 20 + m_dZhuanghao*m_dXScale, asDblArray(startPt));
-		acutPolar(asDblArray(startPt), 3*PI/2, 167, asDblArray(endPt));
+		acutPolar(asDblArray(startPt), 3*PI/2, 152, asDblArray(startPt));
+		acutPolar(asDblArray(startPt), 3*PI/2, 15, asDblArray(endPt));
 		MyDrawEntity::DrawLine(startPt, endPt, hxLayerId);
 		return false;
 	}
@@ -204,6 +205,69 @@ bool DrawDMXProcess::Mod()
 CString DrawDMXProcess::getLabelName()
 {
 	return m_strLabel;
+}
+
+bool DrawDMXProcess::modify()
+{
+	AcDbObjectId objId = setlectEnt(_T("\n选择要编辑的桩号"));
+	CString strGroupName = MyEditEntity::openObjAndGetGroupName(objId);
+	CString strCur = CurNumPosition(strGroupName);
+	int nCount = MyTransFunc::StringToInt(strCur);
+
+	CBcUtils utils;
+	CZdmDataInfo data;
+	utils.get(strGroupName, data);
+	int nRet = acedGetReal(_T("\n输入修改后的数值："), &m_dValue);
+	if (nRet == RTNORM)
+	{
+
+	}
+	else if (nRet == RTNONE)
+	{
+		acutPrintf(_T("\n不进行修改"));
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+	if (doXdata(objId, ZDM_DESIGNDMX, data)||
+		doXdata(objId, ZDM_REALDMX, data)||
+		doXdata(objId, ZDM_JIEDIAN, data)||
+		doXdata(objId, ZDM_CURDATA, data)||
+		doXdata(objId, ZDM_GUANDI, data)||
+		doXdata(objId, ZDM_WASHEN, data)||
+		doXdata(objId, ZDM_PODU, data)||
+		doXdata(objId, ZDM_JULI, data)||
+		doXdata(objId, ZDM_DESINGDMXS, data)||
+		doXdata(objId, ZDM_REALS, data))
+	{
+		
+	}
+	else
+	{
+		acutPrintf(_T("\n选择的实体不能修改数据"));
+		return false;
+	}
+
+
+	MyEditEntity::EraseEntByGroupName(strGroupName);
+
+	CDrawZDM zdm;
+	zdm.setData(&data);
+	bool bRet = zdm.mod(strGroupName);
+
+	if (CDMXUtils::getcreateGw())
+	{
+		CString strGdGroupName;
+		strGdGroupName = BC_DICT_GD + strCur;
+		MyEditEntity::EraseEntByGroupName(strGdGroupName);
+
+		CDrawGd gd;
+		gd.mod(data);
+	}
+
+	return bRet;
 }
 
 //交互相关
@@ -596,6 +660,123 @@ bool DrawDMXProcess::EntInteraction()
 	return true;
 }	
 
+
+//CZdmDataInfo DrawDMXProcess::getXData(AcDbObjectId objId, double dValue, CZdmDataInfo tmpData)
+//{
+//	doXdata(objId, ZDM_DESIGNDMX);
+//	doXdata(objId, ZDM_REALDMX);
+//	doXdata(objId, ZDM_JIEDIAN);
+//	doXdata(objId, ZDM_CURDATA);
+//	doXdata(objId, ZDM_GUANDI);
+//	doXdata(objId, ZDM_WASHEN);
+//	doXdata(objId, ZDM_PODU);
+//	doXdata(objId, ZDM_JULI);
+//	doXdata(objId, ZDM_DESINGDMXS);
+//	doXdata(objId, ZDM_REALS);	
+//	//MyEditEntity::GetObjDoubleXdata(objId, ZDM_PIPETYPE);
+//	//MyEditEntity::GetObjDoubleXdata(objId, ZDM_PIPEDIAMETER)
+//}
+
+bool DrawDMXProcess::doXdata(AcDbObjectId objId, CString strTmp, CZdmDataInfo& tmpData)
+{
+	if (!GetObjDoubleXdata(objId, strTmp))
+	{
+		return false;
+	}
+	if (strTmp.CompareNoCase(ZDM_DESIGNDMX) == 0)
+	{
+		tmpData.setDesignDmx(m_dValue);
+	}
+	else if (strTmp.CompareNoCase(ZDM_REALDMX) == 0)
+	{
+		tmpData.setRealDmx(m_dValue);
+	}
+	else if (strTmp.CompareNoCase(ZDM_JIEDIAN) == 0)
+	{
+		CString strTmp;
+		MyTransFunc::doubleToStr(m_dValue, strTmp);
+		tmpData.setJiedian(strTmp);
+	}
+	else if (strTmp.CompareNoCase(ZDM_CURDATA) == 0)
+	{
+		tmpData.setcurData(m_dValue);
+	}
+	else if (strTmp.CompareNoCase(ZDM_GUANDI) == 0)
+	{
+		tmpData.setGuanDi(m_dValue);
+	}
+	else if (strTmp.CompareNoCase(ZDM_WASHEN) == 0)
+	{
+		tmpData.setWaShen(m_dValue);
+	}
+	else if (strTmp.CompareNoCase(ZDM_PODU) == 0)
+	{
+		tmpData.setPoDu(m_dValue);
+	}
+	else if (strTmp.CompareNoCase(ZDM_JULI) == 0)
+	{
+		tmpData.setJuli(m_dValue);
+	}
+	else if (strTmp.CompareNoCase(ZDM_DESINGDMXS) == 0)
+	{
+		tmpData.setDesingDmxS(m_dValue);
+	}
+	else if (strTmp.CompareNoCase(ZDM_REALS) == 0)
+	{
+		tmpData.setRealDmxS(m_dValue);
+	}
+	return true;
+}
+
+bool DrawDMXProcess::GetObjDoubleXdata(AcDbObjectId objId, CString strTmp)
+{
+	double dXdata = 0.0;
+	if (objId.isNull())
+	{
+		return false;
+	}
+	AcDbObject* pObj = NULL;
+	if (acdbOpenAcDbObject(pObj, objId, AcDb::kForWrite)!=Acad::eOk)
+	{
+		pObj->close();
+		return false;
+	}
+	MyBaseAppXdataList  xdata(pObj);
+	MyBaseAppXdataListIterator iter(xdata);
+	if (xdata.isEmpty())
+	{
+		pObj->close();
+		return false;
+	}
+	bool bIsFind = false;
+	int nIndex = 0;
+	CString strAppName;
+	for (;!iter.done(); iter.next())
+	{
+		strAppName = iter.item()->getAppName();
+		if (strTmp.CompareNoCase(strAppName) == 0)
+		{
+			bIsFind = true;
+		}		
+		else
+		{
+			nIndex++;
+		}
+	}
+	if (!bIsFind)
+	{
+		pObj->close();
+		return false;
+	}
+	MyBaseAppXdata* xdPtr = xdata.at(nIndex);
+	bool bIsOk = xdPtr->getReal(XDT_XG_DOUBLE, dXdata);
+	if (!bIsOk)
+	{
+		dXdata = 0.0;
+	}
+	pObj->close();
+	return true;
+}
 
 bool DrawDMXProcess::del(CString strGroupName)
 {
