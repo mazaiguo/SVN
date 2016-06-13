@@ -115,6 +115,7 @@ private:
 	AcDbObjectIdArray drawGdflat(AcGePoint3d pretmpPt, AcGePoint3d tmpPt);
 	//绘制管底，挖深文字
 	AcDbObjectIdArray drawText(AcGePoint3d basePt);
+	AcDbObjectIdArray drawtnextText(AcGePoint3d basePt, double dGuandi, double dWashen);
 	//绘制坡度，距离文字及坡度线
 	AcDbObjectIdArray drawTextAndLine(AcGePoint3d pretmpPt, AcGePoint3d tmpPt, double dDist, double dPodu);
 
@@ -126,6 +127,7 @@ private:
 	bool ChangeDictName( CString strGroupName, CString strPreGroupName, int nCount, bool bIsDeFault = true );
 
 	bool EditDict(int nCur);
+	AcDbObjectId CreateZero(AcDbObjectId textId2, AcDbObjectId ZxLayerId);
 private:
 	CZdmDataInfo m_pZDM;
 	CZdmDataInfo m_preData;

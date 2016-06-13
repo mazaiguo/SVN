@@ -140,14 +140,13 @@ private:
 	double m_dRealDmxS;//第二个实际地面线
 	AcGePoint3d m_basePt;
 	int m_nCout;//当前计数
-	CZdmDataInfo* m_pZdmInfo;
+	CZdmDataInfo m_pZdmInfo;
 	double m_dminElavation;
 	double m_dmaxElavation;
 	bool m_bHasBugle;//是否有坡度
 	CString m_strLabel;
 	double m_dValue;
-	//AcDbObjectIdArray m_GroupIds;
-
+	CZdmDataInfo m_preZdmInfo;
 };
 
 

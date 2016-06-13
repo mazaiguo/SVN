@@ -928,7 +928,7 @@ bool CDrawGd::del(CZdmDataInfo pZDM)
 	}
 	CString strCount = CDMXUtils::getNumCount();
 	int nCount = MyTransFunc::StringToInt(strCount);
-	if (m_nCount != nCount - 1)//如果不是最后一个桩号
+	if (m_nCount != nCount)//如果不是最后一个桩号
 	{
 		drawGd();
 	}
@@ -1074,6 +1074,7 @@ AcDbObjectIdArray CDrawGd::drawGdflat(AcGePoint3d pretmpPt, AcGePoint3d tmpPt)
 	cenPt = MyTransFunc::MyMidPoint(startPt, endPt);
 	cenPt.y += 8;
 	AcDbObjectId textId = MyDrawEntity::DrawText(cenPt, strText, 3.0, textStyleId, AcDb::kTextCenter, AcDb::kTextBottom);
+	textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
 	objIdArr.append(textId);
 	return objIdArr;
 }
@@ -1091,6 +1092,39 @@ AcDbObjectIdArray CDrawGd::drawText(AcGePoint3d basePt)
 	AcDbObjectId textId = AcDbObjectId::kNull;
 	double dGuandi = m_pZDM.getGuanDi();
 	double dWashen = m_pZDM.getWaShen();
+	CString strTmp;
+	CString strGuandiText;
+	CString strWashen;
+
+	strGuandiText.Format(_T("%.2f"), dGuandi);
+	strWashen.Format(_T("%.2f"), dWashen);
+
+	textId = MyDrawEntity::DrawText(guandiPt, strGuandiText, 3, textStyleId, AcDb::kTextCenter);
+	textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
+	textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
+	MyEditEntity::OpenObjAppendDoubleToXdata(textId, ZDM_GUANDI, dGuandi);
+	objIdArr.append(textId);
+
+	textId = MyDrawEntity::DrawText(washenPt, strWashen, 3, textStyleId, AcDb::kTextCenter);
+	textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
+	textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
+	MyEditEntity::OpenObjAppendDoubleToXdata(textId, ZDM_WASHEN, dWashen);
+	objIdArr.append(textId);
+
+	return objIdArr;
+}
+
+AcDbObjectIdArray CDrawGd::drawtnextText(AcGePoint3d basePt, double dGuandi, double dWashen)
+{
+	AcGePoint3d guandiPt,washenPt;
+	AcDbObjectIdArray objIdArr;
+	objIdArr.removeAll();
+
+	acutPolar(asDblArray(basePt), 3*PI/2, 114.5, asDblArray(guandiPt));
+	acutPolar(asDblArray(guandiPt), 3*PI/2, 15, asDblArray(washenPt));
+	AcDbObjectId ZxLayerId = MySymble::CreateNewLayer(_T("GD-TEXT"), 7);
+	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
+	AcDbObjectId textId = AcDbObjectId::kNull;
 	CString strTmp;
 	CString strGuandiText;
 	CString strWashen;
@@ -1173,6 +1207,10 @@ AcDbObjectIdArray CDrawGd::drawTextAndLine(AcGePoint3d pretmpPt, AcGePoint3d tmp
 		MyEditEntity::OpenObjAppendDoubleToXdata(textId2, ZDM_PODU, dPodu);
 
 		objIdArr.append(textId2);	
+
+		AcDbObjectId textId3 = CreateZero(textId2, ZxLayerId);
+		objIdArr.append(textId3);
+
 	}
 	else
 	{
@@ -1195,6 +1233,10 @@ AcDbObjectIdArray CDrawGd::drawTextAndLine(AcGePoint3d pretmpPt, AcGePoint3d tmp
 		textId2 = MyEditEntity::openEntChangeLayer(textId2, ZxLayerId);
 		MyEditEntity::OpenObjAppendDoubleToXdata(textId2, ZDM_PODU, dPodu);
 		objIdArr.append(textId2);	
+
+		AcDbObjectId textId3 = CreateZero(textId2, ZxLayerId);
+		objIdArr.append(textId3);
+
 	}
 	AcDbObjectId objId = AcDbObjectId::kNull;
 	objId = MyDrawEntity::DrawLine(startPt, endPt, ZxLayerId);
@@ -1317,11 +1359,18 @@ bool CDrawGd::drawCirlceOrEllipse()
 				}
 				double dDist = NextData.getcurData() - m_pZDM.getcurData();
 				double dPodu = 1000*(NextData.getGuanDi() - m_pZDM.getGuanDi())/dDist;
-				objIdArr = drawTextAndLine(pretmpPt, tmpPt, dDist, dPodu);
+				objIdArr = drawTextAndLine(tmpPt, pretmpPt, dDist, dPodu);
 				for (int i=0; i<objIdArr.length(); i++)
 				{
 					MyEditEntity::AddObjToGroup(strGdGroup, objIdArr.at(i));
 				}
+
+				objIdArr = drawtnextText(pretmpPt, NextData.getGuanDi(), NextData.getWaShen());
+				for (int i=0; i<objIdArr.length(); i++)
+				{
+					MyEditEntity::AddObjToGroup(strGdGroup, objIdArr.at(i));
+				}
+
 			}
 			/*objIdArr = drawText(tmpPt);
 			for (int i=0; i<objIdArr.length(); i++)
@@ -1413,8 +1462,8 @@ bool CDrawGd::ChangeDictName( CString strGroupName, CString strPreGroupName, int
 			//需要将水面线删除
 			CString strLayer = pEnt->layer();
 			if (/*(strLayer.CompareNoCase(_T("MQ-XDM")) == 0)
-				||(strLayer.CompareNoCase(_T( "MQ-SDM")) == 0)
-				||*/(strLayer.CompareNoCase(_T( "GD-TMP")) == 0)
+				||*/(strLayer.CompareNoCase(_T( "GD-TEXT")) == 0)
+				||(strLayer.CompareNoCase(_T( "GD-TMP")) == 0)
 				||(strLayer.CompareNoCase(_T("燃气管道")) == 0))
 			{
 				if (!bIsDeFault)
@@ -1484,4 +1533,16 @@ bool CDrawGd::EditDict(int nCur)
 	pGroup->close();
 	pGroupDict->close();
 	return true;
+}
+
+AcDbObjectId CDrawGd::CreateZero(AcDbObjectId textId2, AcDbObjectId ZxLayerId)
+{
+	AcDbObjectId textId = AcDbObjectId::kNull;
+	AcDbExtents exts = MyEditEntity::OpenObjAndGetExts(textId2);
+	AcGePoint3d textPt;
+	textPt.set(exts.maxPoint().x, exts.minPoint().y, 0);
+	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
+	textId = MyDrawEntity::DrawText(textPt, _T("0"), 0.6, textStyleId);
+	textId = MyEditEntity::openEntChangeRotation(textId, 23*PI/12);
+	return textId;
 }

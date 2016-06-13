@@ -11,11 +11,16 @@ DrawDMXProcess::DrawDMXProcess(void)
 	CString strCount = CDMXUtils::getNumCount();
 	m_nCout = MyTransFunc::StringToInt(strCount);
 	m_bDrawJiedian = CDMXUtils::getcreateJiedian();
-	m_pZdmInfo = new CZdmDataInfo();
-	m_pZdmInfo->setCount(strCount);
-	m_pZdmInfo->setJiedian(strCount);
 	CString strLabel = BC_DICT + strCount;
-	m_pZdmInfo->setLabel(strLabel);
+	CBcUtils bcUtils;
+	if (!bcUtils.get(strLabel, m_pZdmInfo))
+	{
+		//m_pZdmInfo = new CZdmDataInfo();
+		m_pZdmInfo.setCount(strCount);
+		m_pZdmInfo.setJiedian(strCount);
+		m_pZdmInfo.setLabel(strLabel);
+	}
+
 	if (m_nCout == 1)
 	{
 		m_dZhuanghao = 0.00;
@@ -27,12 +32,10 @@ DrawDMXProcess::DrawDMXProcess(void)
 		int nTmp = m_nCout - 1;
 		strCount.Format(_T("%d"), nTmp);
 		CString strTmpLabel = BC_DICT + strCount;
-		CBcUtils bcUtils;
 
-		CZdmDataInfo pBiaoChi;
-		bcUtils.get(strTmpLabel, pBiaoChi);
-		m_dZhuanghao = pBiaoChi.getcurData();
-		m_dSJDmHeight = pBiaoChi.getDesignDmx();
+		bcUtils.get(strTmpLabel, m_preZdmInfo);
+		m_dZhuanghao = m_preZdmInfo.getcurData();
+		m_dSJDmHeight = m_preZdmInfo.getDesignDmx();
 	}
 	m_dminElavation = CDMXUtils::getMinElavation();
 	m_dmaxElavation = CDMXUtils::getMaxElavation();
@@ -40,11 +43,11 @@ DrawDMXProcess::DrawDMXProcess(void)
 
 DrawDMXProcess::~DrawDMXProcess(void)
 {
-	if (m_pZdmInfo != NULL)
+	/*if (m_pZdmInfo != NULL)
 	{
 		delete m_pZdmInfo;
 		m_pZdmInfo = NULL;
-	}
+	}*/
 }
 
 bool DrawDMXProcess::Draw()
@@ -59,7 +62,7 @@ bool DrawDMXProcess::Draw()
 
 
 		CDrawZDM zdm;
-		zdm.setData(m_pZdmInfo);
+		zdm.setData(&m_pZdmInfo);
 		AcDbObjectId groupId = zdm.add();
 		return true;
 	}
@@ -77,7 +80,8 @@ bool DrawDMXProcess::Draw()
 		acutPolar(asDblArray(m_basePt), 0, 20 + m_dZhuanghao*m_dXScale, asDblArray(startPt));
 		acutPolar(asDblArray(startPt), 3*PI/2, 152, asDblArray(startPt));
 		acutPolar(asDblArray(startPt), 3*PI/2, 15, asDblArray(endPt));
-		MyDrawEntity::DrawLine(startPt, endPt, hxLayerId);
+		AcDbObjectId textId = MyDrawEntity::DrawLine(startPt, endPt, hxLayerId);
+		MyEditEntity::AddObjToGroup(m_preZdmInfo.label(), textId);
 		return false;
 	}
 	else
@@ -122,10 +126,10 @@ bool DrawDMXProcess::Insert(bool bIsObstacle)
 	m_strLabel = BC_DICT + strCur;
 	if (!bIsExisted)
 	{
-		m_pZdmInfo->setLabel(m_strLabel);
-		m_pZdmInfo->setCount(strCur);
-		m_pZdmInfo->setJiedian(strCur);
-		m_pZdmInfo->setcurData(m_dZhuanghao);
+		m_pZdmInfo.setLabel(m_strLabel);
+		m_pZdmInfo.setCount(strCur);
+		m_pZdmInfo.setJiedian(strCur);
+		m_pZdmInfo.setcurData(m_dZhuanghao);
 		if (nRet == RTNORM)
 		{
 			if (!EntInteraction())
@@ -133,7 +137,7 @@ bool DrawDMXProcess::Insert(bool bIsObstacle)
 				return false;
 			}
 			CDrawZDM zdm;
-			zdm.setData(m_pZdmInfo);
+			zdm.setData(&m_pZdmInfo);
 			AcDbObjectId groupId = zdm.insert();
 
 			if (CDMXUtils::getcreateGw())
@@ -211,6 +215,11 @@ bool DrawDMXProcess::modify()
 {
 	AcDbObjectId objId = setlectEnt(_T("\n选择要编辑的桩号"));
 	CString strGroupName = MyEditEntity::openObjAndGetGroupName(objId);
+	int nFind = strGroupName.Find(BC_DICT_GD);
+	if (nFind >= 0)
+	{
+		strGroupName.Replace(BC_DICT_GD, BC_DICT);
+	}
 	CString strCur = CurNumPosition(strGroupName);
 	int nCount = MyTransFunc::StringToInt(strCur);
 
@@ -329,7 +338,7 @@ int DrawDMXProcess::GetZhuanghao()
 		break;
 	}
 	
-	m_pZdmInfo->setcurData(m_dZhuanghao);
+	m_pZdmInfo.setcurData(m_dZhuanghao);
 
 	return nRet;
 }
@@ -391,7 +400,7 @@ bool DrawDMXProcess::GetSJDmHeight()
 		}
 	}
 	
-	m_pZdmInfo->setDesignDmx(m_dSJDmHeight);
+	m_pZdmInfo.setDesignDmx(m_dSJDmHeight);
 	return bRet;
 }
 
@@ -425,7 +434,7 @@ bool DrawDMXProcess::GetXzDmHeight()
 		break;
 	}
 	}
-	m_pZdmInfo->setRealDmx(m_dXzDmHeight);
+	m_pZdmInfo.setRealDmx(m_dXzDmHeight);
 	return bRet;
 }
 
@@ -451,7 +460,7 @@ bool DrawDMXProcess::GetIsPd()
 	{
 		if (GetPdHeight())
 		{
-			m_pZdmInfo->setHasBulge(m_bHasBugle);
+			m_pZdmInfo.setHasBulge(m_bHasBugle);
 		}
 	}
 	return true;
@@ -503,7 +512,7 @@ bool DrawDMXProcess::GetSJDmHeightS()
 		}
 	}
 
-	m_pZdmInfo->setDesingDmxS(m_dDesignDmxS);
+	m_pZdmInfo.setDesingDmxS(m_dDesignDmxS);
 	return bRet;
 }
 
@@ -537,7 +546,7 @@ bool DrawDMXProcess::GetXzDmHeightS()
 			break;
 		}
 	}
-	m_pZdmInfo->setRealDmxS(m_dRealDmxS);
+	m_pZdmInfo.setRealDmxS(m_dRealDmxS);
 	return bRet;
 }
 
@@ -683,6 +692,9 @@ bool DrawDMXProcess::doXdata(AcDbObjectId objId, CString strTmp, CZdmDataInfo& t
 	{
 		return false;
 	}
+	double dRealDmx = tmpData.getRealDmx();
+	double dGuandi = tmpData.getGuanDi();
+	double dWashen = tmpData.getWaShen();
 	if (strTmp.CompareNoCase(ZDM_DESIGNDMX) == 0)
 	{
 		tmpData.setDesignDmx(m_dValue);
@@ -702,16 +714,27 @@ bool DrawDMXProcess::doXdata(AcDbObjectId objId, CString strTmp, CZdmDataInfo& t
 		tmpData.setcurData(m_dValue);
 	}
 	else if (strTmp.CompareNoCase(ZDM_GUANDI) == 0)
-	{
+	{		
 		tmpData.setGuanDi(m_dValue);
+		dWashen = dRealDmx - m_dValue;
+		tmpData.setWaShen(dWashen);
 	}
 	else if (strTmp.CompareNoCase(ZDM_WASHEN) == 0)
 	{
 		tmpData.setWaShen(m_dValue);
+		dGuandi = dRealDmx - m_dValue;
+		tmpData.setGuanDi(dGuandi);
 	}
 	else if (strTmp.CompareNoCase(ZDM_PODU) == 0)
 	{
 		tmpData.setPoDu(m_dValue);
+		double dDist = m_pZdmInfo.getcurData() - m_preZdmInfo.getcurData();
+		double dGuandi = m_preZdmInfo.getGuanDi();
+		dGuandi = dGuandi + m_dValue*dDist;
+		m_pZdmInfo.setGuanDi(dGuandi);
+		dRealDmx = m_pZdmInfo.getRealDmx();
+		dWashen = dRealDmx - dGuandi;
+		m_pZdmInfo.setWaShen(dWashen);
 	}
 	else if (strTmp.CompareNoCase(ZDM_JULI) == 0)
 	{
@@ -997,7 +1020,8 @@ bool CDrawGDProcess::GetKeyWord()
 	else
 	{
 		acedInitGet(0, _T("Di Wa Po Vertical"));
-		strPrompt = _T("\n输入管底(D)/输入挖深(W)/坡度(P)/垂直间距(V)/<管底>:");
+		//strPrompt = _T("\n输入管底(D)/输入挖深(W)/坡度(P)/垂直间距(V)/<管底>:");
+		strPrompt = _T("\n输入管底(D)/输入挖深(W)/坡度(P)/<管底>:");
 	}
 	TCHAR val[512];
 	int nRet = acedGetKword(strPrompt, val);
