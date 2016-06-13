@@ -235,7 +235,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="acrxEntryPoint.cpp" />
+    <ClCompile Include="DlgDisplayText.cpp" />
+    <ClCompile Include="DlgObstacle.cpp" />
     <ClCompile Include="DocData.cpp" />
+    <ClCompile Include="DrawFM.cpp" />
+    <ClCompile Include="DrawObstacle.cpp" />
+    <ClCompile Include="ObjectToNotify.cpp" />
     <ClCompile Include="StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -259,13 +264,18 @@
     <ClCompile Include="CDlgEditZhuangHao.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DlgDisplayText.h" />
+    <ClInclude Include="DlgObstacle.h" />
     <ClInclude Include="DlgTKSZ.h" />
     <ClInclude Include="BlkInfo.h" />
     <ClInclude Include="BlkJig.h" />
     <ClInclude Include="DlgInsertOther.h" />
+    <ClInclude Include="DrawFM.h" />
+    <ClInclude Include="DrawObstacle.h" />
     <ClInclude Include="MakeBlkFile.h" />
     <ClInclude Include="BcUtils.h" />
     <ClInclude Include="DrawZDM.h" />
+    <ClInclude Include="ObjectToNotify.h" />
     <ClInclude Include="ZdmDataInfo.h" />
     <ClInclude Include="DrawDMXProcess.h" />
     <ClInclude Include="StartDrawRQGD.h" />

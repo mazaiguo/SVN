@@ -50,6 +50,12 @@
       <UniqueIdentifier>{b4ebc3da-c2a6-48f2-8081-e9372177775e}</UniqueIdentifier>
       <Extensions>reg;rgs;mak;clw;vsdir;vsz;css;inf;vcproj;csproj</Extensions>
     </Filter>
+    <Filter Include="Source Files\纵断面\阀门">
+      <UniqueIdentifier>{5e15a48a-0f69-4abd-a2f1-5eeb665388d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\纵断面\障碍物">
+      <UniqueIdentifier>{e489c1e4-8e8a-4ede-aba1-d6fc60cb55cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="acrxEntryPoint.cpp">
@@ -106,6 +112,21 @@
     <ClCompile Include="CDlgEditZhuangHao.cpp">
       <Filter>Source Files\对话框\编辑桩号</Filter>
     </ClCompile>
+    <ClCompile Include="DlgDisplayText.cpp">
+      <Filter>Source Files\纵断面\障碍物</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgObstacle.cpp">
+      <Filter>Source Files\纵断面\障碍物</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawObstacle.cpp">
+      <Filter>Source Files\纵断面\障碍物</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawFM.cpp">
+      <Filter>Source Files\纵断面\阀门</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectToNotify.cpp">
+      <Filter>Source Files\纵断面\阀门</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DlgTKSZ.h">
@@ -158,6 +179,21 @@
     </ClInclude>
     <ClInclude Include="StdAfx.h">
       <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgDisplayText.h">
+      <Filter>Source Files\纵断面\障碍物</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgObstacle.h">
+      <Filter>Source Files\纵断面\障碍物</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawObstacle.h">
+      <Filter>Source Files\纵断面\障碍物</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawFM.h">
+      <Filter>Source Files\纵断面\阀门</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectToNotify.h">
+      <Filter>Source Files\纵断面\阀门</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
