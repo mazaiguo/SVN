@@ -162,10 +162,37 @@ bool DrawDMXProcess::Insert(bool bIsObstacle)
 
 bool DrawDMXProcess::Del()
 {
-	AcDbObjectId objId = setlectEnt(_T("\n选择要删除的桩号"));
-	CString strGroupName = MyEditEntity::openObjAndGetGroupName(objId);
-	bool bRet =	del(strGroupName);
-	return bRet;
+	//AcDbObjectId objId = setlectEnt(_T("\n选择要删除的桩号"));
+	ads_name ssname;
+	ads_name ename;
+	AcDbObjectId objId = AcDbObjectId::kNull;
+	int nRet = acedSSGet(NULL, NULL, NULL, NULL, ssname);
+	if (nRet != RTNORM)
+	{
+		return false;
+	}
+	long sslen;
+	acedSSLength(ssname, &sslen);
+	map<CString, CString> infoMap;
+	CString strGroupName;
+	for (int i=0; i<sslen; i++)
+	{
+		acedSSName(ssname, i, ename);
+		acdbGetObjectId(objId, ename);
+		strGroupName = MyEditEntity::openObjAndGetGroupName(objId);
+		int nFind = strGroupName.Find(BC_DICT_GD);
+		if (nFind >= 0)
+		{
+			strGroupName.Replace(BC_DICT_GD, BC_DICT);
+		}	
+		nFind = strGroupName.Find(BC_DICT);
+		if (nFind >= 0)
+		{
+			bool bRet =	del(strGroupName);
+		}
+	}
+	
+	return true;
 }
 
 bool DrawDMXProcess::Mod()
@@ -444,7 +471,7 @@ bool DrawDMXProcess::GetIsPd()
 	TCHAR szKword [132];
 	szKword[0] = _T('N');	//给szKword一个默认值N
 	szKword[1] = _T('\0');
-	int nRet = acedGetKword(_T("\n是否有坡度?>>是(Y)/否(N) <N>:"), szKword);
+	int nRet = acedGetKword(_T("\n是否有垂直堡坎?>>是(Y)/否(N) <N>:"), szKword);
 	if (nRet == RTNORM)	//如果得到合理的关键字
 	{
 		if (_tcscmp(szKword, _T("Yes")) == 0)

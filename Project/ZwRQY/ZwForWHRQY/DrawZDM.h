@@ -10,6 +10,8 @@
 #else
 #define ZDM_DLL_API __declspec(dllimport)
 #endif
+CString TransFormStr(double dValue);
+
 class ZDM_DLL_API CDrawZDM
 {
 public:
@@ -79,6 +81,7 @@ private:
 
 	CString doZhuanghaoText(CString strTmp);
 	CString GetTFlinag();
+
 private:
 	CZdmDataInfo m_pZDM;
 	CZdmDataInfo m_preData;
@@ -128,6 +131,10 @@ private:
 
 	bool EditDict(int nCur);
 	AcDbObjectId CreateZero(AcDbObjectId textId2, AcDbObjectId ZxLayerId);
+	//获取沟槽底宽度
+	double getGCDWidth(double dDimater);
+	//获取边坡率 需要增加一个土壤类别的成员
+	double getBPl();
 private:
 	CZdmDataInfo m_pZDM;
 	CZdmDataInfo m_preData;

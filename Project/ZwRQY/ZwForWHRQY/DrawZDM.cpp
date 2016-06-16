@@ -395,8 +395,10 @@ bool CDrawZDM::DrawDMText()
 	CString strTmp;
 	CString strSJDmx;
 	CString strXZDmx;	
-	strSJDmx.Format(_T("%.2f"), dSJDmx);
-	strXZDmx.Format(_T("%.2f"), dXZDmx);
+	//strSJDmx.Format(_T("%.2f"), dSJDmx);
+	//strXZDmx.Format(_T("%.2f"), dXZDmx);
+	strSJDmx = TransFormStr(dSJDmx);
+	strXZDmx = TransFormStr(dXZDmx);
 	CString strZhuanghao = MyTransFunc::doubleToStr(dCurData, strTmp, 2, 2);
 	//绘制设计地面高文字
 	acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(textPt));
@@ -427,7 +429,7 @@ bool CDrawZDM::DrawDMText()
 	//	m_idArrs.append(textId);
 	//}
 	//绘制土方
-	CString strCount = m_pZDM.getCount();	
+	/*CString strCount = m_pZDM.getCount();	
 	int nCount = MyTransFunc::StringToInt(strCount);	
 
 	if (nCount > 1)
@@ -441,7 +443,7 @@ bool CDrawZDM::DrawDMText()
 		textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 		textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
 		m_idArrs.append(textId);
-	}
+	}*/
 	//绘制桩号
 	CString strZH = doZhuanghaoText(strZhuanghao);
 	acutPolar(asDblArray(textPt), 3*PI/2, 30, asDblArray(textPt));
@@ -458,8 +460,10 @@ bool CDrawZDM::DrawDMText()
 		double dXZDmxS = m_pZDM.getRealDmxS();
 		CString strSJDmxS;
 		CString strXZDmxS;
-		strSJDmxS.Format(_T("%.2f"), dSJDmxS);
-		strXZDmxS.Format(_T("%.2f"), dXZDmxS );
+		/*strSJDmxS.Format(_T("%.2f"), dSJDmxS);
+		strXZDmxS.Format(_T("%.2f"), dXZDmxS );*/
+		strSJDmxS = TransFormStr(dSJDmxS);
+		strXZDmxS = TransFormStr(dXZDmxS);
 		acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(textPt));
 		acutPolar(asDblArray(textPt), 3*PI/2, 7.5, asDblArray(textPt));
 		AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
@@ -504,8 +508,10 @@ bool CDrawZDM::DrawNextDMText()
 		CString strTmp;
 		CString strSJDmx;
 		CString strXZDmx;
-		strSJDmx.Format(_T("%.2f"), dSJDmx);
-		strXZDmx.Format(_T("%.2f"), dXZDmx);
+		/*strSJDmx.Format(_T("%.2f"), dSJDmx);
+		strXZDmx.Format(_T("%.2f"), dXZDmx);*/
+		strSJDmx = TransFormStr(dSJDmx);
+		strXZDmx = TransFormStr(dXZDmx);
 		CString strZhuanghao = MyTransFunc::doubleToStr(dCurData, strTmp, 2, 2);
 		//绘制设计地面高文字
 		acutPolar(asDblArray(m_basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(textPt));
@@ -539,8 +545,10 @@ bool CDrawZDM::DrawNextDMText()
 			CString strSJDmxS;
 			CString strXZDmxS;
 
-			strSJDmxS.Format(_T("%.2f"), dSJDmxS);
-			strXZDmxS.Format(_T("%.2f"), dXZDmxS);
+			/*strSJDmxS.Format(_T("%.2f"), dSJDmxS);
+			strXZDmxS.Format(_T("%.2f"), dXZDmxS);*/
+			strSJDmxS = TransFormStr(dSJDmxS);
+			strXZDmxS = TransFormStr(dXZDmxS);
 			acutPolar(asDblArray(m_basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(textPt));
 			acutPolar(asDblArray(textPt), 3*PI/2, 7.5, asDblArray(textPt));
 			AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
@@ -890,6 +898,16 @@ CString CDrawZDM::GetTFlinag()
 	return strText;
 }
 
+CString TransFormStr(double dValue)
+{
+	int dFormat = (int)gGlobal.GetIniValue(_T("纵断面设置"), _T("小数位"), 0);
+	CString strTmp;
+	strTmp.Format(_T(".%df"), dFormat);
+	strTmp = _T("%") + strTmp;
+	CString strReturn;
+	strReturn.Format(strTmp, dValue);
+	return strReturn;
+}
 
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
@@ -1059,7 +1077,8 @@ AcDbObjectIdArray CDrawGd::drawGdflat(AcGePoint3d pretmpPt, AcGePoint3d tmpPt)
 	acutPolar(asDblArray(tmpPt), 3*PI/2, 91, asDblArray(endPt));
 	AcDbObjectId RqLayerId = MySymble::CreateNewLayer(_T("燃气管道"), 1);
 	AcDbObjectId objId = MyDrawEntity::DrawPlineByTwoPoint(startPt, endPt, RqLayerId);
-	objId = MyEditEntity::openPlineChangeWidth(objId, m_pZDM.getPipeDiameter()/1000);
+	double dWidth = gGlobal.GetIniValue(_T("纵断面设置"), _T("管道示意宽度"), 0);
+	objId = MyEditEntity::openPlineChangeWidth(objId, dWidth);
 	objIdArr.append(objId);
 
 	//绘制管道类型文字
@@ -1096,9 +1115,10 @@ AcDbObjectIdArray CDrawGd::drawText(AcGePoint3d basePt)
 	CString strGuandiText;
 	CString strWashen;
 
-	strGuandiText.Format(_T("%.2f"), dGuandi);
-	strWashen.Format(_T("%.2f"), dWashen);
-
+	/*strGuandiText.Format(_T("%.2f"), dGuandi);
+	strWashen.Format(_T("%.2f"), dWashen);*/
+	strGuandiText=  TransFormStr(dGuandi);
+	strWashen = TransFormStr(dWashen);
 	textId = MyDrawEntity::DrawText(guandiPt, strGuandiText, 3, textStyleId, AcDb::kTextCenter);
 	textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 	textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
@@ -1129,8 +1149,8 @@ AcDbObjectIdArray CDrawGd::drawtnextText(AcGePoint3d basePt, double dGuandi, dou
 	CString strGuandiText;
 	CString strWashen;
 
-	strGuandiText.Format(_T("%.2f"), dGuandi);
-	strWashen.Format(_T("%.2f"), dWashen);
+	strGuandiText = TransFormStr(dGuandi);
+	strWashen= TransFormStr(dWashen);
 
 	textId = MyDrawEntity::DrawText(guandiPt, strGuandiText, 3, textStyleId, AcDb::kTextCenter);
 	textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
@@ -1160,8 +1180,8 @@ AcDbObjectIdArray CDrawGd::drawTextAndLine(AcGePoint3d pretmpPt, AcGePoint3d tmp
 	double dlen;
 	AcDbObjectId textId1,textId2;
 	CString strPd;
-	strDist.Format(_T("%.2f"), dDist);
-	strPd.Format(_T("%.2f"), dPodu);
+	strDist = TransFormStr(dDist);
+	strPd = TransFormStr(dPodu);
 	strPd += _T("%");
 	
 	if (abs(dPodu) < 0.000001)
@@ -1258,6 +1278,7 @@ bool CDrawGd::drawCirlceOrEllipse()
 	AcDbObjectId RqLayerId = MySymble::CreateNewLayer(_T("燃气管道"), 1);
 	AcDbObjectIdArray objIdArr;
 	objIdArr.removeAll();
+	double dWidth = gGlobal.GetIniValue(_T("纵断面设置"), _T("管道宽度"), 0);
 	//if (m_dXScale != m_dYScale)
 	//{
 	//	//绘制椭圆
@@ -1283,8 +1304,12 @@ bool CDrawGd::drawCirlceOrEllipse()
 		acutPolar(asDblArray(pretmpPt), PI/2, (m_preData.getGuanDi() - CDMXUtils::getMinElavation())*m_dYScale, asDblArray(preguandiPt));
 		acutPolar(asDblArray(preguandiPt), PI/2, 2*dRadius, asDblArray(preguandiTopPt));
 		AcDbObjectId lineId1,lineId2;
-		lineId1 = MyDrawEntity::DrawLine(preguandiPt, guandiPt, RqLayerId);
-		lineId2 = MyDrawEntity::DrawLine(preguandiTopPt, guandiTopPt, RqLayerId);
+		/*lineId1 = MyDrawEntity::DrawLine(preguandiPt, guandiPt, RqLayerId);
+		lineId2 = MyDrawEntity::DrawLine(preguandiTopPt, guandiTopPt, RqLayerId);*/
+		lineId1 = MyDrawEntity::DrawPlineByTwoPoint(preguandiPt, guandiPt, RqLayerId);
+		lineId2 = MyDrawEntity::DrawPlineByTwoPoint(preguandiTopPt, guandiTopPt, RqLayerId);
+		lineId1 = MyEditEntity::openPlineChangeWidth(lineId1, dWidth);
+		lineId2 = MyEditEntity::openPlineChangeWidth(lineId2, dWidth);
 		m_idArrs.append(lineId1);
 		m_idArrs.append(lineId2);
 		//绘制示意图
@@ -1347,8 +1372,12 @@ bool CDrawGd::drawCirlceOrEllipse()
 				acutPolar(asDblArray(pretmpPt), PI/2, (NextData.getGuanDi() - CDMXUtils::getMinElavation())*m_dYScale, asDblArray(preguandiPt));
 				acutPolar(asDblArray(preguandiPt), PI/2, 2*dRadius, asDblArray(preguandiTopPt));
 				AcDbObjectId lineId1,lineId2;
-				lineId1 = MyDrawEntity::DrawLine(preguandiPt, guandiPt, RqLayerId);
-				lineId2 = MyDrawEntity::DrawLine(preguandiTopPt, guandiTopPt, RqLayerId);
+				/*lineId1 = MyDrawEntity::DrawLine(preguandiPt, guandiPt, RqLayerId);
+				lineId2 = MyDrawEntity::DrawLine(preguandiTopPt, guandiTopPt, RqLayerId);*/
+				lineId1 = MyDrawEntity::DrawPlineByTwoPoint(preguandiPt, guandiPt, RqLayerId);
+				lineId2 = MyDrawEntity::DrawPlineByTwoPoint(preguandiTopPt, guandiTopPt, RqLayerId);
+				lineId1 = MyEditEntity::openPlineChangeWidth(lineId1, dWidth);
+				lineId2 = MyEditEntity::openPlineChangeWidth(lineId2, dWidth);
 				MyEditEntity::AddObjToGroup(strGdGroup, lineId1);
 				MyEditEntity::AddObjToGroup(strGdGroup, lineId2);
 				//绘制示意图
@@ -1545,4 +1574,56 @@ AcDbObjectId CDrawGd::CreateZero(AcDbObjectId textId2, AcDbObjectId ZxLayerId)
 	textId = MyDrawEntity::DrawText(textPt, _T("0"), 0.6, textStyleId);
 	textId = MyEditEntity::openEntChangeRotation(textId, 23*PI/12);
 	return textId;
+}
+
+double CDrawGd::getGCDWidth(double dDiameter)
+{
+	double dResult;
+	if (dDiameter <= 80)
+	{
+		dResult = 0.6;
+	}
+	else if ((dDiameter >= 100) &&(dDiameter <= 200))
+	{
+		dResult = 0.7;
+	}
+	else if ((dDiameter >= 250) &&(dDiameter <= 350))
+	{
+		dResult = 0.8;
+	}
+	else if ((dDiameter >= 400) && (dDiameter <= 450))
+	{
+		dResult = 1.0;
+	}
+	else if ((dDiameter >= 500) && (dDiameter <= 600))
+	{
+		dResult = 1.3;
+	}
+	else if ((dDiameter >= 700) && (dDiameter <= 800))
+	{
+		dResult = 1.6;
+	}
+	else if ((dDiameter >= 900) && (dDiameter <= 1000))
+	{
+		dResult = 1.8;
+	}
+	else if ((dDiameter >= 1100) && (dDiameter <= 1200))
+	{
+		dResult = 2.0;
+	}
+	else if ((dDiameter >= 1300) && (dDiameter <= 1400))
+	{
+		dResult = 2.2;
+	}
+	return dResult;
+}
+
+double CDrawGd::getBPl()
+{
+	double dResult;
+	CString strType = gGlobal.GetIniValue(_T("纵断面设置"), _T("开挖方式"));
+	if ()
+	{
+	}
+	return dResult;
 }

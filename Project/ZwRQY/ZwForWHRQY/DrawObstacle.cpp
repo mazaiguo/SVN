@@ -80,11 +80,11 @@ bool CDrawObstacle::getZhuanghao()
 	case 3:
 		bRet = drawCircle();
 		break;
-	case 4:
 	case 5:
-	case 6:
 	case 7:
-	case 8:
+	case 17:
+	case 19:
+	case 22:
 		bRet = drawRectangle();
 		break;
 	default:
