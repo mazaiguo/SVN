@@ -3,6 +3,7 @@
 #include "dbwipe.h"
 #include "BlkInfo.h"
 #include "BcUtils.h"
+#include "GWDesingUtils.h"
 
 CDrawFM::CDrawFM(void)
 {
@@ -295,7 +296,7 @@ void CDrawFM::drawLineAndText()
 		return;
 	}
 	CString strText = _T("·§") + m_strNo;
-	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3000.0/(CDMXUtils::getXScale()));
+	AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
 
 	AcDbObjectId textId = MyDrawEntity::DrawText(midPt, strText,3.0, textStyleId);
 	m_idArrs.append(textId);

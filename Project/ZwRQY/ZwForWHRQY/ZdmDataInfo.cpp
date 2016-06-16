@@ -68,6 +68,11 @@ LPCTSTR CZdmDataInfo::getPipeType() const
 	return m_strPipeType;
 }
 
+LPCTSTR CZdmDataInfo::getSoilType() const
+{
+	return m_strSoilType;
+}
+
 double CZdmDataInfo::getGuanDi() const
 {
 	return m_dGuanDi;
@@ -143,6 +148,12 @@ Acad::ErrorStatus CZdmDataInfo::setPipeType(LPCTSTR strText)
 	return Acad::eOk;
 }
 
+Acad::ErrorStatus CZdmDataInfo::setSoilType(LPCTSTR strText)
+{
+	m_strSoilType = strText;
+	return Acad::eOk;
+}
+
 Acad::ErrorStatus CZdmDataInfo::setGuanDi( double strText )
 {
 	m_dGuanDi = strText;
@@ -206,6 +217,7 @@ CZdmDataInfo& CZdmDataInfo::operator=(const CZdmDataInfo& zdm)
 	m_dRealDmx = zdm.getRealDmx();//实际地面线
 	m_strJiedian = zdm.getJiedian();//节点
 	m_strPipeType = zdm.getPipeType();
+	m_strSoilType = zdm.getSoilType();
 	m_dcurData = zdm.getcurData();//当前桩号数据
 	m_dGuanDi = zdm.getGuanDi();//管底
 	m_dWaShen = zdm.getWaShen();//挖深

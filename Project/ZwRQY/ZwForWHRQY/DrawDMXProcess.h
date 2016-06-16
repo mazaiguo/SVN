@@ -72,6 +72,8 @@ private:
 	bool GetSJDmHeight();
 
 	bool GetXzDmHeight();
+	//获取土壤类型
+	bool GetSoilType();
 
 	//是否有坡度
 	bool GetIsPd();
@@ -133,6 +135,7 @@ private:
 	bool   m_bDrawJiedian;//是否绘制节点
 	double m_dZhuanghao;//桩号
 	CString m_strJiedian;
+	CString m_strSoilType;
 	double m_dSJDmHeight;//设计地面高
 	double m_dXzDmHeight;//现状地面高
 

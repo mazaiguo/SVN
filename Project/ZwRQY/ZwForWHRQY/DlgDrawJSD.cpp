@@ -5,6 +5,7 @@
 #include "resource.h"
 #include "DlgDrawJSD.h"
 #include "ZDMUtils.h"
+#include "GWDesingUtils.h"
 //-----------------------------------------------------------------------------
 IMPLEMENT_DYNAMIC (CDlgDrawJSD, CAcUiDialog)
 
@@ -89,7 +90,7 @@ void CDlgDrawJSD::OnBnClickedOk()
 	acedGrDraw(asDblArray(startPt), asDblArray(midPt), 7, 1);
 	AcDbObjectId textId = AcDbObjectId::kNull;
 	AcDbObjectId plineId = AcDbObjectId::kNull;
-	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3000.0/(CDMXUtils::getXScale()));
+	AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
 	AcGePoint3dArray points;
 	double dLen;
 	AcGePoint3d textPt;

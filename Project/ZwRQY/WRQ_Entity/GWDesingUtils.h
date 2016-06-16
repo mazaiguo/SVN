@@ -23,6 +23,8 @@ public:
 	//为全局变量创建的函数
 	static double getGlobalRadius();
 	static double getGlobalTextHeight();
+	static AcDbObjectId getGlobalTextStyle();
+
 
 	/*static void SetJdNum(CString strCount);
 	static CString getJdNum();

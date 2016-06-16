@@ -25,6 +25,7 @@ public:
 	double   	getRealDmx() const;
 	LPCTSTR  	getJiedian() const;
 	LPCTSTR  	getPipeType() const;
+	LPCTSTR  	getSoilType() const;
 	double 		getGuanDi() const;
 	double 		getWaShen() const;
 	double 		getPoDu() const;
@@ -42,6 +43,7 @@ public:
 	Acad::ErrorStatus setRealDmx(double strText);
 	Acad::ErrorStatus setJiedian(LPCTSTR strText);
 	Acad::ErrorStatus setPipeType(LPCTSTR strText);
+	Acad::ErrorStatus setSoilType(LPCTSTR strText);
 	Acad::ErrorStatus setGuanDi(double strText);
 	Acad::ErrorStatus setWaShen(double strText);
 	Acad::ErrorStatus setPoDu(double strPoDu);
@@ -86,6 +88,8 @@ private:
 	double m_dRealDmxS;//第二个实际地面线
 	double m_dJiedianS;
 
+	CString	m_strSoilType;//土壤类别
+
     static Adesk::Int16 m_version;
 	static LPCTSTR		m_dictName;
 
@@ -97,6 +101,7 @@ private:
 		kDxfNumCount		= 300,//90~99 32位整数值
 		kDxfJieDian			= 301,
 		kDxfPipeType		= 302,
+		kDxfSoilType		= 303,
 		kDxfDesignDmx		= 40,//4~59
 		kDxfRealDmx			= 41,
 		kDxfCurData 		= 42,

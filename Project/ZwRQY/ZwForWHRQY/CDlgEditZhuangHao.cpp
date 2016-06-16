@@ -25,6 +25,7 @@ void CDlgEditZhuangHao::setZDMData(CZdmDataInfo* pData)
 	m_pZDM.setRealDmx(pData->getRealDmx());
 	m_pZDM.setJiedian(pData->getJiedian());
 	m_pZDM.setPipeType(pData->getPipeType());
+	m_pZDM.setSoilType(pData->getSoilType());
 	m_pZDM.setGuanDi(pData->getGuanDi());
 	m_pZDM.setWaShen(pData->getWaShen());
 	m_pZDM.setPoDu(pData->getPoDu());

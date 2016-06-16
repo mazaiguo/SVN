@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "GWDesingUtils.h"
 #include "CBaseDataForGwDesign.h"
+#include "MySymble.h"
 
 CGWDesingUtils::CGWDesingUtils(void)
 {
@@ -292,6 +293,12 @@ double CGWDesingUtils::getGlobalRadius()
 double CGWDesingUtils::getGlobalTextHeight()
 {
 	return getGlobalScale()*4;
+}
+
+AcDbObjectId CGWDesingUtils::getGlobalTextStyle()
+{
+	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0);
+	return textStyleId;
 }
 
 //void CGWDesingUtils::SetJdNum(CString nValue)

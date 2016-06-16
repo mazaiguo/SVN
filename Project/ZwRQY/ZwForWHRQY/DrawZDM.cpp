@@ -3,6 +3,7 @@
 #include "ZDMUtils.h"
 #include "BcUtils.h"
 #include "CBiaochiForRQY.h"
+#include "GWDesingUtils.h"
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
@@ -21,6 +22,7 @@ CDrawZDM::CDrawZDM( CZdmDataInfo* pData )
 	m_pZDM.setRealDmx(pData->getRealDmx());
 	m_pZDM.setJiedian(pData->getJiedian());
 	m_pZDM.setPipeType(pData->getPipeType());
+	m_pZDM.setSoilType(pData->getSoilType());
 	m_pZDM.setGuanDi(pData->getGuanDi());
 	m_pZDM.setWaShen(pData->getWaShen());
 	m_pZDM.setPoDu(pData->getPoDu());
@@ -94,6 +96,7 @@ void CDrawZDM::setData( CZdmDataInfo* pData )
 	m_pZDM.setRealDmx(pData->getRealDmx());
 	m_pZDM.setJiedian(pData->getJiedian());
 	m_pZDM.setPipeType(pData->getPipeType());
+	m_pZDM.setSoilType(pData->getSoilType());
 	m_pZDM.setGuanDi(pData->getGuanDi());
 	m_pZDM.setWaShen(pData->getWaShen());
 	m_pZDM.setPoDu(pData->getPoDu());
@@ -403,7 +406,7 @@ bool CDrawZDM::DrawDMText()
 	//绘制设计地面高文字
 	acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(textPt));
 	acutPolar(asDblArray(textPt), 3*PI/2, 7.5, asDblArray(textPt));
-	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
+	AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
 	textId = MyDrawEntity::DrawText(textPt, strSJDmx, 3, textStyleId, AcDb::kTextCenter);
 	textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 	textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
@@ -466,7 +469,7 @@ bool CDrawZDM::DrawDMText()
 		strXZDmxS = TransFormStr(dXZDmxS);
 		acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(textPt));
 		acutPolar(asDblArray(textPt), 3*PI/2, 7.5, asDblArray(textPt));
-		AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
+		AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
 		textId = MyDrawEntity::DrawText(textPt, strSJDmxS, 3, textStyleId, AcDb::kTextCenter);
 		textId = MyEditEntity::openEntChangeRotation(textId, 3*PI/2);
 		textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
@@ -516,7 +519,7 @@ bool CDrawZDM::DrawNextDMText()
 		//绘制设计地面高文字
 		acutPolar(asDblArray(m_basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(textPt));
 		acutPolar(asDblArray(textPt), 3*PI/2, 7.5, asDblArray(textPt));
-		AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
+		AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
 		textId = MyDrawEntity::DrawText(textPt, strSJDmx, 3, textStyleId, AcDb::kTextCenter);
 		textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 		textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
@@ -551,7 +554,7 @@ bool CDrawZDM::DrawNextDMText()
 			strXZDmxS = TransFormStr(dXZDmxS);
 			acutPolar(asDblArray(m_basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(textPt));
 			acutPolar(asDblArray(textPt), 3*PI/2, 7.5, asDblArray(textPt));
-			AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
+			AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
 			textId = MyDrawEntity::DrawText(textPt, strSJDmxS, 3, textStyleId, AcDb::kTextCenter);
 			textId = MyEditEntity::openEntChangeRotation(textId, 3*PI/2);
 			textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
@@ -595,7 +598,7 @@ bool CDrawZDM::DrawJdText(AcGePoint3d basePt, AcGePoint3d TopPt, AcGePoint3d end
 	CString strText;
 	CString strTmp = m_pZDM.getJiedian();
 	strText = _T("T") + strTmp;
-	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
+	AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
 	textId = MyDrawEntity::DrawText(cenPt, strText, 3, textStyleId, AcDb::kTextMid, AcDb::kTextBase);
 	textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
 	MyEditEntity::OpenObjAppendDoubleToXdata(textId, ZDM_JIEDIAN, MyTransFunc::StringToDouble(strTmp));
@@ -891,12 +894,6 @@ CString CDrawZDM::doZhuanghaoText(CString strTmp)
 
 }
 
-CString CDrawZDM::GetTFlinag()
-{
-	CString strText;
-	strText = _T("abcd");
-	return strText;
-}
 
 CString TransFormStr(double dValue)
 {
@@ -1083,7 +1080,7 @@ AcDbObjectIdArray CDrawGd::drawGdflat(AcGePoint3d pretmpPt, AcGePoint3d tmpPt)
 
 	//绘制管道类型文字
 	AcDbObjectId ZxLayerId = MySymble::CreateNewLayer(_T("GD-TEXT"), 7);
-	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
+	AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
 	CString strPipeType,strPipeDimetar;
 	strPipeType = m_pZDM.getPipeType();
 	CString strTmp,strText;
@@ -1107,7 +1104,7 @@ AcDbObjectIdArray CDrawGd::drawText(AcGePoint3d basePt)
 	acutPolar(asDblArray(basePt), 3*PI/2, 114.5, asDblArray(guandiPt));
 	acutPolar(asDblArray(guandiPt), 3*PI/2, 15, asDblArray(washenPt));
 	AcDbObjectId ZxLayerId = MySymble::CreateNewLayer(_T("GD-TEXT"), 7);
-	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
+	AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
 	AcDbObjectId textId = AcDbObjectId::kNull;
 	double dGuandi = m_pZDM.getGuanDi();
 	double dWashen = m_pZDM.getWaShen();
@@ -1143,7 +1140,7 @@ AcDbObjectIdArray CDrawGd::drawtnextText(AcGePoint3d basePt, double dGuandi, dou
 	acutPolar(asDblArray(basePt), 3*PI/2, 114.5, asDblArray(guandiPt));
 	acutPolar(asDblArray(guandiPt), 3*PI/2, 15, asDblArray(washenPt));
 	AcDbObjectId ZxLayerId = MySymble::CreateNewLayer(_T("GD-TEXT"), 7);
-	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
+	AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
 	AcDbObjectId textId = AcDbObjectId::kNull;
 	CString strTmp;
 	CString strGuandiText;
@@ -1172,7 +1169,7 @@ AcDbObjectIdArray CDrawGd::drawTextAndLine(AcGePoint3d pretmpPt, AcGePoint3d tmp
 	AcGePoint3d startPt,endPt,pdPt,distPt;
 	AcDbObjectIdArray objIdArr;
 	objIdArr.removeAll();
-	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
+	AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
 	AcDbObjectId ZxLayerId = MySymble::CreateNewLayer(_T("GD-TMP"), 7);
 
 	CString strTmp;
@@ -1325,6 +1322,13 @@ bool CDrawGd::drawCirlceOrEllipse()
 		{
 			m_idArrs.append(objIdArr.at(i));
 		}
+		CString strVolume = getEarthWorkd();
+		AcGePoint3d txtPt;
+		acutPolar(asDblArray(tmpPt), 3*PI/2, 67.5, asDblArray(txtPt));
+		AcDbObjectId textId = MyDrawEntity::DrawText(txtPt, strVolume, 3, CGWDesingUtils::getGlobalTextStyle(), AcDb::kTextCenter);
+		textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
+		textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
+		m_idArrs.append(textId);
 	}
 	objIdArr = drawText(tmpPt);
 	for (int i=0; i<objIdArr.length(); i++)
@@ -1570,15 +1574,16 @@ AcDbObjectId CDrawGd::CreateZero(AcDbObjectId textId2, AcDbObjectId ZxLayerId)
 	AcDbExtents exts = MyEditEntity::OpenObjAndGetExts(textId2);
 	AcGePoint3d textPt;
 	textPt.set(exts.maxPoint().x, exts.minPoint().y, 0);
-	AcDbObjectId textStyleId = MySymble::CreateTextStyle(_T("FSHZ"), _T("fszf.shx"), _T("fshz.shx"), 0.8, 3.0*m_dXScale);
+	AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
 	textId = MyDrawEntity::DrawText(textPt, _T("0"), 0.6, textStyleId);
 	textId = MyEditEntity::openEntChangeRotation(textId, 23*PI/12);
 	return textId;
 }
 
-double CDrawGd::getGCDWidth(double dDiameter)
+double CDrawGd::getGCDWidth(CZdmDataInfo data)
 {
 	double dResult;
+	double dDiameter = data.getPipeDiameter();
 	if (dDiameter <= 80)
 	{
 		dResult = 0.6;
@@ -1618,12 +1623,139 @@ double CDrawGd::getGCDWidth(double dDiameter)
 	return dResult;
 }
 
-double CDrawGd::getBPl()
+double CDrawGd::getBPl(CZdmDataInfo data)
 {
 	double dResult;
 	CString strType = gGlobal.GetIniValue(_T("纵断面设置"), _T("开挖方式"));
-	if ()
+	CString strSoilType = data.getSoilType();
+
+	if (strSoilType.CompareNoCase(_T("砂土")) == 0)
 	{
+		if (strType.CompareNoCase(_T("人工开挖")) == 0)
+		{
+			dResult = 1.00;
+		}
+		else if (strType.CompareNoCase(_T("在沟底挖土")) == 0)
+		{
+			dResult = 0.75;
+		}
+		else
+		{
+			dResult = 1.00;
+		}
+	}
+	else if (strSoilType.CompareNoCase(_T("亚砂土")) == 0)
+	{
+		if (strType.CompareNoCase(_T("人工开挖")) == 0)
+		{
+			dResult = 0.67;
+		}
+		else if (strType.CompareNoCase(_T("在沟底挖土")) == 0)
+		{
+			dResult = 0.50;
+		}
+		else
+		{
+			dResult = 0.75;
+		}
+	}
+	else if (strSoilType.CompareNoCase(_T("亚黏土")) == 0)
+	{
+		if (strType.CompareNoCase(_T("人工开挖")) == 0)
+		{
+			dResult = 0.50;
+		}
+		else if (strType.CompareNoCase(_T("在沟底挖土")) == 0)
+		{
+			dResult = 0.33;
+		}
+		else
+		{
+			dResult = 0.75;
+		}
+	}
+	else if (strSoilType.CompareNoCase(_T("黏土")) == 0)
+	{
+		if (strType.CompareNoCase(_T("人工开挖")) == 0)
+		{
+			dResult = 0.33;
+		}
+		else if (strType.CompareNoCase(_T("在沟底挖土")) == 0)
+		{
+			dResult = 0.25;
+		}
+		else
+		{
+			dResult = 0.67;
+		}
+	}
+	else if (strSoilType.CompareNoCase(_T("含砾土卵石土")) == 0)
+	{
+		if (strType.CompareNoCase(_T("人工开挖")) == 0)
+		{
+			dResult = 0.67;
+		}
+		else if (strType.CompareNoCase(_T("在沟底挖土")) == 0)
+		{
+			dResult = 0.50;
+		}
+		else
+		{
+			dResult = 0.75;
+		}
+	}
+	else if (strSoilType.CompareNoCase(_T("泥炭岩白垩土")) == 0)
+	{
+		if (strType.CompareNoCase(_T("人工开挖")) == 0)
+		{
+			dResult = 0.33;
+		}
+		else if (strType.CompareNoCase(_T("在沟底挖土")) == 0)
+		{
+			dResult = 0.25;
+		}
+		else
+		{
+			dResult = 0.67;
+		}
+	}
+	else if (strSoilType.CompareNoCase(_T("干黄土")) == 0)
+	{
+		if (strType.CompareNoCase(_T("人工开挖")) == 0)
+		{
+			dResult = 0.25;
+		}
+		else if (strType.CompareNoCase(_T("在沟底挖土")) == 0)
+		{
+			dResult = 0.10;
+		}
+		else
+		{
+			dResult = 0.33;
+		}
 	}
 	return dResult;
+}
+
+double CDrawGd::getArea(CZdmDataInfo data)
+{
+	double dHeight = data.getRealDmx() - data.getGuanDi();
+	double dDiWidth = getGCDWidth(data);
+	double dBWidth;
+	double dHen = dHeight*getBPl(data);
+	dBWidth = 2*dHen + dDiWidth;
+
+	double dArea = 0;
+	dArea = (dDiWidth + dBWidth)*dHeight/2;
+	return dArea;
+}
+
+CString CDrawGd::getEarthWorkd()
+{
+	double dArea1 = getArea(m_pZDM);
+	double dArea2 = getArea(m_preData);
+	double dLen = m_pZDM.getcurData() - m_preData.getcurData();
+	double dVolume = (dArea1 + dArea2)*dLen/2;
+	CString strTemp = TransFormStr(dVolume);
+	return strTemp;
 }

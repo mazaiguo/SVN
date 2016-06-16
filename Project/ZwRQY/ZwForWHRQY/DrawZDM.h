@@ -80,7 +80,6 @@ private:
 	bool EditDict(int nCur);
 
 	CString doZhuanghaoText(CString strTmp);
-	CString GetTFlinag();
 
 private:
 	CZdmDataInfo m_pZDM;
@@ -132,9 +131,12 @@ private:
 	bool EditDict(int nCur);
 	AcDbObjectId CreateZero(AcDbObjectId textId2, AcDbObjectId ZxLayerId);
 	//获取沟槽底宽度
-	double getGCDWidth(double dDimater);
+	double getGCDWidth(CZdmDataInfo data);
 	//获取边坡率 需要增加一个土壤类别的成员
-	double getBPl();
+	double getBPl(CZdmDataInfo data);
+	double getArea(CZdmDataInfo data);
+	//获取土方量
+	CString getEarthWorkd();
 private:
 	CZdmDataInfo m_pZDM;
 	CZdmDataInfo m_preData;

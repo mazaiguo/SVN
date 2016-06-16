@@ -115,6 +115,12 @@ LPCTSTR CBiaochiForRQY::getPipeType() const
 	return m_strPipeType;
 }
 
+LPCTSTR CBiaochiForRQY::getSoilType() const
+{
+	assertReadEnabled();
+	return m_strSoilType;
+}
+
 double CBiaochiForRQY::getGuanDi() const
 {
 	assertReadEnabled();
@@ -259,6 +265,13 @@ Acad::ErrorStatus CBiaochiForRQY::setPipeType(LPCTSTR newLabel)
 	}
 }
 
+Acad::ErrorStatus CBiaochiForRQY::setSoilType(LPCTSTR strText)
+{
+	assertWriteEnabled();
+	m_strSoilType = strText;
+	return Acad::eOk;
+}
+
 Acad::ErrorStatus CBiaochiForRQY::setGuanDi( double strText )
 {
 	assertWriteEnabled();
@@ -367,6 +380,10 @@ CBiaochiForRQY::dwgInFields(AcDbDwgFiler* filer)
 	filer->readItem(&tmpStr);
 	m_strPipeType = tmpStr;
 	acutDelString(tmpStr);
+	filer->readItem(&tmpStr);
+	m_strSoilType = tmpStr;
+	acutDelString(tmpStr);
+
 
 	filer->readItem(&m_dDesignDmx);
 	filer->readItem(&m_dRealDmx);
@@ -400,6 +417,7 @@ CBiaochiForRQY::dwgOutFields(AcDbDwgFiler* filer) const
 	filer->writeItem(static_cast<const TCHAR*>(m_strCount));
 	filer->writeItem(static_cast<const TCHAR*>(m_strJiedian));
 	filer->writeItem(static_cast<const TCHAR*>(m_strPipeType));
+	filer->writeItem(static_cast<const TCHAR*>(m_strSoilType));
 	filer->writeItem(m_dDesignDmx);
 	filer->writeItem(m_dRealDmx);
 	filer->writeItem(m_dcurData);
@@ -445,6 +463,10 @@ CBiaochiForRQY::dxfInFields(AcDbDxfFiler* filer)
 		else if (rb.restype == kDxfPipeType)
 		{
 			setPipeType(rb.resval.rstring);
+		}
+		else if (rb.restype == kDxfSoilType)
+		{
+			setSoilType(rb.resval.rstring);
 		}
 		else if (rb.restype == kDxfDesignDmx)
 		{
@@ -525,6 +547,7 @@ CBiaochiForRQY::dxfOutFields(AcDbDxfFiler* filer) const
 	filer->writeItem(kDxfNumCount, static_cast<const TCHAR*>(m_strCount));
 	filer->writeItem(kDxfJieDian, static_cast<const TCHAR*>(m_strJiedian));
 	filer->writeItem(kDxfPipeType, static_cast<const TCHAR*>(m_strPipeType));
+	filer->writeItem(kDxfSoilType, static_cast<const TCHAR*>(m_strSoilType));
 	filer->writeItem(kDxfDesignDmx, m_dDesignDmx);
 	filer->writeItem(kDxfRealDmx, m_dRealDmx);
 	filer->writeItem(kDxfCurData, m_dcurData);

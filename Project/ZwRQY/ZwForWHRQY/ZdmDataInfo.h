@@ -26,6 +26,7 @@ public:
 	double getRealDmx() const;
 	LPCTSTR getJiedian() const;
 	LPCTSTR getPipeType() const;
+	LPCTSTR getSoilType() const;
 	double getGuanDi() const;
 	double getWaShen() const;
 	double getPoDu() const;
@@ -43,6 +44,7 @@ public:
 	Acad::ErrorStatus setRealDmx(double strText);
 	Acad::ErrorStatus setJiedian(LPCTSTR strText);
 	Acad::ErrorStatus setPipeType(LPCTSTR strText);
+	Acad::ErrorStatus setSoilType(LPCTSTR strText);
 	Acad::ErrorStatus setGuanDi(double strText);
 	Acad::ErrorStatus setWaShen(double strText);
 	Acad::ErrorStatus setPoDu(double strPoDu);
@@ -63,6 +65,7 @@ private:
 	double m_dRealDmx;//实际地面线
 	CString m_strJiedian;//节点
 	CString m_strPipeType;//管道类型
+	CString m_strSoilType;//土壤类型
 	double m_dcurData;//当前桩号数据
 	double m_dGuanDi;//管底
 	double m_dWaShen;//挖深

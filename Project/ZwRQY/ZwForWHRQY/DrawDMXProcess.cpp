@@ -465,6 +465,32 @@ bool DrawDMXProcess::GetXzDmHeight()
 	return bRet;
 }
 
+bool DrawDMXProcess::GetSoilType()
+{
+	acutPrintf(_T("\n土壤类别有：砂土、亚砂土、亚黏土、黏土、含砾土卵石土、泥炭岩白垩土、干黄土"));
+	TCHAR tempBuf[133];
+	int nRet = acedGetString(1, _T("\n土壤类别<砂土>:"),  tempBuf);
+	if (nRet == RTNORM)
+	{
+		//return true;
+		m_strSoilType = tempBuf;
+		if (m_strSoilType.IsEmpty())
+		{
+			m_strSoilType =_T("砂土");
+		}
+	}
+	else if (nRet == RTNONE)
+	{
+		m_strSoilType =_T("砂土");
+	}
+	else
+	{
+		return false;
+	}
+	m_pZdmInfo.setSoilType(m_strSoilType);
+	return true;
+}
+
 bool DrawDMXProcess::GetIsPd()
 {
 	acedInitGet(0 , _T("Yes No"));
@@ -682,6 +708,10 @@ bool DrawDMXProcess::EntInteraction()
 	}
 
 	if (!GetXzDmHeight())
+	{
+		return false;
+	}
+	if (!GetSoilType())
 	{
 		return false;
 	}
