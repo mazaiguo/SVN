@@ -1264,6 +1264,11 @@ AcDbObjectIdArray CDrawGd::drawTextAndLine(AcGePoint3d pretmpPt, AcGePoint3d tmp
 
 bool CDrawGd::drawCirlceOrEllipse()
 {
+	if ((abs(m_pZDM.getGuanDi()) < GeTol)
+		&&(abs(m_pZDM.getWaShen()) < GeTol))
+	{
+		return true;
+	}
 	AcGePoint3d tmpPt,guandiPt,guandiTopPt,cenPt;
 	double dRadius = (m_dYScale*m_pZDM.getPipeDiameter())/2000;
 	acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(tmpPt));
@@ -1322,7 +1327,7 @@ bool CDrawGd::drawCirlceOrEllipse()
 		{
 			m_idArrs.append(objIdArr.at(i));
 		}
-		CString strVolume = getEarthWorkd();
+		CString strVolume = getEarthWorkd(m_preData, m_pZDM);
 		AcGePoint3d txtPt;
 		acutPolar(asDblArray(tmpPt), 3*PI/2, 67.5, asDblArray(txtPt));
 		AcDbObjectId textId = MyDrawEntity::DrawText(txtPt, strVolume, 3, CGWDesingUtils::getGlobalTextStyle(), AcDb::kTextCenter);
@@ -1369,6 +1374,11 @@ bool CDrawGd::drawCirlceOrEllipse()
 			//	MyEditEntity::AddObjToGroup(strGdGroup, objId);
 			//}
 			//绘制管道线
+			if ((abs(NextData.getGuanDi()) < GeTol)
+				&&(abs(NextData.getWaShen()) < GeTol))
+			{
+				return true;
+			}
 			if (m_nCount > 1)
 			{
 				AcGePoint3d preguandiPt,preguandiTopPt,pretmpPt;
@@ -1403,7 +1413,13 @@ bool CDrawGd::drawCirlceOrEllipse()
 				{
 					MyEditEntity::AddObjToGroup(strGdGroup, objIdArr.at(i));
 				}
-
+				CString strVolume = getEarthWorkd(m_pZDM, NextData);
+				AcGePoint3d txtPt;
+				acutPolar(asDblArray(pretmpPt), 3*PI/2, 67.5, asDblArray(txtPt));
+				AcDbObjectId textId = MyDrawEntity::DrawText(txtPt, strVolume, 3, CGWDesingUtils::getGlobalTextStyle(), AcDb::kTextCenter);
+				textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
+				textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
+				MyEditEntity::AddObjToGroup(strGdGroup, textId);
 			}
 			/*objIdArr = drawText(tmpPt);
 			for (int i=0; i<objIdArr.length(); i++)
@@ -1750,11 +1766,11 @@ double CDrawGd::getArea(CZdmDataInfo data)
 	return dArea;
 }
 
-CString CDrawGd::getEarthWorkd()
+CString CDrawGd::getEarthWorkd(CZdmDataInfo preData, CZdmDataInfo data)
 {
-	double dArea1 = getArea(m_pZDM);
-	double dArea2 = getArea(m_preData);
-	double dLen = m_pZDM.getcurData() - m_preData.getcurData();
+	double dArea1 = getArea(data);
+	double dArea2 = getArea(preData);
+	double dLen = data.getcurData() - preData.getcurData();
 	double dVolume = (dArea1 + dArea2)*dLen/2;
 	CString strTemp = TransFormStr(dVolume);
 	return strTemp;

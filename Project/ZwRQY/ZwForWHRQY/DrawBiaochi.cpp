@@ -349,7 +349,7 @@ void CDrawBiaochi::SaveDataToDwg()
 	CDMXUtils::SetbasePt(m_basePt);
 	CDMXUtils::SetcreateBc(true);
 	CDMXUtils::setNumCount(_T("1"));
-	CDMXUtils::SetCurNum(_T("1"));
+	//CDMXUtils::SetCurNum(_T("1"));
 	CDMXUtils::SetJdNum(_T("1"));
 	CDMXUtils::SetcreateJiedian(false);
 }

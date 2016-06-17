@@ -136,7 +136,7 @@ private:
 	double getBPl(CZdmDataInfo data);
 	double getArea(CZdmDataInfo data);
 	//获取土方量
-	CString getEarthWorkd();
+	CString getEarthWorkd(CZdmDataInfo preData, CZdmDataInfo data);
 private:
 	CZdmDataInfo m_pZDM;
 	CZdmDataInfo m_preData;

@@ -129,6 +129,8 @@ private:
 
 	bool doXdata(AcDbObjectId objId, CString strTMp, CZdmDataInfo& tmpData);
 	bool GetObjDoubleXdata(AcDbObjectId objId, CString strTmp);
+	
+	void getSpecialInfo();
 private:
 	double m_dXScale;//x±ÈÀý
 	double m_dYScale;//y±ÈÀý

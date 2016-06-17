@@ -122,14 +122,34 @@ bool DrawDMXProcess::Insert(bool bIsObstacle)
 	if (strCur.CompareNoCase(_T("0")) == 0)
 	{
 		return false;
+	}	
+	int nCount = MyTransFunc::StringToInt(strCur);
+	if (nCount < 1)
+	{
+		acutPrintf(_T("不能在此数据插入"));
+		return false;
 	}
 	m_strLabel = BC_DICT + strCur;
 	if (!bIsExisted)
-	{
+	{	
+		CBcUtils bc;
+		bc.get(m_strLabel, m_pZdmInfo);
+		int nCurCount = MyTransFunc::StringToInt(CDMXUtils::getCurNum());
+		int nTmp = nCount - 1;
+		CString strCount;
+		strCount.Format(_T("%d"), nTmp);
+		CString strTmpLabel = BC_DICT + strCount;
+		bc.get(strTmpLabel, m_preZdmInfo);
+
+		getSpecialInfo();
 		m_pZdmInfo.setLabel(m_strLabel);
 		m_pZdmInfo.setCount(strCur);
 		m_pZdmInfo.setJiedian(strCur);
 		m_pZdmInfo.setcurData(m_dZhuanghao);
+		//////////////////////////////////////////////////////////////////////////
+		//设置现状地面
+		
+		
 		if (nRet == RTNORM)
 		{
 			if (!EntInteraction())
@@ -142,8 +162,11 @@ bool DrawDMXProcess::Insert(bool bIsObstacle)
 
 			if (CDMXUtils::getcreateGw())
 			{
-				CDrawGDProcess gd;
-				gd.Insert(strCur);
+				if (nCount < nCurCount)
+				{
+					CDrawGDProcess gd;
+					gd.Insert(strCur);
+				}		
 			}
 
 			return true;
@@ -858,6 +881,27 @@ bool DrawDMXProcess::GetObjDoubleXdata(AcDbObjectId objId, CString strTmp)
 	return true;
 }
 
+void DrawDMXProcess::getSpecialInfo()
+{
+	double dLen1 = m_dZhuanghao - m_preZdmInfo.getcurData();
+	double dLen2 = m_pZdmInfo.getcurData() - m_preZdmInfo.getcurData();
+	double dRadio = dLen1/dLen2;
+
+	m_dXzDmHeight = (m_pZdmInfo.getRealDmx() - m_preZdmInfo.getRealDmx())*dRadio + m_preZdmInfo.getRealDmx();
+	m_dSJDmHeight = (m_pZdmInfo.getDesignDmx() - m_preZdmInfo.getDesignDmx())*dRadio + m_preZdmInfo.getDesignDmx();
+	
+	double dWashen = (m_pZdmInfo.getWaShen() - m_preZdmInfo.getWaShen())*dRadio + m_preZdmInfo.getWaShen();
+	double dGuandi = (m_pZdmInfo.getGuanDi() - m_preZdmInfo.getGuanDi())*dRadio + m_preZdmInfo.getGuanDi();
+	double dPodu = m_pZdmInfo.getPoDu();
+	double dJuli = m_dZhuanghao - m_preZdmInfo.getcurData();
+	m_pZdmInfo.setRealDmx(m_dXzDmHeight);
+	m_pZdmInfo.setDesignDmx(m_dSJDmHeight);
+	m_pZdmInfo.setWaShen(dWashen);
+	m_pZdmInfo.setGuanDi(dGuandi);
+	m_pZdmInfo.setPoDu(dPodu);
+	m_pZdmInfo.setJuli(dJuli);
+}
+
 bool DrawDMXProcess::del(CString strGroupName)
 {
 	CString strCur = CurNumPosition(strGroupName);
@@ -953,11 +997,12 @@ bool CDrawGDProcess::Draw()
 		acutPrintf(_T("\n没有地面线数据"));
 		return false;
 	}
-	if (!GetPipeType())
+	
+	if (!GetPipeDiameter())
 	{
 		return false;
 	}
-	if (!GetPipeDiameter())
+	if (!GetPipeType())
 	{
 		return false;
 	}
@@ -994,11 +1039,12 @@ bool CDrawGDProcess::Insert(CString strCur)
 		m_dPipeDiameter = m_preZdmInfo.getPipeDiameter();
 		m_dGuandi = m_preZdmInfo.getGuanDi();
 	}
-	if (!GetPipeType())
+	
+	if (!GetPipeDiameter())
 	{
 		return false;
 	}
-	if (!GetPipeDiameter())
+	if (!GetPipeType())
 	{
 		return false;
 	}

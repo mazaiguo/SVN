@@ -299,6 +299,18 @@ public:
 		DrawDMXProcess dm;
 		dm.modify();
 	}
+
+	// - WRQ_ZDM._ZJNSG command (do not rename)
+	static void WRQ_ZDM_ZJNSG(void)//Ôö¼ÓÁèË®¸×
+	{
+		// Add your code for command WRQ_ZDM._ZJNSG here
+	}
+
+	// - WRQ_ZDM._SCNSG command (do not rename)
+	static void WRQ_ZDM_SCNSG(void)
+	{
+		// Add your code for command WRQ_ZDM._SCNSG here
+	}
 } ;
 
 //-----------------------------------------------------------------------------
@@ -318,3 +330,5 @@ ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _DELJC, SCJC, ACRX_CMD_TRANS
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _ZJFM, ZJFM, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _SCFM, SCFM, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _EDZDM, EDZDM, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _ZJNSG, ZJNSG, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _SCNSG, SCNSG, ACRX_CMD_TRANSPARENT, NULL)
