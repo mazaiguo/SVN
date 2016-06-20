@@ -617,6 +617,42 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="警示带"
+				>
+				<File
+					RelativePath=".\DrawJSD.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DrawJSD.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="凝水缸"
+				>
+				<File
+					RelativePath=".\DrawNSG.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DrawNSG.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="套管"
+				>
+				<File
+					RelativePath=".\DrawTGAndGG.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DrawTGAndGG.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Include Files"

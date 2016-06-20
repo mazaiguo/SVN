@@ -25,6 +25,7 @@ public:
 
 	static void SetStartZH(CString dStartZH);
 	static CString getStartZH();
+	static double  startzh();
 
 	static void SetPipeType(CString dStartZH);
 	static CString getPipeType();

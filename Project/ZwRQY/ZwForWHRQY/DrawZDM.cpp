@@ -275,10 +275,10 @@ bool CDrawZDM::DrawLine(bool bIsDeFault)
 		{
 			acutPolar(asDblArray(m_basePt), 3*PI/2, i*15, asDblArray(tmpPt));
 		}
-		acutPolar(asDblArray(tmpPt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(endPt));
+		acutPolar(asDblArray(tmpPt), 0, m_dLen + (m_pZDM.getcurData() - CDMXUtils::startzh())*m_dXScale, asDblArray(endPt));
 		if (nCount > 1)
 		{
-			acutPolar(asDblArray(tmpPt), 0, m_dLen + m_preData.getcurData()*m_dXScale, asDblArray(tmpPt));
+			acutPolar(asDblArray(tmpPt), 0, m_dLen + (m_preData.getcurData() - CDMXUtils::startzh())*m_dXScale, asDblArray(tmpPt));
 		}
 		lineId = MyDrawEntity::DrawLine(tmpPt, endPt, hxLayerId);
 		m_idArrs.append(lineId);
@@ -305,10 +305,10 @@ bool CDrawZDM::DrawLine(bool bIsDeFault)
 				{
 					acutPolar(asDblArray(m_basePt), 3*PI/2, i*15, asDblArray(tmpPt));
 				}
-				acutPolar(asDblArray(tmpPt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(endPt));
+				acutPolar(asDblArray(tmpPt), 0, m_dLen + (NextData.getcurData() - CDMXUtils::startzh())*m_dXScale, asDblArray(endPt));
 				if (nCount > 1)
 				{
-					acutPolar(asDblArray(tmpPt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(tmpPt));
+					acutPolar(asDblArray(tmpPt), 0, m_dLen + (m_pZDM.getcurData() - CDMXUtils::startzh())*m_dXScale, asDblArray(tmpPt));
 				}
 				lineId = MyDrawEntity::DrawLine(tmpPt, endPt, hxLayerId);
 				AddObjToDict(strNextLabel, lineId);
@@ -325,7 +325,7 @@ bool CDrawZDM::DrawLine(bool bIsDeFault)
 
 
 	AcGePoint3d tmpPt,basePt;	
-	acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(basePt));
+	acutPolar(asDblArray(m_basePt), 0, m_dLen + (m_pZDM.getcurData() - CDMXUtils::startzh())*m_dXScale, asDblArray(basePt));
 
 	if (dDesignDmx < dRealDmx)
 	{
@@ -404,7 +404,7 @@ bool CDrawZDM::DrawDMText()
 	strXZDmx = TransFormStr(dXZDmx);
 	CString strZhuanghao = MyTransFunc::doubleToStr(dCurData, strTmp, 2, 2);
 	//绘制设计地面高文字
-	acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(textPt));
+	acutPolar(asDblArray(m_basePt), 0, m_dLen + (m_pZDM.getcurData() - CDMXUtils::startzh())*m_dXScale, asDblArray(textPt));
 	acutPolar(asDblArray(textPt), 3*PI/2, 7.5, asDblArray(textPt));
 	AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
 	textId = MyDrawEntity::DrawText(textPt, strSJDmx, 3, textStyleId, AcDb::kTextCenter);
@@ -467,7 +467,7 @@ bool CDrawZDM::DrawDMText()
 		strXZDmxS.Format(_T("%.2f"), dXZDmxS );*/
 		strSJDmxS = TransFormStr(dSJDmxS);
 		strXZDmxS = TransFormStr(dXZDmxS);
-		acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(textPt));
+		acutPolar(asDblArray(m_basePt), 0, m_dLen + (m_pZDM.getcurData() - CDMXUtils::startzh())*m_dXScale, asDblArray(textPt));
 		acutPolar(asDblArray(textPt), 3*PI/2, 7.5, asDblArray(textPt));
 		AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
 		textId = MyDrawEntity::DrawText(textPt, strSJDmxS, 3, textStyleId, AcDb::kTextCenter);
@@ -517,7 +517,7 @@ bool CDrawZDM::DrawNextDMText()
 		strXZDmx = TransFormStr(dXZDmx);
 		CString strZhuanghao = MyTransFunc::doubleToStr(dCurData, strTmp, 2, 2);
 		//绘制设计地面高文字
-		acutPolar(asDblArray(m_basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(textPt));
+		acutPolar(asDblArray(m_basePt), 0, m_dLen + (NextData.getcurData() - CDMXUtils::startzh())*m_dXScale, asDblArray(textPt));
 		acutPolar(asDblArray(textPt), 3*PI/2, 7.5, asDblArray(textPt));
 		AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
 		textId = MyDrawEntity::DrawText(textPt, strSJDmx, 3, textStyleId, AcDb::kTextCenter);
@@ -552,7 +552,7 @@ bool CDrawZDM::DrawNextDMText()
 			strXZDmxS.Format(_T("%.2f"), dXZDmxS);*/
 			strSJDmxS = TransFormStr(dSJDmxS);
 			strXZDmxS = TransFormStr(dXZDmxS);
-			acutPolar(asDblArray(m_basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(textPt));
+			acutPolar(asDblArray(m_basePt), 0, m_dLen + (NextData.getcurData() - CDMXUtils::startzh())*m_dXScale, asDblArray(textPt));
 			acutPolar(asDblArray(textPt), 3*PI/2, 7.5, asDblArray(textPt));
 			AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
 			textId = MyDrawEntity::DrawText(textPt, strSJDmxS, 3, textStyleId, AcDb::kTextCenter);
@@ -627,7 +627,7 @@ bool CDrawZDM::DrawSMXLine(bool bIsDeFault)
 	double dPreRealDmx = (m_preData.getRealDmx() - CDMXUtils::getMinElavation())*m_dYScale;
 
 	AcGePoint3d startPt, endPt, tmpPt, preStartPt, preEndPt,endPtS, preEndPtS;	
-	acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(tmpPt));
+	acutPolar(asDblArray(m_basePt), 0, m_dLen + (m_pZDM.getcurData() - CDMXUtils::startzh())*m_dXScale, asDblArray(tmpPt));
 	acutPolar(asDblArray(tmpPt), PI/2, dDesignDmx, asDblArray(endPt));
 	acutPolar(asDblArray(tmpPt), PI/2, dRealDmx, asDblArray(preEndPt));
 	if (m_pZDM.getHasBulge())
@@ -636,7 +636,7 @@ bool CDrawZDM::DrawSMXLine(bool bIsDeFault)
 		acutPolar(asDblArray(tmpPt), PI/2, (m_pZDM.getRealDmxS() - CDMXUtils::getMinElavation())*m_dYScale, asDblArray(preEndPtS));
 	}
 
-	acutPolar(asDblArray(m_basePt), 0, m_dLen + m_preData.getcurData()*m_dXScale, asDblArray(tmpPt));
+	acutPolar(asDblArray(m_basePt), 0, m_dLen + (m_preData.getcurData() - CDMXUtils::startzh())*m_dXScale, asDblArray(tmpPt));
 	if (m_preData.getHasBulge())
 	{
 		acutPolar(asDblArray(tmpPt), PI/2, (m_preData.getDesignDmxS() - CDMXUtils::getMinElavation())*m_dYScale, asDblArray(startPt));
@@ -668,7 +668,7 @@ bool CDrawZDM::DrawSMXLine(bool bIsDeFault)
 			double dNextDesignDmx = (NextData.getDesignDmx() - CDMXUtils::getMinElavation())*m_dYScale;
 			double dNextRealDmx = (NextData.getRealDmx() - CDMXUtils::getMinElavation())*m_dYScale;
 
-			acutPolar(asDblArray(m_basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(tmpPt));
+			acutPolar(asDblArray(m_basePt), 0, m_dLen + (NextData.getcurData() - CDMXUtils::startzh())*m_dXScale, asDblArray(tmpPt));
 			acutPolar(asDblArray(tmpPt), PI/2, dNextDesignDmx, asDblArray(startPt));
 			acutPolar(asDblArray(tmpPt), PI/2, dNextRealDmx, asDblArray(preStartPt));
 		
@@ -1271,7 +1271,7 @@ bool CDrawGd::drawCirlceOrEllipse()
 	}
 	AcGePoint3d tmpPt,guandiPt,guandiTopPt,cenPt;
 	double dRadius = (m_dYScale*m_pZDM.getPipeDiameter())/2000;
-	acutPolar(asDblArray(m_basePt), 0, m_dLen + m_pZDM.getcurData()*m_dXScale, asDblArray(tmpPt));
+	acutPolar(asDblArray(m_basePt), 0, m_dLen + (m_pZDM.getcurData() - CDMXUtils::startzh())*m_dXScale, asDblArray(tmpPt));
 	acutPolar(asDblArray(tmpPt), PI/2, (m_pZDM.getGuanDi() - CDMXUtils::getMinElavation())*m_dYScale, asDblArray(guandiPt));
 	acutPolar(asDblArray(guandiPt), PI/2, 2*dRadius, asDblArray(guandiTopPt));
 	acutPolar(asDblArray(guandiPt), PI/2, dRadius, asDblArray(cenPt));
@@ -1302,7 +1302,7 @@ bool CDrawGd::drawCirlceOrEllipse()
 	if (m_nCount > 1)
 	{
 		AcGePoint3d preguandiPt,preguandiTopPt,pretmpPt;
-		acutPolar(asDblArray(m_basePt), 0, m_dLen + m_preData.getcurData()*m_dXScale, asDblArray(pretmpPt));
+		acutPolar(asDblArray(m_basePt), 0, m_dLen + (m_preData.getcurData() - CDMXUtils::startzh())*m_dXScale, asDblArray(pretmpPt));
 		acutPolar(asDblArray(pretmpPt), PI/2, (m_preData.getGuanDi() - CDMXUtils::getMinElavation())*m_dYScale, asDblArray(preguandiPt));
 		acutPolar(asDblArray(preguandiPt), PI/2, 2*dRadius, asDblArray(preguandiTopPt));
 		AcDbObjectId lineId1,lineId2;
@@ -1382,7 +1382,7 @@ bool CDrawGd::drawCirlceOrEllipse()
 			if (m_nCount > 1)
 			{
 				AcGePoint3d preguandiPt,preguandiTopPt,pretmpPt;
-				acutPolar(asDblArray(m_basePt), 0, m_dLen + NextData.getcurData()*m_dXScale, asDblArray(pretmpPt));
+				acutPolar(asDblArray(m_basePt), 0, m_dLen + (NextData.getcurData() - CDMXUtils::startzh())*m_dXScale, asDblArray(pretmpPt));
 				acutPolar(asDblArray(pretmpPt), PI/2, (NextData.getGuanDi() - CDMXUtils::getMinElavation())*m_dYScale, asDblArray(preguandiPt));
 				acutPolar(asDblArray(preguandiPt), PI/2, 2*dRadius, asDblArray(preguandiTopPt));
 				AcDbObjectId lineId1,lineId2;

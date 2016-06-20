@@ -2,11 +2,63 @@
 #include "DrawObstacle.h"
 #include "BcUtils.h"
 #include "DrawDMXProcess.h"
+#include "GWDesingUtils.h"
+
+AcDbObjectIdArray drawLineAndText(AcGePoint3d startPt, CString strText)
+{
+	AcDbObjectIdArray objIdArr;
+	objIdArr.removeAll();
+
+	AcGePoint3d midPt,endPt,txtPt, tmpPt;
+	int nOrthomode = 0;
+	MyBaseUtils::GetVar(_T("ORTHOMODE"), &nOrthomode);
+	if (nOrthomode != 1)
+	{
+		MyBaseUtils::SetVar(_T("ORTHOMODE"), 1);
+	}
+	int nRet = acedGetPoint(asDblArray(startPt), _T("\n请指定起点"), asDblArray(midPt));
+	if (nRet != RTNORM)
+	{
+		return objIdArr;
+	}	
+	acedGrDraw(asDblArray(startPt), asDblArray(midPt), 7, 1);
+	if (nOrthomode != 0)
+	{
+		MyBaseUtils::SetVar(_T("ORTHOMODE"), 0);
+	}
+	nRet = acedGetPoint(asDblArray(midPt), _T("\n请指定终点"), asDblArray(endPt));
+	if (nRet != RTNORM)
+	{
+		return objIdArr;
+	}
+	acedGrDraw(asDblArray(midPt), asDblArray(endPt), 7, 1);
+
+	AcDbObjectId textId = AcDbObjectId::kNull;
+	AcDbObjectId plineId = AcDbObjectId::kNull;
+	AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
+	AcGePoint3dArray points;
+	double dLen;
+	AcGePoint3d textPt;
+	acutPolar(asDblArray(endPt), PI/2, 1, asDblArray(textPt));
+	textId = MyDrawEntity::DrawText(textPt, strText, 3.0, textStyleId, AcDb::kTextLeft);
+	dLen = MyEditEntity::OpenObjAndGetLength(textId);
+	acutPolar(asDblArray(endPt), 0, dLen, asDblArray(tmpPt));
+	points.append(startPt);
+	points.append(midPt);
+	points.append(endPt);
+	points.append(tmpPt);
+	plineId = MyDrawEntity::DrawPlineByPoints(points);
+	objIdArr.append(textId);
+	objIdArr.append(plineId);
+	return objIdArr;
+}
+
 
 CDrawObstacle::CDrawObstacle(void)
 {
 	m_idArrs.removeAll();
-	m_dBase = 0;
+	m_dYBase = 0;
+	m_dXBase = 0;
 	m_idArrs.removeAll();
 	m_bIsGdingType = false;
 	m_dHeight = 0.0;
@@ -16,7 +68,8 @@ CDrawObstacle::CDrawObstacle(int nIndex, CString strName)
 {
 	m_nIndex = nIndex;
 	m_strName = strName;
-	m_dBase = 0;
+	m_dYBase = 0;
+	m_dXBase = 0;
 	m_idArrs.removeAll();
 	m_bIsGdingType = false;
 	m_dHeight = 0.0;
@@ -271,11 +324,12 @@ bool CDrawObstacle::drawCircle()
 	m_strText += strTmp;
 	
 
-	drawCirlceOrEllipse();
-	drawText();
+	bool bRet = drawCirlceOrEllipse();
+	//drawText();
+	//AcDbObjectIdArray objIdArr = drawLineAndText()
 
 	makeGroup();
-	return true;
+	return bRet;
 }
 
 bool CDrawObstacle::drawRectangle()
@@ -326,7 +380,7 @@ bool CDrawObstacle::insertRef()
 	AcGePoint3d basePt = CDMXUtils::getbasePt();
 	AcGePoint3d insertPt;
 
-	acutPolar(asDblArray(basePt), 0, 20 + m_zdmdata.getcurData()*1000/(CDMXUtils::getXScale()), asDblArray(insertPt));
+	acutPolar(asDblArray(basePt), 0, 20 + (m_zdmdata.getcurData() - CDMXUtils::startzh())*1000/(CDMXUtils::getXScale()), asDblArray(insertPt));
 	acutPolar(asDblArray(insertPt), 3*PI/2, 91, asDblArray(insertPt));
 	AcDbObjectId refId = MyDrawEntity::InsertBlkRef(strFile, insertPt);
 	if (refId.isNull())
@@ -345,11 +399,23 @@ bool CDrawObstacle::drawText()
 	AcGePoint3d insertPt;
 	AcGePoint3d basePt = CDMXUtils::getbasePt();
 
-	acutPolar(asDblArray(basePt), 0, 20 + m_zdmdata.getcurData()*1000/(CDMXUtils::getXScale()), asDblArray(insertPt));
-	acutPolar(asDblArray(insertPt), PI/2, 5, asDblArray(insertPt));
+	acutPolar(asDblArray(basePt), 0, 20 + (m_zdmdata.getcurData() - CDMXUtils::startzh())*1000/(CDMXUtils::getXScale()), asDblArray(insertPt));
+	acutPolar(asDblArray(insertPt), PI/2, (m_dHeight - CDMXUtils::getMinElavation())*CDMXUtils::globalYScale(), asDblArray(insertPt));
+
+	/*acutPolar(asDblArray(insertPt), PI/2, 5, asDblArray(insertPt));
 	AcDbObjectId textId = MyDrawEntity::DrawText(insertPt, m_strText, 3.0, AcDbObjectId::kNull, AcDb::kTextLeft, AcDb::kTextBottom);
 	textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
-	m_idArrs.append(textId);
+	m_idArrs.append(textId);*/
+
+	AcDbObjectIdArray objIdArr = drawLineAndText(insertPt, m_strText);
+	if (objIdArr.length() < 1)
+	{
+		return false;
+	}
+	for (int i=0; i<objIdArr.length(); i++)
+	{
+		m_idArrs.append(objIdArr.at(i));
+	}
 
 	return true;
 }
@@ -362,14 +428,14 @@ bool CDrawObstacle::drawCirlceOrEllipse()
 	double dYScale = 1000/(CDMXUtils::getYScale());	
 	double dRadius = m_dPipeDiameter/2;
 
-	acutPolar(asDblArray(basePt), 0, 20 + m_zdmdata.getcurData()*dXScale, asDblArray(tmpPt));
+	acutPolar(asDblArray(basePt), 0, 20 + (m_zdmdata.getcurData() - CDMXUtils::startzh())*dXScale, asDblArray(tmpPt));
 	//////////////////////////////////////////////////////////////////////////
 	//绘制base
-	if (m_dBase)
+	if (m_dYBase)
 	{
 		if (!m_bIsGdingType)
 		{
-			m_dHeight = m_dHeight + dRadius + m_dBase/1000;
+			m_dHeight = m_dHeight + dRadius + m_dYBase/1000;
 		}
 		else
 		{
@@ -415,16 +481,26 @@ bool CDrawObstacle::drawCirlceOrEllipse()
 		objId = MyEditEntity::openEntChangeColor(objId, 3);
 		m_idArrs.append(objId);
 	}
-	if (m_dBase > 0)
+	if (m_dYBase > 0)
 	{
 		AcGePoint3d baseDiPt,baseminPt,baseMaxPt;
-		acutPolar(asDblArray(guandiPt), 3*PI/2, dYScale*m_dBase/1000, asDblArray(baseDiPt));
-		acutPolar(asDblArray(baseDiPt), PI, dXScale*m_dBase/1000, asDblArray(baseminPt));
-		acutPolar(asDblArray(guandiPt), 0, dXScale*m_dBase/1000, asDblArray(baseMaxPt));
+		acutPolar(asDblArray(guandiPt), 3*PI/2, dYScale*m_dYBase/1000, asDblArray(baseDiPt));
+		acutPolar(asDblArray(baseDiPt), PI, dXScale*m_dXBase/1000, asDblArray(baseminPt));
+		acutPolar(asDblArray(guandiPt), 0, dXScale*m_dXBase/1000, asDblArray(baseMaxPt));
 		AcGePoint3dArray ptArr = MyTransFunc::OperateTwoPointsAndGetPoints(baseminPt, baseMaxPt);
 		AcDbObjectId plineId = MyDrawEntity::DrawPlineByPoints(ptArr);
 		m_idArrs.append(plineId);
 	}
+	objIdArr = drawLineAndText(guandiPt, m_strText);
+	if (objIdArr.length() < 1)
+	{
+		return false;
+	}
+	for (int i=0; i<objIdArr.length(); i++)
+	{
+		m_idArrs.append(objIdArr.at(i));
+	}
+
 	return true;
 }
 
@@ -441,9 +517,11 @@ void CDrawObstacle::makeGroup(bool bIsAdded)
 	}
 	else
 	{
-		MyEditEntity::EraseEntByGroupName(strGroupName);
 		nCount--;
 		strJcNum.Format(_T("%d"), nCount);
+		strGroupName = JC_DICT + strJcNum;
+		MyEditEntity::EraseEntByGroupName(strGroupName);
+		
 	}
 	CDMXUtils::SetJcNum(strJcNum);
 }
@@ -454,14 +532,21 @@ bool CDrawObstacle::GetUseBase()
 	CString strPrompt;	
 	bool bRet = true;
 	double dHeigth = 0.0;
+	int nRet = acedGetReal(_T("\n请输入基础长度<mm>:"), &dHeigth);
+	if (nRet != RTNORM)
+	{
+		return false;
+	}
+	m_dXBase = dHeigth;
 	int nResult = acedGetReal(_T("\n请输入基础高度<mm>:"), &dHeigth);
 	if (nResult != RTNORM)
 	{
 		return false;
 	}
-	m_dBase = dHeigth;
+	m_dYBase = dHeigth;
+	
 	CString strTmp;
-	strTmp.Format(_T("带基础%.f"), m_dBase);
+	strTmp.Format(_T("带基础%.fX%.f"), m_dXBase, m_dYBase);
 	m_strText += strTmp;
 	return bRet;
 }
@@ -550,7 +635,7 @@ void CDrawObstacle::drawRec(double dHeigth, double dWidth)
 	AcGePoint3d basePt = CDMXUtils::getbasePt();
 	double dXScale = 1000/(CDMXUtils::getXScale());
 	double dYScale = 1000/(CDMXUtils::getYScale());
-	acutPolar(asDblArray(basePt), 0, 20 + m_zdmdata.getcurData()*dXScale, asDblArray(tmpPt));
+	acutPolar(asDblArray(basePt), 0, 20 + (m_zdmdata.getcurData() - CDMXUtils::startzh())*dXScale, asDblArray(tmpPt));
 
 	acutPolar(asDblArray(tmpPt), PI/2, (m_dHeight - CDMXUtils::getMinElavation())*dYScale, asDblArray(tmpPt));
 

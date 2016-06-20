@@ -77,7 +77,7 @@ bool DrawDMXProcess::Draw()
 		m_basePt = CDMXUtils::getbasePt();
 		m_dXScale = 1000/(CDMXUtils::getXScale());
 		AcGePoint3d startPt,endPt;
-		acutPolar(asDblArray(m_basePt), 0, 20 + m_dZhuanghao*m_dXScale, asDblArray(startPt));
+		acutPolar(asDblArray(m_basePt), 0, 20 + (m_dZhuanghao - CDMXUtils::startzh())*m_dXScale, asDblArray(startPt));
 		acutPolar(asDblArray(startPt), 3*PI/2, 152, asDblArray(startPt));
 		acutPolar(asDblArray(startPt), 3*PI/2, 15, asDblArray(endPt));
 		AcDbObjectId textId = MyDrawEntity::DrawLine(startPt, endPt, hxLayerId);

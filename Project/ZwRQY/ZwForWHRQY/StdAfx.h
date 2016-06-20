@@ -61,7 +61,7 @@
 #define JC_DICT		_T("ZW_FOR_WHRQY_JC_")//障碍物
 #define FM_DICT _T("ZW_FOR_WHRQY_FM_")//阀门
 #define WP_DICT _T("OBJECT_TO_NOTIFY_")
-#define LSG_DICT _T("ZW_FOR_WHRQY_LSG_")//凌水缸
+#define NSG_DICT _T("ZW_FOR_WHRQY_LSG_")//凌水缸
 #define JSD_DICT	_T("ZW_FOR_WHRQY_JSD")//警示带
 #define GG_DICT		_T("ZW_FOR_WHRQY_GG")//管沟
 #define TG_DICT		_T("ZW_FOR_WHRQY_TG")//套管

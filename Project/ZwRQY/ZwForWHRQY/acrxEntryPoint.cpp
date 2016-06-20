@@ -16,6 +16,8 @@
 #include "DlgObstacle.h"
 #include "DrawFM.h"
 #include "ObjectToNotify.h"
+#include "DrawJSD.h"
+#include "DrawNSG.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("")
 //-----------------------------------------------------------------------------
@@ -160,11 +162,19 @@ public:
 	static void WRQ_ZDM_ZJJSD(void)
 	{
 		// Add your code for command WRQ_ZDM._ZJJSD here
-		CAcModuleResourceOverride rs;
-		CDlgDrawJSD dlg;
-		dlg.DoModal();
+// 		CAcModuleResourceOverride rs;
+// 		CDlgDrawJSD dlg;
+// 		dlg.DoModal();
+		CDrawJSD jsd;
+		jsd.draw();
 	}
-
+	// - WRQ_ZDM._SCJSD command (do not rename)
+	static void WRQ_ZDM_SCJSD(void)
+	{
+		// Add your code for command WRQ_ZDM._SCJSD here
+		CDrawJSD jsd;
+		jsd.del();
+	}
 	// - WRQ_ZDM._CRQT command (do not rename)
 	//************************************
 	// Method:    WRQ_ZDM_CRQT
@@ -238,7 +248,7 @@ public:
 	static void WRQ_ZDM_DELJC(void)
 	{
 		// Add your code for command WRQ_ZDM._DELJC here
-		AcDbObjectId objId = AcDbObjectId::kNull;
+		/*	AcDbObjectId objId = AcDbObjectId::kNull;
 
 		ads_name ename;
 		AcGePoint3d pt;
@@ -257,6 +267,29 @@ public:
 		else
 		{
 			AfxMessageBox(_T("请选择交管"));
+		}*/
+		ads_name ssname;
+		ads_name ename;
+		AcDbObjectId objId = AcDbObjectId::kNull;
+		int nRet = acedSSGet(NULL, NULL, NULL, NULL, ssname);
+		if (nRet != RTNORM)
+		{
+			return;
+		}
+		long sslen;
+		acedSSLength(ssname, &sslen);
+		map<CString, CString> infoMap;
+		CString strGroupName;
+		for (int i=0; i<sslen; i++)
+		{
+			acedSSName(ssname, i, ename);
+			acdbGetObjectId(objId, ename);
+			strGroupName = MyEditEntity::openObjAndGetGroupName(objId);
+			int nFind = strGroupName.Find(JC_DICT);
+			if (nFind >= 0)
+			{
+				MyEditEntity::EraseEntByGroupName(strGroupName);
+			}
 		}
 	}
 
@@ -304,12 +337,45 @@ public:
 	static void WRQ_ZDM_ZJNSG(void)//增加凌水缸
 	{
 		// Add your code for command WRQ_ZDM._ZJNSG here
+		CDrawNSG nsg;
+		nsg.draw();
+
 	}
 
 	// - WRQ_ZDM._SCNSG command (do not rename)
 	static void WRQ_ZDM_SCNSG(void)
 	{
 		// Add your code for command WRQ_ZDM._SCNSG here
+		CDrawNSG nsg;
+		nsg.del();
+	}
+
+
+
+	// - WRQ_ZDM._ZJTG command (do not rename)
+	static void WRQ_ZDM_ZJTG(void)
+	{
+		// Add your code for command WRQ_ZDM._ZJTG here
+
+	}
+
+	// - WRQ_ZDM._SCTG command (do not rename)
+	static void WRQ_ZDM_SCTG(void)
+	{
+		// Add your code for command WRQ_ZDM._SCTG here
+	}
+
+	// - WRQ_ZDM._ZJGG command (do not rename)
+	static void WRQ_ZDM_ZJGG(void)
+	{
+		// Add your code for command WRQ_ZDM._ZJGG here
+
+	}
+
+	// - WRQ_ZDM._SCGG command (do not rename)
+	static void WRQ_ZDM_SCGG(void)
+	{
+		// Add your code for command WRQ_ZDM._SCGG here
 	}
 } ;
 
@@ -323,6 +389,7 @@ ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _EditDM, EDDM, ACRX_CMD_TRAN
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _DELDATA, SCSJ, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _XJGD, XJGD, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _ZJJSD, ZJJSD, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _SCJSD, SCJSD, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _CRQT, CRQT, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _SCTL, SCTL, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _JC, JC, ACRX_CMD_TRANSPARENT, NULL)
@@ -332,3 +399,7 @@ ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _SCFM, SCFM, ACRX_CMD_TRANSP
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _EDZDM, EDZDM, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _ZJNSG, ZJNSG, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _SCNSG, SCNSG, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _ZJTG, ZJTG, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _SCTG, SCTG, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _ZJGG, ZJGG, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CZwForWHRQYApp, WRQ_ZDM, _SCGG, SCGG, ACRX_CMD_TRANSPARENT, NULL)

@@ -48,28 +48,48 @@ bool CDrawFM::doIt()
 
 bool CDrawFM::del()
 {
-	AcDbObjectId objId = AcDbObjectId::kNull;
+	//AcDbObjectId objId = AcDbObjectId::kNull;
 
+	//ads_name ename;
+	//AcGePoint3d pt;
+	//int nRet = acedEntSel(_T("\n请选择要删除的阀门："), ename, asDblArray(pt));
+	//if (nRet != RTNORM)
+	//{
+	//	return false;
+	//}
+	//acdbGetObjectId(objId, ename);
+	//CString strGroupName = MyEditEntity::openObjAndGetGroupName(objId);
+	//if (strGroupName.Find(FM_DICT) != -1)
+	//{
+	//	MyEditEntity::EraseEntByGroupName(strGroupName);
+	//}
+	//else
+	//{
+	//	AfxMessageBox(_T("请选择阀门"));
+	//}
+
+	ads_name ssname;
 	ads_name ename;
-	AcGePoint3d pt;
-	int nRet = acedEntSel(_T("\n请选择要删除的阀门："), ename, asDblArray(pt));
+	AcDbObjectId objId = AcDbObjectId::kNull;
+	int nRet = acedSSGet(NULL, NULL, NULL, NULL, ssname);
 	if (nRet != RTNORM)
 	{
 		return false;
 	}
-	acdbGetObjectId(objId, ename);
-	CString strGroupName = MyEditEntity::openObjAndGetGroupName(objId);
-	if (strGroupName.Find(FM_DICT) != -1)
+	long sslen;
+	acedSSLength(ssname, &sslen);
+	map<CString, CString> infoMap;
+	CString strGroupName;
+	for (int i=0; i<sslen; i++)
 	{
-		MyEditEntity::EraseEntByGroupName(strGroupName);
-		int nBlkRefCount = 0;
-		MyBaseUtils::GetVar(_T("USERI2"), &nBlkRefCount);
-		nBlkRefCount--;
-		MyBaseUtils::SetVar(_T("USERI2"), nBlkRefCount);
-	}
-	else
-	{
-		AfxMessageBox(_T("请选择阀门"));
+		acedSSName(ssname, i, ename);
+		acdbGetObjectId(objId, ename);
+		strGroupName = MyEditEntity::openObjAndGetGroupName(objId);
+		int nFind = strGroupName.Find(FM_DICT);
+		if (nFind >= 0)
+		{
+			MyEditEntity::EraseEntByGroupName(strGroupName);
+		}
 	}
 	return true;
 }
@@ -162,7 +182,7 @@ bool CDrawFM::insertGdBlk(AcGePoint3d insertPt)
 	CBlkInsert blkInsert;
 	blkInsert.SetBlkInfo(blkInfo);
 	blkInsert.SetModified(true);
-	if (blkInsert.Insert())
+	if (blkInsert.Insert()) 
 	{
 		AcDbObjectId blkId = blkInsert.GetObjectId();
 		blkId = MyEditEntity::openEntChangeLayer(blkId, m_layerId);
@@ -218,6 +238,7 @@ bool CDrawFM::insert()
 	CZdmDataInfo zdm;
 	bc.get(strLabel, zdm);
 	double dRotate = 0.0;
+	double dRadius = (dYScale*zdm.getPipeDiameter())/2000;
 	if (!bIsExisted)//如果没有找到，说明在strCur与strCur+1之间
 	{
 		CBcUtils nextBc;
@@ -228,19 +249,11 @@ bool CDrawFM::insert()
 		CString strNext = BC_DICT + strCur;
 		bc.get(strNext, preZdm);
 		double dDist1,dDist2,dDist3,dDist4;
-// 		dDist1 = (zdm.getRealDmx() - CDMXUtils::getMinElavation())*dYScale;
-// 		dDist2 = (preZdm.getRealDmx() - CDMXUtils::getMinElavation())*dYScale;
-// 		dDist3 = (m_dZhuanghao - preZdm.getcurData())*dXScale;
-// 		dDist4 = (zdm.getcurData() - preZdm.getcurData())*dXScale;
-// 
-// 		m_blkInsert.x = (m_dZhuanghao - preZdm.getRealDmx())*dXScale + tmpPt.x;
-// 		m_blkInsert.y = (dDist1*dDist4 + dDist2*dDist3)/(dDist3+dDist4) + tmpPt.y;
-// 		m_blkInsert.z = tmpPt.z;
 		AcGePoint3d startPt,endPt;
-		acutPolar(asDblArray(basePt), 0, 20 + preZdm.getcurData()*dXScale, asDblArray(startPt));
-		acutPolar(asDblArray(startPt), PI/2, (preZdm.getRealDmx() - CDMXUtils::getMinElavation())*dYScale, asDblArray(startPt));
-		acutPolar(asDblArray(basePt), 0, 20 + zdm.getcurData()*dXScale, asDblArray(endPt));
-		acutPolar(asDblArray(endPt), PI/2, (zdm.getRealDmx() - CDMXUtils::getMinElavation())*dYScale, asDblArray(endPt));
+		acutPolar(asDblArray(basePt), 0, 20 + (preZdm.getcurData() - CDMXUtils::startzh())*dXScale, asDblArray(startPt));
+		acutPolar(asDblArray(startPt), PI/2, (preZdm.getGuanDi() - CDMXUtils::getMinElavation())*dYScale, asDblArray(startPt));
+		acutPolar(asDblArray(basePt), 0, 20 + (zdm.getcurData() - CDMXUtils::startzh())*dXScale, asDblArray(endPt));
+		acutPolar(asDblArray(endPt), PI/2, (zdm.getGuanDi() - CDMXUtils::getMinElavation())*dYScale, asDblArray(endPt));
 		
 		AcGePoint3d rayPt = tmpPt;
 		rayPt.y += 1000*dYScale;
@@ -249,24 +262,25 @@ bool CDrawFM::insert()
 		line1.intersectWith(line2, m_blkInsert);
 	
 		AcGeVector3d vec;
-		vec.set((zdm.getcurData() - preZdm.getcurData())*dXScale, (zdm.getRealDmx() - preZdm.getRealDmx())*dYScale, 0);
+		vec.set((zdm.getcurData() - preZdm.getcurData())*dXScale, (zdm.getGuanDi() - preZdm.getGuanDi())*dYScale, 0);
 		dRotate = vec.angleOnPlane(AcGePlane::kXYPlane);
 	}
 	else
 	{
-		acutPolar(asDblArray(tmpPt), PI/2, (zdm.getRealDmx() - CDMXUtils::getMinElavation())*dYScale, asDblArray(m_blkInsert));
+		acutPolar(asDblArray(tmpPt), PI/2, (zdm.getGuanDi() - CDMXUtils::getMinElavation())*dYScale, asDblArray(m_blkInsert));
 	}
-	
+	acutPolar(asDblArray(m_blkInsert), PI/2, dRadius, asDblArray(m_blkInsert));
 	insertGdBlk(insertPt);
 	insertUp(m_blkInsert, dRotate);
+
 	return true;
 }
 
 void CDrawFM::insertUp(AcGePoint3d insertPt, double dRotate)
 {
 	CBlkBaseInFo blkInfo;
-	CString strPath = MyBaseUtils::GetAppPath() + _T("zdm\\fm\\up.dwg");
-	blkInfo.SetBlkName(_T("up"));
+	CString strPath = MyBaseUtils::GetAppPath() + _T("zdm\\fm\\RFM1-UP.dwg");
+	blkInfo.SetBlkName(_T("RFM1-UP"));
 	blkInfo.SetFileName(strPath);
 	blkInfo.SetInsertPt(insertPt);
 	blkInfo.SetRotate(dRotate);
@@ -279,6 +293,31 @@ void CDrawFM::insertUp(AcGePoint3d insertPt, double dRotate)
 		AcDbObjectId blkId = blkInsert.GetObjectId();
 		blkId = MyEditEntity::openEntChangeLayer(blkId, m_layerId);
 		m_idArrs.append(blkId);
+
+		//生成两条直线
+		AcDbExtents exts = MyEditEntity::OpenObjAndGetExts(blkId);
+		AcGePoint3d leftPt,rightPt, NodePt, midPt,startPt, endPt;
+		leftPt.x = exts.minPoint().x;
+		leftPt.y = exts.maxPoint().y;
+		leftPt.z = 0;
+
+		rightPt.x = exts.maxPoint().x;
+		rightPt.y = exts.maxPoint().y;
+		rightPt.z = 0;
+		acutPolar(asDblArray(insertPt), PI/2, 10, asDblArray(NodePt));
+		acutPolar(asDblArray(insertPt), PI/2, 8, asDblArray(midPt));
+		acutPolar(asDblArray(midPt), 0, 0.7, asDblArray(endPt));
+		acutPolar(asDblArray(midPt), PI, 0.7, asDblArray(startPt));
+		AcDbObjectId line1Id,line2Id,line3Id;
+		line1Id = MyDrawEntity::DrawLine(leftPt, NodePt);
+		line2Id = MyDrawEntity::DrawLine(rightPt, NodePt);
+		line3Id = MyDrawEntity::DrawLine(startPt, endPt);
+		line1Id = MyEditEntity::openEntChangeColor(line1Id, 3);
+		line2Id = MyEditEntity::openEntChangeColor(line2Id, 3);
+		line3Id = MyEditEntity::openEntChangeColor(line3Id, 3);
+		m_idArrs.append(line1Id);
+		m_idArrs.append(line2Id);
+		m_idArrs.append(line3Id);
 	}
 	else
 	{

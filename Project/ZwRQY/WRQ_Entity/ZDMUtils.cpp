@@ -471,6 +471,12 @@ CString CDMXUtils::getStartZH()
 }
 
 
+double CDMXUtils::startzh()
+{
+	double dResult = _tcstod(getStartZH(), 0);
+	return dResult;
+}
+
 void CDMXUtils::SetPipeType(CString dValue)
 {
 	AcDbObjectId StyleId;
@@ -1211,6 +1217,7 @@ double CDMXUtils::getMinElavation()
 	{
 		SetMinElavation(0);
 	}
+	
 	return nBlkRefCount;
 }
 

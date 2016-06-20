@@ -74,7 +74,8 @@ private:
 	CZdmDataInfo m_zdmdata;
 	double m_dMin;//最小范围
 	double m_dMax;//最大范围
-	double m_dBase;//基础数据
+	double m_dYBase;//基础数据
+	double m_dXBase;
 	double m_dHeight;//插入位置
 	double m_dPipeDiameter;//管径
 	double m_dBaseHeight;
