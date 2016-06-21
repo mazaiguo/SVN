@@ -8,16 +8,25 @@ public:
 
 	bool drawTG();
 	bool drawGG();//埋深不足
+
+	bool del();
+	
+private:
+	bool midProcess(); 
 	bool getStartZH();
 	bool getEndZH();
-	bool drawlineAndText();
-	bool getDescription();
-private:
-	
+	bool drawlineAndText(AcGePoint3d pt);
+	bool getDownText();
+	bool getUpText();
+	CString CurNumPosition( double dValue, bool& bIsExisted);
+
+	bool getSpecailData();
 
 private: 
 	AcDbObjectIdArray m_idArrs;
 	double m_dStartZH;
 	double m_dEndZH;
-	CString m_strDescription;
+	CString m_strDownText;
+	CString m_strUpText;
+	bool m_bIsTG;//是否套管
 };

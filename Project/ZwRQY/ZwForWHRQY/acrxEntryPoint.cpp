@@ -18,6 +18,7 @@
 #include "ObjectToNotify.h"
 #include "DrawJSD.h"
 #include "DrawNSG.h"
+#include "DrawTGAndGG.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("")
 //-----------------------------------------------------------------------------
@@ -356,26 +357,32 @@ public:
 	static void WRQ_ZDM_ZJTG(void)
 	{
 		// Add your code for command WRQ_ZDM._ZJTG here
-
+		CDrawTGAndGG tg;
+		tg.drawTG();
 	}
 
 	// - WRQ_ZDM._SCTG command (do not rename)
 	static void WRQ_ZDM_SCTG(void)
 	{
 		// Add your code for command WRQ_ZDM._SCTG here
+		CDrawTGAndGG tg;
+		tg.del();
 	}
 
 	// - WRQ_ZDM._ZJGG command (do not rename)
 	static void WRQ_ZDM_ZJGG(void)
 	{
 		// Add your code for command WRQ_ZDM._ZJGG here
-
+		CDrawTGAndGG gg;
+		gg.drawGG();
 	}
 
 	// - WRQ_ZDM._SCGG command (do not rename)
 	static void WRQ_ZDM_SCGG(void)
 	{
 		// Add your code for command WRQ_ZDM._SCGG here
+		CDrawTGAndGG gg;
+		gg.del();
 	}
 } ;
 

@@ -23,7 +23,7 @@ DrawDMXProcess::DrawDMXProcess(void)
 
 	if (m_nCout == 1)
 	{
-		m_dZhuanghao = 0.00;
+		m_dZhuanghao = CDMXUtils::startzh();
 		m_dSJDmHeight = 0.00;
 	}
 	else

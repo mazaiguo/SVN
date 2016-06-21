@@ -127,6 +127,15 @@
     <ClCompile Include="ObjectToNotify.cpp">
       <Filter>Source Files\纵断面\阀门</Filter>
     </ClCompile>
+    <ClCompile Include="DrawJSD.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawNSG.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawTGAndGG.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DlgTKSZ.h">
@@ -194,6 +203,15 @@
     </ClInclude>
     <ClInclude Include="ObjectToNotify.h">
       <Filter>Source Files\纵断面\阀门</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawJSD.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawNSG.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawTGAndGG.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
