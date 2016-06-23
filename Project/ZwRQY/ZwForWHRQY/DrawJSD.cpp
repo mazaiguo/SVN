@@ -110,28 +110,28 @@ bool CDrawJSD::drawlineAndText()
 	bool bIsContinued = true;
 	while (bIsContinued)
 	{
-		int nResult = acedGetPoint(NULL, _T("\n请指定插入警示带的位置："), asDblArray(startPt));
-		if (nResult != RTNORM)
+		int nRet = acedGetPoint(NULL, _T("\n请指定插入警示带的位置："), asDblArray(startPt));
+		if (nRet != RTNORM)
 		{
 			bIsContinued = false;
 			break;
 		}
 		
-		int nRet = acedGetPoint(asDblArray(startPt), _T("\n请指定起点"), asDblArray(midPt));
+		/*int nRet = acedGetPoint(asDblArray(startPt), _T("\n请指定起点"), asDblArray(midPt));
 		if (nRet != RTNORM)
 		{
 			bIsContinued = false;
 			break;
 		}	
-		acedGrDraw(asDblArray(startPt), asDblArray(midPt), 7, 1);
+		acedGrDraw(asDblArray(startPt), asDblArray(midPt), 7, 1);*/
 		
-		nRet = acedGetPoint(asDblArray(midPt), _T("\n请指定终点"), asDblArray(endPt));
+		nRet = acedGetPoint(asDblArray(startPt), _T("\n请指定终点"), asDblArray(endPt));
 		if (nRet != RTNORM)
 		{
 			bIsContinued = false;
 			break;
 		}
-		acedGrDraw(asDblArray(midPt), asDblArray(endPt), 7, 1);
+		acedGrDraw(asDblArray(startPt), asDblArray(endPt), 7, 1);
 
 		AcDbObjectId textId = AcDbObjectId::kNull;
 		AcDbObjectId plineId = AcDbObjectId::kNull;
@@ -140,11 +140,30 @@ bool CDrawJSD::drawlineAndText()
 		double dLen;
 		AcGePoint3d textPt;
 		acutPolar(asDblArray(endPt), PI/2, 1, asDblArray(textPt));
-		textId = MyDrawEntity::DrawText(textPt, _T("警示带"), 3.0, textStyleId, AcDb::kTextLeft);
+		CString strTxt;
+		TCHAR tempBuf[133];
+		nRet = acedGetString(1, _T("\n请输入文字<燃气管道警示带>:"), tempBuf);
+		if (nRet == RTNONE)
+		{
+			strTxt = _T("燃气管道警示带");
+		}
+		else if (nRet == RTNORM)
+		{
+			strTxt = tempBuf;
+			if (strTxt.IsEmpty())
+			{
+				strTxt = _T("燃气管道警示带");
+			}
+		}
+		else
+		{
+			bIsContinued = false;
+			break;
+		}
+		textId = MyDrawEntity::DrawText(textPt, strTxt, 3.0, textStyleId, AcDb::kTextLeft);
 		dLen = MyEditEntity::OpenObjAndGetLength(textId);
 		acutPolar(asDblArray(endPt), 0, dLen, asDblArray(tmpPt));
 		points.append(startPt);
-		points.append(midPt);
 		points.append(endPt);
 		points.append(tmpPt);
 		plineId = MyDrawEntity::DrawPlineByPoints(points);

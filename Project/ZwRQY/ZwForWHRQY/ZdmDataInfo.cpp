@@ -19,6 +19,7 @@ CZdmDataInfo::CZdmDataInfo(void)
 	m_dWaShen = 0.0;//挖深
 	m_dPoDu = 0.0;//坡度
 	m_dJuli = 0.0;//距离
+	m_strPipeType = _T("DN");
 	//////////////////////////////////////////////////////////////////////////
 	//在同一处凸起
 	//m_bHasBulge;//是否有凸起

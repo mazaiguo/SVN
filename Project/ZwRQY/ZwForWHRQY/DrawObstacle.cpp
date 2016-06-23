@@ -190,7 +190,7 @@ bool CDrawObstacle::getTopOrBottom()
 	bool bRet = true;
 
 	acedInitGet(0, _T("A B"));
-	strPrompt = _T("\n输入顶高(A)/低高（B）/<管底>:");
+	strPrompt = _T("\n输入管顶标高(A)/管底标高（B）/<管底标高>:");
 
 	TCHAR val[512];
 	int nRet = acedGetKword(strPrompt, val);
@@ -224,7 +224,7 @@ bool CDrawObstacle::GetGuanDing()
 	bool bRet = true;
 	while (bIsContinued)
 	{
-		int nResult = acedGetReal(_T("\n请输入管顶数据："), &dResult);
+		int nResult = acedGetReal(_T("\n请输入管底标高："), &dResult);
 		if (nResult != RTNORM)
 		{
 			bRet = false;
@@ -261,7 +261,7 @@ bool CDrawObstacle::GetGuandi()
 	bool bRet = true;
 	while (bIsContinued)
 	{
-		int nResult = acedGetReal(_T("\n请输入管底数据："), &dResult);
+		int nResult = acedGetReal(_T("\n请输入管底标高："), &dResult);
 		if (nResult != RTNORM)
 		{
 			bRet = false;
@@ -491,7 +491,14 @@ bool CDrawObstacle::drawCirlceOrEllipse()
 		AcDbObjectId plineId = MyDrawEntity::DrawPlineByPoints(ptArr);
 		m_idArrs.append(plineId);
 	}
-	objIdArr = drawLineAndText(guandiPt, m_strText);
+	if (m_bIsGdingType)
+	{
+		objIdArr = drawLineAndText(guandiTopPt, m_strText);
+	}
+	else
+	{
+		objIdArr = drawLineAndText(guandiPt, m_strText);
+	}
 	if (objIdArr.length() < 1)
 	{
 		return false;

@@ -33,10 +33,12 @@ private:
 	bool insert();
 	void insertUp(AcGePoint3d blkInsert, double dRotate);
 	void drawLineAndText();
+	bool GetZuoFa();
 private:
 	AcDbObjectIdArray m_idArrs;
 	AcDbObjectId m_layerId;
 	CString m_strNo;
 	double m_dZhuanghao;
 	AcGePoint3d m_blkInsert;
+	CString m_strZF;
 };

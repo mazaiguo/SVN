@@ -18,9 +18,11 @@ private:
 	CString CurNumPosition(double m_dZhuanghao, bool& bIsExisted);
 	bool insertGdBlk(AcGePoint3d insertPt);
 	bool insertUp(AcGePoint3d m_blkInsert, double dRotate);
+	bool GetZuoFa();
 private:
 	AcDbObjectIdArray m_idArrs; 
 	double m_dZhuanghao;
 	CString m_strNo;
 	AcGePoint3d m_blkInsert;
+	CString m_strZF;
 };

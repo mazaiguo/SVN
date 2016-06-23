@@ -107,7 +107,7 @@ bool CDrawTGAndGG::getStartZH()
 	}
 	else
 	{
-		strPromPt = _T("\n请输入桩号：");
+		strPromPt = _T("\n请选择起始桩号：");
 	}
 	int nRet = acedGetReal(strPromPt, &m_dStartZH);
 	if (nRet != RTNORM)
@@ -170,39 +170,30 @@ bool CDrawTGAndGG::drawlineAndText(AcGePoint3d pt)
 
 bool CDrawTGAndGG::getDownText()
 {
-	TCHAR tempBuf[255];
-	CString strPrompt;
-	CString strTmp;
-	if (m_bIsTG)
+	TCHAR tempBuf[133];
+
+	int nRet = acedGetString(1, _T("\n请输入通用图做法<做法>："),tempBuf);
+	if (nRet == RTNORM)
 	{
-		strTmp = _T("钢套管保护DN400-");
-	}
-	else
-	{
-		strTmp = _T("管沟保护-");
-	}
-	strPrompt.Format(_T("\n说明文字<%s>:"), strTmp);
-	int nRet = acedGetString(1, strPrompt,  tempBuf);
-	if (nRet == RTNONE)
-	{
-		m_strDownText = strTmp;
-	}
-	else if (nRet == RTNORM)
-	{
-		m_strDownText = tempBuf;
-		if (m_strDownText.IsEmpty())
+		CString strTmp = tempBuf;
+		if (strTmp.IsEmpty())
 		{
-			m_strDownText = strTmp;
+			m_strDownText = _T("做法");
 		}
+		else
+		{
+			m_strDownText.Format(_T("做法\"%s\""), strTmp);
+		}
+	}
+	else if (nRet == RTNONE)
+	{
+		m_strDownText = _T("做法");
 	}
 	else
 	{
 		return false;
 	}
-	double dLen = m_dEndZH - m_dStartZH;
-	CString strTmp1;
-	strTmp1.Format(_T("%.fm"), dLen);
-	m_strDownText += strTmp1;
+
 	return true;
 }
 
@@ -213,11 +204,11 @@ bool CDrawTGAndGG::getUpText()
 	CString strTmp;
 	if (m_bIsTG)
 	{
-		strTmp = _T("间距不足");
+		strTmp = _T("间距不足套管长");
 	}
 	else
 	{
-		strTmp = _T("埋深不足");
+		strTmp = _T("埋深不足管沟长");
 	}
 	strPrompt.Format(_T("\n说明文字<%s>"), strTmp); 
 	int nRet = acedGetString(1, strPrompt,  tempBuf);
@@ -237,6 +228,10 @@ bool CDrawTGAndGG::getUpText()
 	{
 		return false;
 	}
+	double dLen = m_dEndZH - m_dStartZH;
+	CString strTmp1;
+	strTmp1.Format(_T("%.fm"), dLen);
+	m_strUpText += strTmp1;
 	return true;
 }
 CString CDrawTGAndGG::CurNumPosition( double dValue, bool& bIsExisted)

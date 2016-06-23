@@ -62,7 +62,7 @@ AcDbObjectId CDrawBiaochi:: DrawBiaoChi()
 	for (int i=0; i<nCount; i++)
 	{
 		nCurCount = m_nStartBG + i;
-		strText.Format(_T("%d"), nCurCount);
+		strText.Format(_T("%d.00"), nCurCount);
 		acutPolar(asDblArray(m_basePt), PI/2, i*m_dYRatio, asDblArray(pt));
 		groupId = DrawTextAndBC(pt, strText, true&i);
 		objIds.append(groupId);

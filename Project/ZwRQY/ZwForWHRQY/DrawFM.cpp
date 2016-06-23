@@ -27,6 +27,10 @@ bool CDrawFM::doIt()
 	{
 		return false;
 	}
+	if (!GetZuoFa())
+	{
+		return false;
+	}
 	
 	if (!insert())
 	{
@@ -337,15 +341,60 @@ void CDrawFM::drawLineAndText()
 	CString strText = _T("阀") + m_strNo;
 	AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
 
-	AcDbObjectId textId = MyDrawEntity::DrawText(midPt, strText,3.0, textStyleId);
-	m_idArrs.append(textId);
+	AcGePoint3d textPt1, textPt2;
+	acutPolar(asDblArray(midPt), PI/2, 1, asDblArray(textPt1));
+	acutPolar(asDblArray(midPt), 3*PI/2, 1, asDblArray(textPt2));
+	AcDbObjectId textId1 = MyDrawEntity::DrawText(textPt1, strText, 3.0, textStyleId, AcDb::kTextLeft);
+	double dLen1 = MyEditEntity::OpenObjAndGetLength(textId1);
+	AcDbObjectId textId2 = MyDrawEntity::DrawText(textPt2, m_strZF, 3.0, textStyleId, AcDb::kTextLeft, AcDb::kTextTop);
+	double dLen2 = MyEditEntity::OpenObjAndGetLength(textId2);
+	double dLen;
+	if (dLen1 > dLen2)
+	{
+		dLen = dLen1;
+	}
+	else
+	{
+		dLen = dLen2;
+	}
+	acutPolar(asDblArray(midPt), 0, dLen, asDblArray(endPt));
 
-	double dlen = MyEditEntity::OpenObjAndGetLength(textId);
-	acutPolar(asDblArray(midPt), 0, dlen, asDblArray(endPt));
 	AcGePoint3dArray points;
 	points.append(m_blkInsert);
 	points.append(midPt);
 	points.append(endPt);
 	AcDbObjectId plineId = MyDrawEntity::DrawPlineByPoints(points);
+	plineId = MyEditEntity::openEntChangeColor(plineId, 2);
 	m_idArrs.append(plineId);
+	m_idArrs.append(textId1);
+	m_idArrs.append(textId2);
+}
+
+bool CDrawFM::GetZuoFa()
+{
+	TCHAR tempBuf[133];
+
+	int nRet = acedGetString(1, _T("\n请输入通用图做法详尽<做法详尽>："),tempBuf);
+	if (nRet == RTNORM)
+	{
+		CString strTmp = tempBuf;
+		if (strTmp.IsEmpty())
+		{
+			m_strZF = _T("做法详尽");
+		}
+		else
+		{
+			m_strZF.Format(_T("做法详尽\"%s\""), strTmp);
+		}
+	}
+	else if (nRet == RTNONE)
+	{
+		m_strZF = _T("做法详尽");
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
 }

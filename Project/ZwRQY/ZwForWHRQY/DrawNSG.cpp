@@ -53,25 +53,41 @@ bool CDrawNSG::del()
 
 bool CDrawNSG::drawlineAndText()
 {
-	AcGePoint3d endPt;
-	int nRet = acedGetPoint(asDblArray(m_blkInsert), _T("\n请指定终点"), asDblArray(endPt));
+	AcGePoint3d midPt,endPt;
+	int nRet = acedGetPoint(asDblArray(m_blkInsert), _T("\n请指定终点"), asDblArray(midPt));
 	if (nRet != RTNORM)
 	{
 		return false;
 	}
-	AcGePoint3d textPt,tmpPt;
-	acutPolar(asDblArray(endPt), PI/2, 1, asDblArray(textPt));
-	AcDbObjectId textId = MyDrawEntity::DrawText(textPt, m_strNo, 3.0, CGWDesingUtils::getGlobalTextStyle(), AcDb::kTextLeft);
-	double dLen = MyEditEntity::OpenObjAndGetLength(textId);
-	acutPolar(asDblArray(endPt), 0, dLen, asDblArray(tmpPt));
+	AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
+
+	AcGePoint3d textPt1, textPt2;
+	acutPolar(asDblArray(midPt), PI/2, 1, asDblArray(textPt1));
+	acutPolar(asDblArray(midPt), 3*PI/2, 1, asDblArray(textPt2));
+	AcDbObjectId textId1 = MyDrawEntity::DrawText(textPt1, m_strNo, 3.0, textStyleId, AcDb::kTextLeft);
+	double dLen1 = MyEditEntity::OpenObjAndGetLength(textId1);
+	AcDbObjectId textId2 = MyDrawEntity::DrawText(textPt2, m_strZF, 3.0, textStyleId, AcDb::kTextLeft, AcDb::kTextTop);
+	double dLen2 = MyEditEntity::OpenObjAndGetLength(textId2);
+	double dLen;
+	if (dLen1 > dLen2)
+	{
+		dLen = dLen1;
+	}
+	else
+	{
+		dLen = dLen2;
+	}
+	acutPolar(asDblArray(midPt), 0, dLen, asDblArray(endPt));
 
 	AcGePoint3dArray points;
 	points.append(m_blkInsert);
+	points.append(midPt);
 	points.append(endPt);
-	points.append(tmpPt);
 	AcDbObjectId plineId = MyDrawEntity::DrawPlineByPoints(points);
-	m_idArrs.append(textId);
+	plineId = MyEditEntity::openEntChangeColor(plineId, 2);
 	m_idArrs.append(plineId);
+	m_idArrs.append(textId1);
+	m_idArrs.append(textId2);
 	return true;
 }
 
@@ -83,6 +99,11 @@ bool CDrawNSG::doIt()
 	}
 
 	if (!GetDescription())
+	{
+		return false;
+	}
+
+	if (!GetZuoFa())
 	{
 		return false;
 	}
@@ -132,7 +153,7 @@ bool CDrawNSG::GetDescription()
 {
 	TCHAR tempBuf[133];
 
-	int nRet = acedGetString(1, _T("\n请输入型号:<DN300>"),tempBuf);
+	int nRet = acedGetString(1, _T("\n请输入型号<DN300>:"),tempBuf);
 	if (nRet == RTNORM)
 	{
 		CString strTmp = tempBuf;
@@ -264,4 +285,33 @@ bool CDrawNSG::insertUp(AcGePoint3d insertPt, double dRotate)
 	{
 		return false;
 	}
+}
+
+bool CDrawNSG::GetZuoFa()
+{
+	TCHAR tempBuf[133];
+
+	int nRet = acedGetString(1, _T("\n请输入通用图做法<做法>："),tempBuf);
+	if (nRet == RTNORM)
+	{
+		CString strTmp = tempBuf;
+		if (strTmp.IsEmpty())
+		{
+			m_strZF = _T("做法");
+		}
+		else
+		{
+			m_strZF.Format(_T("做法\"%s\""), strTmp);
+		}
+	}
+	else if (nRet == RTNONE)
+	{
+		m_strZF = _T("做法");
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
 }

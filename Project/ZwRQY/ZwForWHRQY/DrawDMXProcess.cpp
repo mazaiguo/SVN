@@ -221,6 +221,10 @@ bool DrawDMXProcess::Del()
 bool DrawDMXProcess::Mod()
 {
 	AcDbObjectId objId = setlectEnt(_T("\n选择要编辑的桩号"));
+	if (objId.isNull())
+	{
+		return false;
+	}
 	CString strGroupName = MyEditEntity::openObjAndGetGroupName(objId);
 	CString strCur = CurNumPosition(strGroupName);
 	int nCount = MyTransFunc::StringToInt(strCur);
@@ -263,7 +267,12 @@ CString DrawDMXProcess::getLabelName()
 
 bool DrawDMXProcess::modify()
 {
-	AcDbObjectId objId = setlectEnt(_T("\n选择要编辑的桩号"));
+	AcDbObjectId objId = setlectEnt(_T("\n选择要编辑的数据："));
+	if (objId.isNull())
+	{
+		return false;
+	}
+	
 	CString strGroupName = MyEditEntity::openObjAndGetGroupName(objId);
 	int nFind = strGroupName.Find(BC_DICT_GD);
 	if (nFind >= 0)
@@ -276,6 +285,13 @@ bool DrawDMXProcess::modify()
 	CBcUtils utils;
 	CZdmDataInfo data;
 	utils.get(strGroupName, data);
+
+	//////////////////////////////////////////////////////////////////////////
+	int nTmp = nCount - 1;
+	CString strTemp;
+	strTemp.Format(_T("%d"), nTmp);
+	CString strLabel = BC_DICT + strTemp;
+	utils.get(strLabel, m_preZdmInfo);
 	int nRet = acedGetReal(_T("\n输入修改后的数值："), &m_dValue);
 	if (nRet == RTNORM)
 	{
@@ -558,7 +574,7 @@ bool DrawDMXProcess::GetPdHeight()
 bool DrawDMXProcess::GetSJDmHeightS()
 {
 	CString strPrompt;
-	strPrompt.Format(_T("\n坡度设计地面标高<m> <%.2f>:"), m_dSJDmHeight);
+	strPrompt.Format(_T("\n堡坎设计地面标高<m> <%.2f>:"), m_dSJDmHeight);
 
 	bool bRet = false;
 	while(!bRet)
@@ -595,7 +611,7 @@ bool DrawDMXProcess::GetSJDmHeightS()
 bool DrawDMXProcess::GetXzDmHeightS()
 {
 	CString strPrompt;
-	strPrompt.Format(_T("\n坡度现状地面标高<m> <%.2f>:"), m_dDesignDmxS);
+	strPrompt.Format(_T("\n堡坎<m> <%.2f>:"), m_dDesignDmxS);
 	bool bRet = false;
 	while(!bRet)
 	{
@@ -635,8 +651,8 @@ bool DrawDMXProcess::verifyHeight( double dHeight )
 	}
 	if (dHeight > m_dmaxElavation)
 	{
-		AfxMessageBox(_T("地面线数据比基础地面线标高还高，请重新输入数据"));
-		return false;
+		acutPrintf(_T("地面线数据比基础地面线标高还高，请重新输入数据"));
+		//return false;
 	}
 	return true;
 }
@@ -807,14 +823,15 @@ bool DrawDMXProcess::doXdata(AcDbObjectId objId, CString strTmp, CZdmDataInfo& t
 	}
 	else if (strTmp.CompareNoCase(ZDM_PODU) == 0)
 	{
+		m_dValue /= 1000;
 		tmpData.setPoDu(m_dValue);
-		double dDist = m_pZdmInfo.getcurData() - m_preZdmInfo.getcurData();
+		double dDist = tmpData.getcurData() - m_preZdmInfo.getcurData();
 		double dGuandi = m_preZdmInfo.getGuanDi();
 		dGuandi = dGuandi + m_dValue*dDist;
-		m_pZdmInfo.setGuanDi(dGuandi);
-		dRealDmx = m_pZdmInfo.getRealDmx();
+		tmpData.setGuanDi(dGuandi);
+		dRealDmx = tmpData.getRealDmx();
 		dWashen = dRealDmx - dGuandi;
-		m_pZdmInfo.setWaShen(dWashen);
+		tmpData.setWaShen(dWashen);
 	}
 	else if (strTmp.CompareNoCase(ZDM_JULI) == 0)
 	{
@@ -967,6 +984,7 @@ CDrawGDProcess::CDrawGDProcess(void)
 	{
 		m_dPipeDiameter = m_pZdmInfo.getPipeDiameter();
 		m_dGuandi = m_dminElavation;
+		m_strPipeType = _T("DN");
 	}
 	else
 	{
@@ -977,6 +995,7 @@ CDrawGDProcess::CDrawGDProcess(void)
 		bcUtils.get(strTmpLabel, m_preZdmInfo);
 		m_dPipeDiameter = m_preZdmInfo.getPipeDiameter();
 		m_dGuandi = m_preZdmInfo.getGuanDi();
+		m_strPipeType = m_preZdmInfo.getPipeType();
 	}
 	
 }
@@ -1085,7 +1104,7 @@ bool CDrawGDProcess::GetPipeDiameter()
 	else
 	{
 		acedInitGet(0, _T("Undo"));
-		strPrompt.Format(_T("\n回退一步(U)/<下一点管道管径> <m> <%.2f>:"), m_dPipeDiameter);
+		strPrompt.Format(_T("\n回退一步(U)/<下一段管道管径> <m> <%.2f>:"), m_dPipeDiameter);
 	}
 	int nRet = acedGetReal(strPrompt, &m_dPipeDiameter);
 	if (nRet == RTNORM)
@@ -1118,13 +1137,13 @@ bool CDrawGDProcess::GetKeyWord()
 	if (m_nCout == 1)
 	{
 		acedInitGet(0, _T("Di Wa"));
-		strPrompt = _T("\n输入管底(D)/输入挖深(W)/<管底>:");
+		strPrompt = _T("\n输入管底标高(D)/输入管底挖深(W)/<管底标高>:");
 	}
 	else
 	{
 		acedInitGet(0, _T("Di Wa Po Vertical"));
 		//strPrompt = _T("\n输入管底(D)/输入挖深(W)/坡度(P)/垂直间距(V)/<管底>:");
-		strPrompt = _T("\n输入管底(D)/输入挖深(W)/坡度(P)/<管底>:");
+		strPrompt = _T("\n输入管底标高(D)/输入管底挖深(W)/坡度(P)/<管底标高>:");
 	}
 	TCHAR val[512];
 	int nRet = acedGetKword(strPrompt, val);
@@ -1161,7 +1180,7 @@ bool CDrawGDProcess::GetKeyWord()
 bool CDrawGDProcess::GetGuanDi()
 {
 	CString strPrompt;
-	strPrompt.Format(_T("\n管底深<m> <%.2f>:"), m_dGuandi);
+	strPrompt.Format(_T("\n管底标高<m> <%.2f>:"), m_dGuandi);
 
 	bool bRet = false;
 	while(!bRet)
@@ -1207,7 +1226,7 @@ bool CDrawGDProcess::GetGuanDi()
 bool CDrawGDProcess::GetWaShen()
 {
 	CString strPrompt;
-	strPrompt.Format(_T("\n管底深<m> <%.2f>:"), m_dWashen);
+	strPrompt.Format(_T("\n管底挖深<m> <%.2f>:"), m_dWashen);
 
 	bool bRet = false;
 	while(!bRet)
@@ -1320,7 +1339,9 @@ bool CDrawGDProcess::GetVertical()
 bool CDrawGDProcess::GetPipeType()
 {
 	TCHAR tempBuf[133];
-	int nRet = acedGetString(1, _T("\n管道类型<DN>:"),  tempBuf);
+	CString strPrompt;
+	strPrompt.Format(_T("\n管道类型<%s>:"), m_strPipeType);
+	int nRet = acedGetString(1, strPrompt,  tempBuf);
 	if (nRet == RTNORM)
 	{
 		//return true;
@@ -1344,8 +1365,9 @@ bool CDrawGDProcess::GetPipeType()
 
 bool CDrawGDProcess::doUndo()
 {
-	int nTmp = m_nCout - 1;
-	CString strCount;
+	CString strCount = CDMXUtils::getCurNum();
+	int nCount = MyTransFunc::StringToInt(strCount);
+	int nTmp = nCount - 1;
 	strCount.Format(_T("%d"), nTmp);
 	CString strTmpLabel = BC_DICT_GD + strCount;
 
@@ -1353,6 +1375,11 @@ bool CDrawGDProcess::doUndo()
 	CString strLabel = BC_DICT + strCount;
 	CBcUtils bcUtils;
 	bcUtils.get(strLabel, m_pZdmInfo);
+
+	nTmp = nCount - 2;
+	strCount.Format(_T("%d"), nTmp);
+	strLabel = BC_DICT + strCount;
+	bcUtils.get(strLabel, m_preZdmInfo);
 	CDMXUtils::SetCurNum(strCount);
 	return true;
 }

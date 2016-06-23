@@ -470,16 +470,16 @@ bool CDrawZDM::DrawDMText()
 		acutPolar(asDblArray(m_basePt), 0, m_dLen + (m_pZDM.getcurData() - CDMXUtils::startzh())*m_dXScale, asDblArray(textPt));
 		acutPolar(asDblArray(textPt), 3*PI/2, 7.5, asDblArray(textPt));
 		AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
-		textId = MyDrawEntity::DrawText(textPt, strSJDmxS, 3, textStyleId, AcDb::kTextCenter);
-		textId = MyEditEntity::openEntChangeRotation(textId, 3*PI/2);
+		textId = MyDrawEntity::DrawText(textPt, strSJDmxS, 3, textStyleId, AcDb::kTextCenter, AcDb::kTextTop);
+		textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 		textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
 		MyEditEntity::OpenObjAppendDoubleToXdata(textId, ZDM_DESINGDMXS, dSJDmxS);
 		m_idArrs.append(textId);
 
 		//绘制现状地面高
 		acutPolar(asDblArray(textPt), 3*PI/2, 15, asDblArray(textPt));
-		textId = MyDrawEntity::DrawText(textPt, strXZDmxS, 3, textStyleId, AcDb::kTextCenter);
-		textId = MyEditEntity::openEntChangeRotation(textId, 3*PI/2);
+		textId = MyDrawEntity::DrawText(textPt, strXZDmxS, 3, textStyleId, AcDb::kTextCenter, AcDb::kTextTop);
+		textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 		textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
 		MyEditEntity::OpenObjAppendDoubleToXdata(textId, ZDM_REALS, dXZDmxS);
 		m_idArrs.append(textId);
@@ -555,16 +555,16 @@ bool CDrawZDM::DrawNextDMText()
 			acutPolar(asDblArray(m_basePt), 0, m_dLen + (NextData.getcurData() - CDMXUtils::startzh())*m_dXScale, asDblArray(textPt));
 			acutPolar(asDblArray(textPt), 3*PI/2, 7.5, asDblArray(textPt));
 			AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
-			textId = MyDrawEntity::DrawText(textPt, strSJDmxS, 3, textStyleId, AcDb::kTextCenter);
-			textId = MyEditEntity::openEntChangeRotation(textId, 3*PI/2);
+			textId = MyDrawEntity::DrawText(textPt, strSJDmxS, 3, textStyleId, AcDb::kTextCenter, AcDb::kTextTop);
+			textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 			textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
 			MyEditEntity::OpenObjAppendDoubleToXdata(textId, ZDM_DESINGDMXS, dSJDmxS);
 			AddObjToDict(strNextLabel, textId);
 
 			//绘制现状地面高
 			acutPolar(asDblArray(textPt), 3*PI/2, 15, asDblArray(textPt));
-			textId = MyDrawEntity::DrawText(textPt, strXZDmxS, 3, textStyleId, AcDb::kTextCenter);
-			textId = MyEditEntity::openEntChangeRotation(textId, 3*PI/2);
+			textId = MyDrawEntity::DrawText(textPt, strXZDmxS, 3, textStyleId, AcDb::kTextCenter, AcDb::kTextTop);
+			textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 			textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
 			MyEditEntity::OpenObjAppendDoubleToXdata(textId, ZDM_REALS, dXZDmxS);
 			AddObjToDict(strNextLabel, textId);
@@ -941,7 +941,7 @@ bool CDrawGd::del(CZdmDataInfo pZDM)
 	{	
 		ModifyDictbyInt(m_nCount, false);
 	}
-	CString strCount = CDMXUtils::getNumCount();
+	CString strCount = CDMXUtils::getCurNum();
 	int nCount = MyTransFunc::StringToInt(strCount);
 	if (m_nCount != nCount)//如果不是最后一个桩号
 	{
