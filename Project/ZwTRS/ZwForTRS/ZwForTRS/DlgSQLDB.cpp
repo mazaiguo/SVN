@@ -318,7 +318,7 @@ void CDlgSQLDB::OnBnClickedButtonUpdate()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	CDBAdo dbAdo;
-	dbAdo.SetConnectionString(_T("SQLOLEDB"), m_strAddress, _T("AIS20120813194456"), m_strUserName, m_strPassWord);
+	dbAdo.SetConnectionString(_T("SQLOLEDB.1"), m_strAddress, m_strSQLName, m_strUserName, m_strPassWord);
 	bool bRet = dbAdo.CreateInstance();
 	if (!bRet)
 	{
@@ -564,6 +564,7 @@ void CDlgSQLDB::SaveInfoToReg()
 	CString strRootKey = _T("Software\\ZWSOFT\\ZWSQL");
 	COperateReg Reg;
 	Reg.SetRegister(HKEY_CURRENT_USER, strRootKey, _T("ADDRESS"), m_strAddress);
+	Reg.SetRegister(HKEY_CURRENT_USER, strRootKey, _T("SQLNAME"), m_strSQLName);
 	Reg.SetRegister(HKEY_CURRENT_USER, strRootKey, _T("USERNAME"), m_strUserName);
 	Reg.SetRegister(HKEY_CURRENT_USER, strRootKey, _T("PASSWORD"), m_strPassWord);
 
@@ -590,6 +591,7 @@ void CDlgSQLDB::SaveInfoToReg()
 void CDlgSQLDB::GetInfoFromReg()
 {
 	m_strAddress = GetStringFromReg(_T("ADDRESS"));
+	m_strSQLName = GetStringFromReg(_T("SQLNAME"));
 	m_strUserName = GetStringFromReg(_T("USERNAME"));
 	m_strPassWord = GetStringFromReg(_T("PASSWORD"));
 	m_bIsDeFault = (BOOL)GetDwordFromReg(_T("DEFAULT"));

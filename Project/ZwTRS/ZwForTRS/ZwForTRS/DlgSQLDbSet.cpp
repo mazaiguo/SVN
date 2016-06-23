@@ -35,6 +35,7 @@ CDlgSQLDbSet::~CDlgSQLDbSet()
 void CDlgSQLDbSet::DoDataExchange (CDataExchange *pDX) {
 	CAcUiDialog::DoDataExchange (pDX) ;
 	DDX_Text(pDX, IDC_EDIT_ADDRESS, m_strAddress);
+	DDX_Text(pDX, IDC_EDIT_SQLNAME, m_strSQLName);
 	DDX_Text(pDX, IDC_EDIT_USERNAME, m_strUserName);
 	DDX_Text(pDX, IDC_EDIT_PASSWORD, m_strPassWord);
 }
@@ -64,13 +65,14 @@ void CDlgSQLDbSet::OnBnClickedButtonTest()
 	GetDlgItem(IDC_EDIT_ADDRESS)->GetWindowText(m_strAddress);
 	GetDlgItem(IDC_EDIT_USERNAME)->GetWindowText(m_strUserName);
 	GetDlgItem(IDC_EDIT_PASSWORD)->GetWindowText(m_strPassWord);
-	if ((m_strAddress.IsEmpty())||(m_strUserName.IsEmpty())||(m_strPassWord.IsEmpty()))
+	GetDlgItem(IDC_EDIT_SQLNAME)->GetWindowText(m_strSQLName);
+	if ((m_strAddress.IsEmpty())||(m_strUserName.IsEmpty())||(m_strPassWord.IsEmpty()) ||(m_strSQLName.IsEmpty()))
 	{
 		AfxMessageBox(_T("数据不能为空"));
 		return;
 	}
 	CDBAdo dbAdo;
-	dbAdo.SetConnectionString(_T("SQLOLEDB.1"), m_strAddress, _T("AIS20120813194456"), m_strUserName, m_strPassWord);
+	dbAdo.SetConnectionString(_T("SQLOLEDB.1"), m_strAddress, m_strSQLName, m_strUserName, m_strPassWord);
 	bool bRet = dbAdo.CreateInstance();
 	if (!bRet)
 	{
@@ -183,13 +185,31 @@ void CDlgSQLDbSet::SaveInfoToReg()
 	Reg.SetRegister(HKEY_CURRENT_USER, strRootKey, _T("ADDRESS"), m_strAddress);
 	Reg.SetRegister(HKEY_CURRENT_USER, strRootKey, _T("USERNAME"), m_strUserName);
 	Reg.SetRegister(HKEY_CURRENT_USER, strRootKey, _T("PASSWORD"), m_strPassWord);
+	Reg.SetRegister(HKEY_CURRENT_USER, strRootKey, _T("SQLNAME"), m_strSQLName);
 }
 
 void CDlgSQLDbSet::GetInfoFromReg()
 {
 	m_strAddress = GetStringFromReg(_T("ADDRESS"));
+	if (m_strAddress.IsEmpty())
+	{
+		m_strAddress = _T("192.168.2.11");
+	}
 	m_strUserName = GetStringFromReg(_T("USERNAME"));
+	if (m_strUserName.IsEmpty())
+	{
+		m_strUserName = _T("sa");
+	}
 	m_strPassWord = GetStringFromReg(_T("PASSWORD"));
+	if (m_strPassWord.IsEmpty())
+	{
+		m_strPassWord = _T("jc_123");
+	}
+	m_strSQLName = GetStringFromReg(_T("SQLNAME"));
+	if (m_strSQLName.IsEmpty())
+	{
+		m_strSQLName = _T("AIS20160515143231");
+	}
 }
 
 CString CDlgSQLDbSet::GetStringFromReg(LPCTSTR strKey)

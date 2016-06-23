@@ -63,6 +63,7 @@ private:
 	CString m_strAddress;
 	CString m_strUserName;
 	CString m_strPassWord;
+	CString m_strSQLName;
 
 	CString m_strName;//FName
 	CString m_strMark;//FitemId

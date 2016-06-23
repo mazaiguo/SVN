@@ -1,0 +1,26 @@
+HKCR
+{
+	ZwcadmPlugins.DbCom.1 = s 'CZwcadmCom Class'
+	{
+		CLSID = s '{CE33CDA5-6D9E-442D-9372-D84D49EF6467}'
+	}
+	ZwcadmPlugins.DbCom = s 'CZwcadmCom Class'
+	{		
+		CurVer = s 'ZwcadmPlugins.DbCom.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {CE33CDA5-6D9E-442D-9372-D84D49EF6467} = s 'CZwcadmCom Class'
+		{
+			ProgID = s 'ZwcadmPlugins.DbCom.1'
+			VersionIndependentProgID = s 'ZwcadmPlugins.DbCom'
+			ForceRemove Programmable
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			TypeLib = s '{CAA3786F-A518-48F3-A265-EB6927CF74B1}'
+			Version = s '1.0'
+		}
+	}
+}

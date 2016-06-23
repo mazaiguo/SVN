@@ -35,5 +35,6 @@ public:
 	CString m_strAddress;
 	CString m_strUserName;
 	CString m_strPassWord;
+	CString m_strSQLName;
 	bool m_bSuccess;
 } ;

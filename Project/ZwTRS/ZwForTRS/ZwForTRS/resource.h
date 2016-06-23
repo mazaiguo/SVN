@@ -68,8 +68,9 @@
 #define IDC_EDIT_COUNT                  146
 #define IDC_EDIT3                       147
 #define IDC_EDIT_JILIANG                147
-#define IDC_CHECK1                      148
 #define IDC_CHECK_DEFAULT               148
+#define IDC_EDIT2                       149
+#define IDC_EDIT_SQLNAME                149
 #define IDC_BUTTON_PRE                  195
 #define IDC_BUTTON_NEXT                 196
 #define IDC_STATIC_VIEW1                237
@@ -93,7 +94,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        103
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         149
+#define _APS_NEXT_CONTROL_VALUE         150
 #define _APS_NEXT_SYMED_VALUE           134
 #endif
 #endif
