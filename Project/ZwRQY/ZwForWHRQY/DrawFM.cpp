@@ -273,6 +273,7 @@ bool CDrawFM::insert()
 	{
 		acutPolar(asDblArray(tmpPt), PI/2, (zdm.getGuanDi() - CDMXUtils::getMinElavation())*dYScale, asDblArray(m_blkInsert));
 	}
+	m_dScale = (dYScale*zdm.getPipeDiameter())/3000;
 	acutPolar(asDblArray(m_blkInsert), PI/2, dRadius, asDblArray(m_blkInsert));
 	insertGdBlk(insertPt);
 	insertUp(m_blkInsert, dRotate);
@@ -288,6 +289,7 @@ void CDrawFM::insertUp(AcGePoint3d insertPt, double dRotate)
 	blkInfo.SetFileName(strPath);
 	blkInfo.SetInsertPt(insertPt);
 	blkInfo.SetRotate(dRotate);
+	blkInfo.SetScale(AcGeScale3d(m_dScale, m_dScale, m_dScale));
 	//blkInfo.SetInsertPt();
 	CBlkInsert blkInsert;
 	blkInsert.SetBlkInfo(blkInfo);
@@ -346,8 +348,14 @@ void CDrawFM::drawLineAndText()
 	acutPolar(asDblArray(midPt), 3*PI/2, 1, asDblArray(textPt2));
 	AcDbObjectId textId1 = MyDrawEntity::DrawText(textPt1, strText, 3.0, textStyleId, AcDb::kTextLeft);
 	double dLen1 = MyEditEntity::OpenObjAndGetLength(textId1);
-	AcDbObjectId textId2 = MyDrawEntity::DrawText(textPt2, m_strZF, 3.0, textStyleId, AcDb::kTextLeft, AcDb::kTextTop);
-	double dLen2 = MyEditEntity::OpenObjAndGetLength(textId2);
+	double dLen2 = 0.0;
+	if (!m_strZF.IsEmpty())
+	{
+		AcDbObjectId textId2 = MyDrawEntity::DrawText(textPt2, m_strZF, 3.0, textStyleId, AcDb::kTextLeft, AcDb::kTextTop);
+		dLen2 = MyEditEntity::OpenObjAndGetLength(textId2);
+		m_idArrs.append(textId2);
+	}
+
 	double dLen;
 	if (dLen1 > dLen2)
 	{
@@ -367,29 +375,24 @@ void CDrawFM::drawLineAndText()
 	plineId = MyEditEntity::openEntChangeColor(plineId, 2);
 	m_idArrs.append(plineId);
 	m_idArrs.append(textId1);
-	m_idArrs.append(textId2);
 }
 
 bool CDrawFM::GetZuoFa()
 {
 	TCHAR tempBuf[133];
 
-	int nRet = acedGetString(1, _T("\n请输入通用图做法详尽<做法详尽>："),tempBuf);
+	int nRet = acedGetString(1, _T("\n请输入通用图做法<做法详见>："),tempBuf);
 	if (nRet == RTNORM)
 	{
 		CString strTmp = tempBuf;
-		if (strTmp.IsEmpty())
+		if (!strTmp.IsEmpty())
 		{
-			m_strZF = _T("做法详尽");
-		}
-		else
-		{
-			m_strZF.Format(_T("做法详尽\"%s\""), strTmp);
+			m_strZF.Format(_T("做法详见%s"), strTmp);
 		}
 	}
 	else if (nRet == RTNONE)
 	{
-		m_strZF = _T("做法详尽");
+		m_strZF = _T("做法详见");
 	}
 	else
 	{

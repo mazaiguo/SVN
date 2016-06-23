@@ -410,6 +410,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\ZdmUtility.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ZwForWHRQY.cpp"
 				>
 			</File>
@@ -668,6 +672,10 @@
 			</File>
 			<File
 				RelativePath=".\StdAfx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ZdmUtility.h"
 				>
 			</File>
 		</Filter>

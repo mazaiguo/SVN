@@ -28,7 +28,7 @@ CBaseDataForZdDwg::CBaseDataForZdDwg()
 	m_strJdNum = _T("1");
 	m_strJcNum = _T("1");
 	m_strStartZH = _T("0");
-	m_strPipeType = _T("DN");
+	m_dInitZh = 0.0;
 }
 
 
@@ -43,7 +43,7 @@ CBaseDataForZdDwg::~CBaseDataForZdDwg()
 	m_strNumCount = _T("1");
 	m_strJdNum = _T("1");
 	m_strStartZH = _T("0");
-	m_strPipeType = _T("DN");
+	m_dInitZh = 0.0;
 }
 
 
@@ -158,16 +158,16 @@ Acad::ErrorStatus CBaseDataForZdDwg::setStartZH(CString dHx)
 	return Acad::eOk;
 }
 
-CString CBaseDataForZdDwg::pipeType() const
+double CBaseDataForZdDwg::initZh() const
 {
 	assertReadEnabled();
-	return m_strPipeType;
+	return m_dInitZh;
 }
 
-Acad::ErrorStatus CBaseDataForZdDwg::setPipeType(CString dHx)
+Acad::ErrorStatus CBaseDataForZdDwg::setInitZh(double dHx)
 {
 	assertWriteEnabled();
-	m_strPipeType = dHx;
+	m_dInitZh = dHx;
 
 	return Acad::eOk;
 }
@@ -321,10 +321,8 @@ CBaseDataForZdDwg::dwgInFields(AcDbDwgFiler* filer)
 	filer->readItem(&tmpStr);
 	m_strStartZH = tmpStr;
 	acutDelString(tmpStr);
-	filer->readItem(&tmpStr);
-	m_strPipeType = tmpStr;
-	acutDelString(tmpStr);
 
+	filer->readItem(&m_dInitZh);
 	filer->readItem(&m_dXScale);
 	filer->readItem(&m_dYScale);
 	filer->readItem(&m_dminElavation);
@@ -362,7 +360,7 @@ CBaseDataForZdDwg::dwgOutFields(AcDbDwgFiler* filer) const
 	filer->writeItem(static_cast<const TCHAR*>(m_strJdNum));
 	filer->writeItem(static_cast<const TCHAR*>(m_strJcNum));
 	filer->writeItem(static_cast<const TCHAR*>(m_strStartZH));
-	filer->writeItem(static_cast<const TCHAR*>(m_strPipeType));
+	filer->writeItem(m_dInitZh);
 	filer->writeItem(m_dXScale);
 	filer->writeItem(m_dYScale);
 	filer->writeItem(m_dminElavation);
@@ -453,9 +451,9 @@ CBaseDataForZdDwg::dxfInFields(AcDbDxfFiler* filer)
 		{
 			setStartZH(rb.resval.rstring);
 		}
-		else if (rb.restype == kDxfPipeType)
+		else if (rb.restype == kDxfInitZh)
 		{
-			setPipeType(rb.resval.rstring);
+			setInitZh(rb.resval.rreal);
 		}
 		/*else if (rb.restype == kDxfStartPt)
 		{
@@ -512,7 +510,7 @@ CBaseDataForZdDwg::dxfOutFields(AcDbDxfFiler* filer) const
 	filer->writeItem(kDxfDrawGw, m_bDrawGW);
 	filer->writeItem(kDxfBasePt, m_basePt);
 	filer->writeItem(kDxfStartZH, m_strStartZH);
-	filer->writeItem(kDxfPipeType, m_strPipeType);
+	filer->writeItem(kDxfInitZh, m_dInitZh);
 	/*filer->writeItem(kDxfStartPt, m_startPt);
 	filer->writeItem(kDxfEndPt, m_endPt);
 	filer->writeItem(kDxfHengxiang, m_dHengxiang);

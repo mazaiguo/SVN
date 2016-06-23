@@ -27,8 +27,8 @@ public:
 	static CString getStartZH();
 	static double  startzh();
 
-	static void SetPipeType(CString dStartZH);
-	static CString getPipeType();
+	static void SetInitZH(double dStartZH);
+	static double getInitZh();
 
 	static void SetXScale(double dXScale);
 	static double getXScale();

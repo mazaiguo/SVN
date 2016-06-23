@@ -60,6 +60,10 @@ private:
 	bool getRecHeight();
 	bool getRecWidth();
 	void drawRec(double dHeigth, double dWidth);
+	bool verifyIntersect();
+	void modCurZh();
+	void editGroupName(CString strPreName, CString strGroupName);
+	void selAllJCGroup();
 	//bool GetBaseHeight();
 	//bool GetBaseWidth();
 	enum type
@@ -72,6 +76,11 @@ private:
 	CString m_strName;//从外部传进来的名称
 	int m_nIndex;//序列
 	CZdmDataInfo m_zdmdata;
+	CZdmDataInfo m_nextZdm;
+	CZdmDataInfo m_preZdm;
+	CString m_strCount;
+
+	AcDbObjectId m_objId;
 	double m_dMin;//最小范围
 	double m_dMax;//最大范围
 	double m_dYBase;//基础数据
@@ -79,10 +88,18 @@ private:
 	double m_dHeight;//插入位置
 	double m_dPipeDiameter;//管径
 	double m_dBaseHeight;
+	double m_dXScale;
+	double m_dYScale;
+	bool m_bIsModGd;
+	double m_dFlag;//标识
 	//double m_dBaseWidth;
 	bool m_bIsGdingType;//管道类型，管顶或管底
 	AcDbObjectIdArray m_idArrs;
 	CString m_strText;//文字内容
+	AcGePoint3d m_guandiPt;
+	AcGePoint3d m_guandiTopPt;
+
+	AcGePoint3d m_SpecialPt;
 };
 
 //////////////////////////////////////////////////////////////////////////

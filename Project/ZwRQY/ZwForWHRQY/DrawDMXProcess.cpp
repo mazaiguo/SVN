@@ -6,6 +6,8 @@
 #include "CBiaochiForRQY.h"
 #include "BcUtils.h"
 
+extern CString TransFormStr(double dValue);
+
 DrawDMXProcess::DrawDMXProcess(void)
 {
 	CString strCount = CDMXUtils::getNumCount();
@@ -25,6 +27,7 @@ DrawDMXProcess::DrawDMXProcess(void)
 	{
 		m_dZhuanghao = CDMXUtils::startzh();
 		m_dSJDmHeight = 0.00;
+		m_strSoilType = _T("砂土");
 	}
 	else
 	{
@@ -36,6 +39,7 @@ DrawDMXProcess::DrawDMXProcess(void)
 		bcUtils.get(strTmpLabel, m_preZdmInfo);
 		m_dZhuanghao = m_preZdmInfo.getcurData();
 		m_dSJDmHeight = m_preZdmInfo.getDesignDmx();
+		m_strSoilType = m_preZdmInfo.getSoilType();
 	}
 	m_dminElavation = CDMXUtils::getMinElavation();
 	m_dmaxElavation = CDMXUtils::getMaxElavation();
@@ -96,13 +100,14 @@ bool DrawDMXProcess::Draw()
 bool DrawDMXProcess::Insert(bool bIsObstacle)
 {
 	CString strPrompt;
+	CString strTmp = TransFormStr(m_dZhuanghao);
 	if (bIsObstacle)
 	{
-		strPrompt.Format(_T("\n插入桩号值<m> <%.2f>:"), m_dZhuanghao);
+		strPrompt.Format(_T("\n插入桩号值<m> <%s>:"), strTmp);
 	}
 	else
 	{
-		strPrompt.Format(_T("\n起始桩号值<m> <%.2f>:"), m_dZhuanghao);
+		strPrompt.Format(_T("\n起始桩号值<m> <%s>:"), strTmp);
 	}
 	int nRet = acedGetReal(strPrompt, &m_dZhuanghao);
 	if (nRet == RTNORM)
@@ -181,6 +186,68 @@ bool DrawDMXProcess::Insert(bool bIsObstacle)
 		}
 	}
 	return true;
+}
+
+bool DrawDMXProcess::Insert(double dValue, bool bIsCalc, bool bIsAdded)
+{
+	bool bIsExisted = false;
+	CString strCur = CurNumPosition(dValue, bIsExisted);
+	if (strCur.CompareNoCase(_T("0")) == 0)
+	{
+		return false;
+	}	
+	int nCount = MyTransFunc::StringToInt(strCur);
+	if (!bIsAdded)
+	{
+		nCount = nCount - 1;
+		strCur.Format(_T("%d"), nCount);
+	}
+	if (nCount < 1)
+	{
+		acutPrintf(_T("不能在此数据插入"));
+		return false;
+	}
+	m_dZhuanghao = dValue;
+	m_strLabel = BC_DICT + strCur;
+	if (!bIsExisted)
+	{	
+		CBcUtils bc;
+		bc.get(m_strLabel, m_pZdmInfo);	
+		int nCurCount = MyTransFunc::StringToInt(CDMXUtils::getCurNum());
+
+		if (bIsCalc)
+		{
+			int nTmp = nCount - 1;
+			CString strCount;
+			strCount.Format(_T("%d"), nTmp);
+			CString strTmpLabel = BC_DICT + strCount;
+			bc.get(strTmpLabel, m_preZdmInfo);
+
+			getSpecialInfo();
+		}
+		if (!bIsAdded)
+		{
+			nCount = nCount + 1;
+			strCur.Format(_T("%d"), nCount);
+			m_strLabel = BC_DICT + strCur;
+		}
+		m_pZdmInfo.setLabel(m_strLabel);
+		m_pZdmInfo.setCount(strCur);
+		m_pZdmInfo.setJiedian(strCur);
+		m_pZdmInfo.setcurData(m_dZhuanghao);
+		//////////////////////////////////////////////////////////////////////////
+		//设置现状地面
+	
+		CDrawZDM zdm;
+		zdm.setData(&m_pZdmInfo);
+		AcDbObjectId groupId = zdm.insert();
+
+		CDrawGd gd;
+		gd.insert(m_pZdmInfo);
+
+		return true;	
+	}
+	return false;
 }
 
 bool DrawDMXProcess::Del()
@@ -357,14 +424,15 @@ int DrawDMXProcess::GetZhuanghao()
 	while (bIsContinued)
 	{
 		bIsContinued = false;
+		CString strTemp = TransFormStr(m_dZhuanghao);
 		if (m_nCout == 1)
 		{
-			strPrompt.Format(_T("\n起始桩号值<m> <%.2f>:"), m_dZhuanghao);
+			strPrompt.Format(_T("\n起始桩号值<m> <%s>:"), strTemp);
 		}
 		else
 		{
 			acedInitGet(0, _T("Undo"));
-			strPrompt.Format(_T("\n回退一步(U)/<下一点桩号值> <m> <%.2f>:"), m_dZhuanghao);
+			strPrompt.Format(_T("\n回退一步(U)/<下一点桩号值> <m> <%s>:"), strTemp);
 		}
 		double dResult = m_dZhuanghao;
 		int nResult = acedGetReal(strPrompt, &m_dZhuanghao);
@@ -406,6 +474,10 @@ int DrawDMXProcess::GetZhuanghao()
 	
 	m_pZdmInfo.setcurData(m_dZhuanghao);
 
+	if (m_nCout == 1)
+	{
+		CDMXUtils::SetInitZH(m_dZhuanghao);
+	}
 	return nRet;
 }
 
@@ -436,7 +508,8 @@ bool DrawDMXProcess::GetIsJiedian()
 bool DrawDMXProcess::GetSJDmHeight()
 {
 	CString strPrompt;
-	strPrompt.Format(_T("\n设计地面标高<m> <%.2f>:"), m_dSJDmHeight);
+	CString strTemp = TransFormStr(m_dSJDmHeight);
+	strPrompt.Format(_T("\n设计地面标高<m> <%s>:"), strTemp);
 
 	bool bRet = false;
 	while(!bRet)
@@ -473,7 +546,8 @@ bool DrawDMXProcess::GetSJDmHeight()
 bool DrawDMXProcess::GetXzDmHeight()
 {
 	CString strPrompt;
-	strPrompt.Format(_T("\n现状地面标高<m> <%.2f>:"), m_dSJDmHeight);
+	CString strTemp = TransFormStr(m_dSJDmHeight);
+	strPrompt.Format(_T("\n现状地面标高<m> <%s>:"), strTemp);
 	bool bRet = false;
 	while(!bRet)
 	{
@@ -508,19 +582,47 @@ bool DrawDMXProcess::GetSoilType()
 {
 	acutPrintf(_T("\n土壤类别有：砂土、亚砂土、亚黏土、黏土、含砾土卵石土、泥炭岩白垩土、干黄土"));
 	TCHAR tempBuf[133];
-	int nRet = acedGetString(1, _T("\n土壤类别<砂土>:"),  tempBuf);
+	CString strTemp = m_strSoilType;
+	CString strPrompt;
+	strPrompt.Format(_T("\n土壤类别砂土(S)/亚砂土(YS)/黏土(N)/含砾土卵石土(H)/泥炭岩白垩土(NT)/干黄土(G)<%s>:"), strTemp);
+	acedInitGet(0, _T("S YS YN N H NT G"));
+	int nRet = acedGetKword(strPrompt,  tempBuf);
 	if (nRet == RTNORM)
 	{
 		//return true;
 		m_strSoilType = tempBuf;
 		if (m_strSoilType.IsEmpty())
 		{
-			m_strSoilType =_T("砂土");
+			m_strSoilType = strTemp;
+		}
+		if (_tcscmp(tempBuf, _T("S")) == 0)
+		{
+			m_strSoilType = _T("砂土");
+		}
+		else if (_tcscmp(tempBuf, _T("YS")) == 0)
+		{
+			m_strSoilType = _T("亚砂土");
+		}
+		else if (_tcscmp(tempBuf, _T("N")) == 0)
+		{
+			m_strSoilType = _T("黏土");
+		}
+		else if (_tcscmp(tempBuf, _T("H")) == 0)
+		{
+			m_strSoilType = _T("含砾土卵石土");
+		}
+		else if (_tcscmp(tempBuf, _T("NT")) == 0)
+		{
+			m_strSoilType = _T("泥炭岩白垩土");
+		}
+		else if (_tcscmp(tempBuf, _T("G")) == 0)
+		{
+			m_strSoilType = _T("干黄土");
 		}
 	}
 	else if (nRet == RTNONE)
 	{
-		m_strSoilType =_T("砂土");
+		m_strSoilType = strTemp;
 	}
 	else
 	{
@@ -574,7 +676,8 @@ bool DrawDMXProcess::GetPdHeight()
 bool DrawDMXProcess::GetSJDmHeightS()
 {
 	CString strPrompt;
-	strPrompt.Format(_T("\n堡坎设计地面标高<m> <%.2f>:"), m_dSJDmHeight);
+	CString strTemp = TransFormStr(m_dSJDmHeight);
+	strPrompt.Format(_T("\n堡坎设计地面标高<m> <%s>:"), strTemp);
 
 	bool bRet = false;
 	while(!bRet)
@@ -611,7 +714,8 @@ bool DrawDMXProcess::GetSJDmHeightS()
 bool DrawDMXProcess::GetXzDmHeightS()
 {
 	CString strPrompt;
-	strPrompt.Format(_T("\n堡坎<m> <%.2f>:"), m_dDesignDmxS);
+	CString strTemp = TransFormStr(m_dDesignDmxS);
+	strPrompt.Format(_T("\n堡坎<m> <%s>:"), strTemp);
 	bool bRet = false;
 	while(!bRet)
 	{
@@ -1180,7 +1284,8 @@ bool CDrawGDProcess::GetKeyWord()
 bool CDrawGDProcess::GetGuanDi()
 {
 	CString strPrompt;
-	strPrompt.Format(_T("\n管底标高<m> <%.2f>:"), m_dGuandi);
+	CString strTemp = TransFormStr(m_dGuandi);
+	strPrompt.Format(_T("\n管底标高<m> <%s>:"), strTemp);
 
 	bool bRet = false;
 	while(!bRet)
@@ -1226,7 +1331,8 @@ bool CDrawGDProcess::GetGuanDi()
 bool CDrawGDProcess::GetWaShen()
 {
 	CString strPrompt;
-	strPrompt.Format(_T("\n管底挖深<m> <%.2f>:"), m_dWashen);
+	CString strTemp = TransFormStr(m_dWashen);
+	strPrompt.Format(_T("\n管底挖深<m> <%s>:"), strTemp);
 
 	bool bRet = false;
 	while(!bRet)
@@ -1273,7 +1379,8 @@ bool CDrawGDProcess::GetWaShen()
 bool CDrawGDProcess::GetPodu()
 {
 	CString strPrompt;
-	strPrompt.Format(_T("\n坡度<‰%.2f>:"), m_dPodu);
+	CString strTemp = TransFormStr(m_dPodu);
+	strPrompt.Format(_T("\n坡度<‰%s>:"), strTemp);
 
 	bool bRet = false;
 	while(!bRet)
@@ -1341,6 +1448,7 @@ bool CDrawGDProcess::GetPipeType()
 	TCHAR tempBuf[133];
 	CString strPrompt;
 	strPrompt.Format(_T("\n管道类型<%s>:"), m_strPipeType);
+	CString strTemp = m_strPipeType;
 	int nRet = acedGetString(1, strPrompt,  tempBuf);
 	if (nRet == RTNORM)
 	{
@@ -1348,12 +1456,12 @@ bool CDrawGDProcess::GetPipeType()
 		m_strPipeType = tempBuf;
 		if (m_strPipeType.IsEmpty())
 		{
-			m_strPipeType =_T("DN");
+			m_strPipeType = strTemp;
 		}
 	}
 	else if (nRet == RTNONE)
 	{
-		m_strPipeType =_T("DN");
+		m_strPipeType = strTemp;
 	}
 	else
 	{

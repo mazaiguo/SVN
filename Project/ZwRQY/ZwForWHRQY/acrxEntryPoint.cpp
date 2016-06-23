@@ -281,6 +281,7 @@ public:
 		acedSSLength(ssname, &sslen);
 		map<CString, CString> infoMap;
 		CString strGroupName;
+		vector<int> nVec;
 		for (int i=0; i<sslen; i++)
 		{
 			acedSSName(ssname, i, ename);
@@ -289,8 +290,102 @@ public:
 			int nFind = strGroupName.Find(JC_DICT);
 			if (nFind >= 0)
 			{
-				MyEditEntity::EraseEntByGroupName(strGroupName);
+				int nFind1 = strGroupName.Find(JC_DICT_ZA);
+				if (nFind >=0)
+				{
+					AcDbDictionary *pGroupDict;	
+					AcDbGroup* pGroup = NULL;
+					Acad::ErrorStatus es;
+					es = acdbHostApplicationServices()->workingDatabase()->getGroupDictionary(pGroupDict, AcDb::kForWrite);
+					es = pGroupDict->getAt(strGroupName, (AcDbObject*&)pGroup, AcDb::kForWrite);
+					if (es != Acad::eOk)
+					{
+						pGroupDict->close();
+						return;
+					}
+
+					AcDbEntity* pEnt = NULL;
+					AcDbObjectId entId;
+					AcDbObjectIdArray objIds;
+					objIds.removeAll();
+					int nLength = 0;
+					nLength = pGroup->allEntityIds(objIds);
+					for (int i=0; i<objIds.length(); i++)
+					{
+						entId = objIds.at(i);
+						es = acdbOpenAcDbEntity((AcDbEntity*&)pEnt, entId, AcDb::kForRead);
+						if (es!= Acad::eOk)
+						{
+							pEnt->close();
+						}
+						else
+						{
+							if (pEnt->isKindOf(AcDbBlockReference::desc()))
+							{
+								pEnt->close();
+								CString strTmp = MyEditEntity::GetObjStrXdata(entId, ZDM_JC_ADD);
+								acutPrintf(_T("\n"));
+								acutPrintf(strTmp);
+								if (!strTmp.IsEmpty())
+								{
+									CString strCur, strTmp;
+									int nCount = MyParserString::GetPileLength(strGroupName, strTmp);
+									nVec.push_back(nCount);
+								}
+								MyEditEntity::EraseObj(entId);
+							}
+							else
+							{
+								pEnt->upgradeOpen();
+								pEnt->erase();
+								pEnt->close();
+							}
+
+						}
+					}
+					pGroup->erase();
+					pGroup->close();
+
+					pGroupDict->close();
+				}
+				else
+				{
+					MyEditEntity::EraseEntByGroupName(strGroupName);
+				}		
 			}
+		}
+		acedSSFree(ssname);
+		int nCount;
+		CString strCur;
+		for (vector<int>::iterator iter=nVec.begin();
+			iter!=nVec.end();
+			++iter)
+		{
+			nCount = *iter;
+			nCount += 4;
+
+			DrawDMXProcess dm;
+			//删除第一个
+			strCur.Format(_T("%d"), nCount);
+			strGroupName = BC_DICT + strCur;
+			dm.del(strGroupName);
+			//删除第二个
+			nCount--;
+			strCur.Format(_T("%d"), nCount);
+			strGroupName = BC_DICT + strCur;
+			dm.del(strGroupName);
+			//删除第三个
+			nCount--;
+			nCount--;
+			strCur.Format(_T("%d"), nCount);
+			strGroupName = BC_DICT + strCur;
+			dm.del(strGroupName);
+
+			//删除第四个
+			nCount--;
+			strCur.Format(_T("%d"), nCount);
+			strGroupName = BC_DICT + strCur;
+			dm.del(strGroupName);
 		}
 	}
 

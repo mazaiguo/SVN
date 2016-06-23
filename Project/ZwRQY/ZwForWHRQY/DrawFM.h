@@ -41,4 +41,5 @@ private:
 	double m_dZhuanghao;
 	AcGePoint3d m_blkInsert;
 	CString m_strZF;
+	double m_dScale;
 };

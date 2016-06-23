@@ -59,6 +59,7 @@
 #define BC_DICT _T("ZW_FOR_WHRQY_")
 #define BC_DICT_GD _T("ZW_FOR_WHRQY_GD_")
 #define JC_DICT		_T("ZW_FOR_WHRQY_JC_")//障碍物
+#define JC_DICT_ZA		_T("ZW_FOR_WHRQY_JC_ZA")//修改了管道的障碍物
 #define FM_DICT _T("ZW_FOR_WHRQY_FM_")//阀门
 #define WP_DICT _T("OBJECT_TO_NOTIFY_")
 #define NSG_DICT _T("ZW_FOR_WHRQY_LSG_")//凌水缸
@@ -80,6 +81,7 @@
 #define ZDM_DESINGDMXS						_T("第二个设计地面线")
 #define ZDM_REALS							_T("第二个实际地面线")
 #define ZDM_PIPEDIAMETER					_T("管径")
+#define ZDM_JC_ADD							_T("障碍物与管道相交")
 
 //double m_dDesignDmx;//设计地面线
 //double m_dRealDmx;//实际地面线

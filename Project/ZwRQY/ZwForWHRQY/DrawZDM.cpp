@@ -534,8 +534,9 @@ bool CDrawZDM::DrawNextDMText()
 		MyEditEntity::OpenObjAppendDoubleToXdata(textId, ZDM_REALDMX, dXZDmx);
 		AddObjToDict(strNextLabel, textId);
 		//»æÖÆ×®ºÅ
+		CString strZH = doZhuanghaoText(strZhuanghao);
 		acutPolar(asDblArray(textPt), 3*PI/2, 30, asDblArray(textPt));
-		textId = MyDrawEntity::DrawText(textPt, strZhuanghao, 3, textStyleId, AcDb::kTextCenter);
+		textId = MyDrawEntity::DrawText(textPt, strZH, 3, textStyleId, AcDb::kTextCenter);
 		textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
 		textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
 		MyEditEntity::OpenObjAppendDoubleToXdata(textId, ZDM_CURDATA, dCurData);
@@ -889,7 +890,8 @@ CString CDrawZDM::doZhuanghaoText(CString strTmp)
 	}
 	CString strResult;
 	nCount += nstartRe;
-	strResult.Format(_T("%s%d+%.2f"), strPrefix, nstartRe, nendRe);
+	CString strTemp = TransFormStr(nendRe);
+	strResult.Format(_T("%s%d+%s"), strPrefix, nCount, strTemp);
 	return strResult;
 
 }
@@ -1128,10 +1130,25 @@ AcDbObjectIdArray CDrawGd::drawText(AcGePoint3d basePt)
 	MyEditEntity::OpenObjAppendDoubleToXdata(textId, ZDM_WASHEN, dWashen);
 	objIdArr.append(textId);
 
+	if (m_pZDM.getHasBulge())//Í¹¶È
+	{
+		textId = MyDrawEntity::DrawText(guandiPt, strGuandiText, 3, textStyleId, AcDb::kTextCenter, AcDb::kTextTop);
+		textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
+		textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
+		objIdArr.append(textId);
+
+		double dWashenS = m_pZDM.getRealDmxS() - dGuandi;
+		CString strWashenS;
+		strWashenS = TransFormStr(dWashenS);
+		textId = MyDrawEntity::DrawText(washenPt, strWashenS, 3, textStyleId, AcDb::kTextCenter, AcDb::kTextTop);
+		textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
+		textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
+		objIdArr.append(textId);
+	}
 	return objIdArr;
 }
 
-AcDbObjectIdArray CDrawGd::drawtnextText(AcGePoint3d basePt, double dGuandi, double dWashen)
+AcDbObjectIdArray CDrawGd::drawtnextText(AcGePoint3d basePt, double dGuandi, double dWashen, CZdmDataInfo data)
 {
 	AcGePoint3d guandiPt,washenPt;
 	AcDbObjectIdArray objIdArr;
@@ -1160,6 +1177,22 @@ AcDbObjectIdArray CDrawGd::drawtnextText(AcGePoint3d basePt, double dGuandi, dou
 	textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
 	MyEditEntity::OpenObjAppendDoubleToXdata(textId, ZDM_WASHEN, dWashen);
 	objIdArr.append(textId);
+
+	if (data.getHasBulge())//Í¹¶È
+	{
+		textId = MyDrawEntity::DrawText(guandiPt, strGuandiText, 3, textStyleId, AcDb::kTextCenter, AcDb::kTextTop);
+		textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
+		textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
+		objIdArr.append(textId);
+
+		double dWashenS = data.getRealDmxS() - dGuandi;
+		CString strWashenS;
+		strWashenS = TransFormStr(dWashenS);
+		textId = MyDrawEntity::DrawText(washenPt, strWashenS, 3, textStyleId, AcDb::kTextCenter, AcDb::kTextTop);
+		textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
+		textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
+		objIdArr.append(textId);
+	}
 
 	return objIdArr;
 }
@@ -1408,7 +1441,7 @@ bool CDrawGd::drawCirlceOrEllipse()
 					MyEditEntity::AddObjToGroup(strGdGroup, objIdArr.at(i));
 				}
 
-				objIdArr = drawtnextText(pretmpPt, NextData.getGuanDi(), NextData.getWaShen());
+				objIdArr = drawtnextText(pretmpPt, NextData.getGuanDi(), NextData.getWaShen(), NextData);
 				for (int i=0; i<objIdArr.length(); i++)
 				{
 					MyEditEntity::AddObjToGroup(strGdGroup, objIdArr.at(i));
@@ -1591,8 +1624,9 @@ AcDbObjectId CDrawGd::CreateZero(AcDbObjectId textId2, AcDbObjectId ZxLayerId)
 	AcGePoint3d textPt;
 	textPt.set(exts.maxPoint().x, exts.minPoint().y, 0);
 	AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
-	textId = MyDrawEntity::DrawText(textPt, _T("0"), 0.6, textStyleId);
+	textId = MyDrawEntity::DrawText(textPt, _T("0"), 0.8, textStyleId);
 	textId = MyEditEntity::openEntChangeRotation(textId, 23*PI/12);
+	textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
 	return textId;
 }
 

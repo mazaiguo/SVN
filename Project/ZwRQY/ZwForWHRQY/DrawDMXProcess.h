@@ -26,6 +26,8 @@ public:
 	bool Insert(bool bIsObstacle = false);
 
 
+	bool Insert(double dValue, bool bIsCalc = false, bool bIsAdded = true);
+
 	//************************************
 	// Method:    Del
 	// FullName:  DrawDMXProcess::Del
