@@ -698,6 +698,10 @@ bool CDrawObstacle::verifyIntersect()
 	AcGePoint3d guandiPt,guantopPt;
 
 	CZdmUtility util;
+	if ((m_zdmdata.getGuanDi() < GeTol))
+	{
+		return false;
+	}
 	guandiPt = util.getGuandiPt(m_zdmdata);
 	guantopPt = util.getGuanTopPt(m_zdmdata);
 
@@ -705,7 +709,7 @@ bool CDrawObstacle::verifyIntersect()
 	double dDist1,dDist2;
 	bool bo1 = line.isOn(guandiPt, dDist1);
 	bool bo2 = line.isOn(guantopPt, dDist2);
-	if (bo1 || bo2)//有交集
+	if ((dDist1 > GeTol) || (dDist2 > GeTol))//有交集
 	{
 		CString strPrompt;
 		acedInitGet(0, _T("Up Down"));

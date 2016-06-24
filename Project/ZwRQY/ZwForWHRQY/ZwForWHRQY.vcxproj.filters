@@ -136,6 +136,9 @@
     <ClCompile Include="DrawTGAndGG.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ZdmUtility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DlgTKSZ.h">
@@ -212,6 +215,9 @@
     </ClInclude>
     <ClInclude Include="DrawTGAndGG.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ZdmUtility.h">
+      <Filter>Include Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
