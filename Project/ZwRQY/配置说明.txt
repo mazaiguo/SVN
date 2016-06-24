@@ -1,0 +1,2 @@
+1.将ZWRQY_ZWCAD目录所在的完整路径添加到options->文件->添加搜索路径中
+2.在cad中运行appload命令，将ZWRQY_ZWCAD目录中cmdextool.lsp、GwDesign.zrx、MyBaseDLL.zrx、WRQ_Entity.zrx、WRQ_Reactor.zrx、WRQ_ZDM.ZRX这几个文件添加到启动项

@@ -12,11 +12,14 @@ CBcUtils::~CBcUtils(void)
 	m_Data.clear();
 }
 
-bool CBcUtils::add( LPCTSTR strLabel, CZdmDataInfo data)
+bool CBcUtils::add( int nCount, CZdmDataInfo data)
 {
 	//将数据写入dictionary中
 	getAllData();
-	map<CString, CZdmDataInfo>::iterator iter = m_Data.find(strLabel);	
+	map<int, CZdmDataInfo>::iterator iter = m_Data.find(nCount);	
+	CString strTmp;
+	strTmp.Format(_T("%d"), nCount);
+	CString strLabel = BC_DICT + strTmp;
 	AcDbObjectId StyleId;
 
 	if (iter == m_Data.end())//如果dictionary中没有就添加记录
@@ -64,15 +67,18 @@ bool CBcUtils::add( LPCTSTR strLabel, CZdmDataInfo data)
 	}
 	else//如果有，就表示要修改当前数据
 	{
-		modify(strLabel, data);
+		modify(nCount, data);
 	}
 	return true;
 }
 
-bool CBcUtils::insert( LPCTSTR strLabel, CZdmDataInfo data)
+bool CBcUtils::insert( int nCount, CZdmDataInfo data)
 {
 	getAllData();
-	map<CString, CZdmDataInfo>::iterator iter = m_Data.find(strLabel);
+	map<int, CZdmDataInfo>::iterator iter = m_Data.find(nCount);
+	CString strTmp;
+	strTmp.Format(_T("%d"), nCount);
+	CString strLabel = BC_DICT + strTmp;
 	if (iter == m_Data.end())
 	{
 		//没有找到，说明插入的数据不对，不能在那个位置插入数据
@@ -81,47 +87,47 @@ bool CBcUtils::insert( LPCTSTR strLabel, CZdmDataInfo data)
 	else
 	{
 		//倒序查找
-		vector<pair<CString, CZdmDataInfo> > tmpVec;
+		vector<pair<int, CZdmDataInfo> > tmpVec;
 		bool bIsCreased = true;
-		for (map<CString, CZdmDataInfo>::reverse_iterator iRevers = m_Data.rbegin();
+		for (map<int, CZdmDataInfo>::reverse_iterator iRevers = m_Data.rbegin();
 			iRevers != m_Data.rend(); ++iRevers)
 		{
 			CZdmDataInfo tmpData = iRevers->second;
-			CString strName = iRevers->first;
+			int nIndex = iRevers->first;
 			CString strTmpName;
 
-			if (strName.CompareNoCase(strLabel) == 0)
+			if (nIndex == nCount)
 			{
 				CString strCount = iRevers->second.getCount();
-				int nCount = MyTransFunc::StringToInt(strCount);
-				nCount++;
-				strCount.Format(_T("%d"), nCount);
+				int ncurCount = MyTransFunc::StringToInt(strCount);
+				ncurCount++;
+				strCount.Format(_T("%d"), ncurCount);
 				strTmpName = BC_DICT + strCount;
 				tmpData.setCount(strCount);
 				tmpData.setJiedian(strCount);
 				tmpData.setLabel(strTmpName);
-				tmpVec.push_back(make_pair(strTmpName, tmpData));
+				tmpVec.push_back(make_pair(ncurCount, tmpData));
 				bIsCreased = false;
 				continue;
 			}
 			CString strCount = iRevers->second.getCount();
-			int nCount = MyTransFunc::StringToInt(strCount);
+			int ncurCount = MyTransFunc::StringToInt(strCount);
 			if (bIsCreased)
 			{
-				nCount++;
+				ncurCount++;
 			}
-			strCount.Format(_T("%d"), nCount);
+			strCount.Format(_T("%d"), ncurCount);
 			strTmpName = BC_DICT + strCount;
 			tmpData.setCount(strCount);
 			tmpData.setJiedian(strCount);
 			tmpData.setLabel(strTmpName);
-			tmpVec.push_back(make_pair(strTmpName, tmpData));
+			tmpVec.push_back(make_pair(ncurCount, tmpData));
 		}
 
 		//m_Data.insert(make_pair(strLabel, data));
-		tmpVec.push_back(make_pair(strLabel, data));
+		tmpVec.push_back(make_pair(nCount, data));
 		m_Data.clear();
-		for (vector<pair<CString, CZdmDataInfo> >::iterator iter = tmpVec.begin();
+		for (vector<pair<int, CZdmDataInfo> >::iterator iter = tmpVec.begin();
 			iter != tmpVec.end(); ++iter)
 		{
 			m_Data.insert(make_pair(iter->first, iter->second));
@@ -133,10 +139,13 @@ bool CBcUtils::insert( LPCTSTR strLabel, CZdmDataInfo data)
 	return true;
 }
 
-bool CBcUtils::modify( LPCTSTR strLabel, CZdmDataInfo pData )
+bool CBcUtils::modify( int nCount, CZdmDataInfo pData )
 {
 	getAllData();
-	map<CString, CZdmDataInfo>::iterator iter = m_Data.find(strLabel);
+	map<int, CZdmDataInfo>::iterator iter = m_Data.find(nCount);
+	CString strTmp;
+	strTmp.Format(_T("%d"), nCount);
+	CString strLabel = BC_DICT + strTmp;
 	if (iter == m_Data.end())
 	{
 		//没有找到
@@ -170,43 +179,46 @@ bool CBcUtils::modify( LPCTSTR strLabel, CZdmDataInfo pData )
 	return true;
 }
 //
-bool CBcUtils::del( LPCTSTR strLabel )
+bool CBcUtils::del( int nCount )
 {
 	getAllData();
-	map<CString, CZdmDataInfo>::iterator iter = m_Data.find(strLabel);
+	map<int, CZdmDataInfo>::iterator iter = m_Data.find(nCount);
+	CString strTmp;
+	strTmp.Format(_T("%d"), nCount);
+	CString strLabel = BC_DICT + strTmp;
 	if (iter != m_Data.end())
 	{
 		//倒序查找
 		bool bIsDeCreased = true;
-		vector<pair<CString, CZdmDataInfo> > tmpVec;
-		for (map<CString, CZdmDataInfo>::reverse_iterator iRevers = m_Data.rbegin();
+		vector<pair<int, CZdmDataInfo> > tmpVec;
+		for (map<int, CZdmDataInfo>::reverse_iterator iRevers = m_Data.rbegin();
 			iRevers != m_Data.rend(); ++iRevers)
 		{
 			CZdmDataInfo tmpData = iRevers->second;
-			CString strName = iRevers->first;
+			int nIndex = iRevers->first;
 			CString strTmpName;
 
-			if (strName.CompareNoCase(strLabel) == 0)
+			if (nIndex  == nCount)
 			{
 				bIsDeCreased = false;
 				continue;
 			}
 			CString strCount = iRevers->second.getCount();
-			int nCount = MyTransFunc::StringToInt(strCount);
+			int ncurCount = MyTransFunc::StringToInt(strCount);
 			if (bIsDeCreased)
 			{
-				nCount--;
+				ncurCount--;
 			}
-			strCount.Format(_T("%d"), nCount);
+			strCount.Format(_T("%d"), ncurCount);
 			strTmpName = BC_DICT + strCount;
 			tmpData.setCount(strCount);
 			tmpData.setJiedian(strCount);
 			tmpData.setLabel(strTmpName);
-			tmpVec.push_back(make_pair(strTmpName, tmpData));
+			tmpVec.push_back(make_pair(ncurCount, tmpData));
 		}
 
 		m_Data.clear();
-		for (vector<pair<CString, CZdmDataInfo> >::iterator iter = tmpVec.begin();
+		for (vector<pair<int, CZdmDataInfo> >::iterator iter = tmpVec.begin();
 			iter != tmpVec.end(); ++iter)
 		{
 			m_Data.insert(make_pair(iter->first, iter->second));
@@ -223,10 +235,13 @@ bool CBcUtils::del( LPCTSTR strLabel )
 	return true;
 }
 
-bool CBcUtils::get( LPCTSTR strLabel ,CZdmDataInfo& bcData)
+bool CBcUtils::get( int nCount ,CZdmDataInfo& bcData)
 {
 	getAllData();
-	map<CString, CZdmDataInfo>::iterator iter = m_Data.find(strLabel);
+	map<int, CZdmDataInfo>::iterator iter = m_Data.find(nCount);
+	CString strTmp;
+	strTmp.Format(_T("%d"), nCount);
+	CString strLabel = BC_DICT + strTmp;
 	if (iter != m_Data.end())
 	{ 
 		bcData = iter->second;
@@ -249,7 +264,7 @@ bool CBcUtils::get( LPCTSTR strLabel ,CZdmDataInfo& bcData)
 //	return nCount;
 //}
 
-map<CString, CZdmDataInfo> CBcUtils::getAllData()
+map<int, CZdmDataInfo> CBcUtils::getAllData()
 {
 	AcDbDictionary* testDict = MyBaseUtils::openDictionaryForRead(
 		CBiaochiForRQY::dictName(),	acdbHostApplicationServices()->workingDatabase());
@@ -286,7 +301,7 @@ map<CString, CZdmDataInfo> CBcUtils::getAllData()
 			data.setDesingDmxS(pEnt->getDesingDmxS());
 			data.setRealDmxS(pEnt->getRealDmxS());
 			data.setPipeDiameter(pEnt->getPipeDiameter());
-			m_Data.insert(make_pair(pEnt->label(), data));
+			m_Data.insert(make_pair(_tstoi(pEnt->getCount()), data));
 		}
 		es = pObj->close();	
 	}
@@ -305,11 +320,14 @@ void CBcUtils::addAll()
 
 	Acad::ErrorStatus es;
 
-	for (map<CString, CZdmDataInfo>::iterator iter = m_Data.begin();
+	for (map<int, CZdmDataInfo>::iterator iter = m_Data.begin();
 		iter != m_Data.end();
 		++iter)
 	{
-		CString strLable = iter->first;
+		int nCount = iter->first;
+		CString strTmp;
+		strTmp.Format(_T("%d"), nCount);
+		CString strLable = BC_DICT + strTmp;
 		CZdmDataInfo data = iter->second;
 		if (testDict->getAt(strLable, StyleId) != Acad::eOk)
 		{

@@ -37,7 +37,7 @@ public:
 	//************************************
 	bool Del();
 
-	bool del(CString strGroupName);
+	bool del(int nIndex);
 
 	//************************************
 	// Method:    Mod
@@ -55,7 +55,8 @@ public:
 	// Returns:   CString
 	// Qualifier: 专为插入障碍物的时候返回的label数据
 	//************************************
-	CString getLabelName();
+	int getIndex();
+	bool getIsExisted();
 
 	//************************************
 	// Method:    modify
@@ -146,7 +147,8 @@ private:
 	double m_dDesignDmxS;//第二个设计地面线
 	double m_dRealDmxS;//第二个实际地面线
 	AcGePoint3d m_basePt;
-	int m_nCout;//当前计数
+	int m_nCount;//当前计数
+	bool m_bIsExisted;
 	CZdmDataInfo m_pZdmInfo;
 	double m_dminElavation;
 	double m_dmaxElavation;

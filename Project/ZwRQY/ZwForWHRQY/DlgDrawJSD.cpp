@@ -87,7 +87,6 @@ void CDlgDrawJSD::OnBnClickedOk()
 		CancelEditorCommand();
 		return;
 	}
-	acedGrDraw(asDblArray(startPt), asDblArray(midPt), 7, 1);
 	AcDbObjectId textId = AcDbObjectId::kNull;
 	AcDbObjectId plineId = AcDbObjectId::kNull;
 	AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();

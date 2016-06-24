@@ -58,149 +58,149 @@ void CBaseEntDoubleClick::beginDoubleClick(const AcGePoint3d & clickPoint)
 {
 	acDocManager->lockDocument(curDoc(),AcAp::kWrite,NULL,NULL,true); 
 	
-	ads_name ssname,ename;
-	AcDbObjectId objId;
-	AcDbObject* pObj = NULL;
-	int nResult = acedSSGet(NULL, asDblArray(clickPoint), NULL, NULL, ssname);
-	if (nResult == RTNORM)
-	{
-		long len;
-		acedSSLength(ssname, &len);
-		if (len > 1L)
-		{
-			acedSSFree(ssname);
-			acDocManager->unlockDocument(curDoc()); 
-			return;
-		}
+	//ads_name ssname,ename;
+	//AcDbObjectId objId;
+	//AcDbObject* pObj = NULL;
+	//int nResult = acedSSGet(NULL, asDblArray(clickPoint), NULL, NULL, ssname);
+	//if (nResult == RTNORM)
+	//{
+	//	long len;
+	//	acedSSLength(ssname, &len);
+	//	if (len > 1L)
+	//	{
+	//		acedSSFree(ssname);
+	//		acDocManager->unlockDocument(curDoc()); 
+	//		return;
+	//	}
 
-		acedSSName(ssname, 0, ename);
-		Acad::ErrorStatus es = acdbGetObjectId(objId, ename);
+	//	acedSSName(ssname, 0, ename);
+	//	Acad::ErrorStatus es = acdbGetObjectId(objId, ename);
 
 
-		if (acdbOpenObject(pObj, objId, AcDb::kForWrite) != Acad::eOk)
-		{
-			acedSSFree(ssname);
-			acDocManager->unlockDocument(curDoc()); 
-			return;
-		}
-		AcDbObjectIdArray hardPointerIds, softPointerIds, hardOwnershipIds, softOwnershipIds;
-		ArxDbgReferenceFiler filer;
-		pObj->dwgOut(&filer);
-		pObj->close();
+	//	if (acdbOpenObject(pObj, objId, AcDb::kForWrite) != Acad::eOk)
+	//	{
+	//		acedSSFree(ssname);
+	//		acDocManager->unlockDocument(curDoc()); 
+	//		return;
+	//	}
+	//	AcDbObjectIdArray hardPointerIds, softPointerIds, hardOwnershipIds, softOwnershipIds;
+	//	ArxDbgReferenceFiler filer;
+	//	pObj->dwgOut(&filer);
+	//	pObj->close();
 
-		//////////////////////////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////
-		hardPointerIds = filer.m_hardPointerIds;
-		softPointerIds = filer.m_softPointerIds;
-		hardOwnershipIds = filer.m_hardOwnershipIds;
-		softOwnershipIds = filer.m_softOwnershipIds;
-		if (softPointerIds.length() < 1)
-		{
-			acedSSFree(ssname);
-			acDocManager->unlockDocument(curDoc()); 
+	//	//////////////////////////////////////////////////////////////////////////
+	//	//////////////////////////////////////////////////////////////////////////
+	//	//////////////////////////////////////////////////////////////////////////
+	//	hardPointerIds = filer.m_hardPointerIds;
+	//	softPointerIds = filer.m_softPointerIds;
+	//	hardOwnershipIds = filer.m_hardOwnershipIds;
+	//	softOwnershipIds = filer.m_softOwnershipIds;
+	//	if (softPointerIds.length() < 1)
+	//	{
+	//		acedSSFree(ssname);
+	//		acDocManager->unlockDocument(curDoc()); 
 
-			return;
-		}
+	//		return;
+	//	}
 
-		AcDbObjectId entId = softPointerIds.at(0);
-		AcDbGroup* pGroup = NULL;
-		if (acdbOpenObject(pGroup, entId, AcDb::kForRead) != Acad::eOk)
-		{
-			acedSSFree(ssname);
-			acDocManager->unlockDocument(curDoc()); 
+	//	AcDbObjectId entId = softPointerIds.at(0);
+	//	AcDbGroup* pGroup = NULL;
+	//	if (acdbOpenObject(pGroup, entId, AcDb::kForRead) != Acad::eOk)
+	//	{
+	//		acedSSFree(ssname);
+	//		acDocManager->unlockDocument(curDoc()); 
 
-			return;
-		}
-		TCHAR* name;
-		pGroup->getName(name);
-		pGroup->close();
-		CString strGroupName = name;
-		int nFind = strGroupName.Find(BC_DICT);
-		//如果找到就要弹出对话框进行下一步的处理操作
-		if (nFind >= 0)
-		{
-			//AfxMessageBox(_T("取到有用的数据!"));
-			CBcUtils utils;
-			CZdmDataInfo data;
-			utils.get(strGroupName, data);
+	//		return;
+	//	}
+	//	TCHAR* name;
+	//	pGroup->getName(name);
+	//	pGroup->close();
+	//	CString strGroupName = name;
+	//	int nFind = strGroupName.Find(BC_DICT);
+	//	//如果找到就要弹出对话框进行下一步的处理操作
+	//	if (nFind >= 0)
+	//	{
+	//		//AfxMessageBox(_T("取到有用的数据!"));
+	//		CBcUtils utils;
+	//		CZdmDataInfo data;
+	//		utils.get(strGroupName, data);
 
-			CDlgEditZhuangHao dlg;
-			dlg.setZDMData(&data);
-			if (dlg.DoModal() == IDOK)
-			{
-				data = dlg.getData();
-				MyEditEntity::EraseEntByGroupName(strGroupName);
+	//		CDlgEditZhuangHao dlg;
+	//		dlg.setZDMData(&data);
+	//		if (dlg.DoModal() == IDOK)
+	//		{
+	//			data = dlg.getData();
+	//			MyEditEntity::EraseEntByGroupName(strGroupName);
 
-				CDrawZDM zdm;
-				zdm.setData(&data);
-				bool bRet = zdm.mod(strGroupName);
-			}
-			else	
-			{
-				MyBaseUtils::flushGraphics(objId);
-			}
+	//			CDrawZDM zdm;
+	//			zdm.setData(&data);
+	//			bool bRet = zdm.mod(strGroupName);
+	//		}
+	//		else	
+	//		{
+	//			MyBaseUtils::flushGraphics(objId);
+	//		}
 
-			//if (pObj->isKindOf(AcDbText::desc()))
-			//{
-			//	AcDbText* pText = AcDbText::cast(pObj);
-			//	CString strLayerName = pText->layer();
-			//	pObj->close();
-			//	if (strLayerName.CompareNoCase(_T("DM-TEXT")) == 0)
-			//	{
-			//		AcGePoint3d pt = pText->position();
-			//		AcGePoint3d basePt;
-			//		basePt = CDMXUtils::getbasePt();
-			//		double dLen = basePt.y - pt.y;
-			//		double dYScale = 1000/(CDMXUtils::getYScale());
-			//		int nSize = ceil(dLen/(dYScale*1.5));
-			//		CString strText = pText->textString();
+	//		//if (pObj->isKindOf(AcDbText::desc()))
+	//		//{
+	//		//	AcDbText* pText = AcDbText::cast(pObj);
+	//		//	CString strLayerName = pText->layer();
+	//		//	pObj->close();
+	//		//	if (strLayerName.CompareNoCase(_T("DM-TEXT")) == 0)
+	//		//	{
+	//		//		AcGePoint3d pt = pText->position();
+	//		//		AcGePoint3d basePt;
+	//		//		basePt = CDMXUtils::getbasePt();
+	//		//		double dLen = basePt.y - pt.y;
+	//		//		double dYScale = 1000/(CDMXUtils::getYScale());
+	//		//		int nSize = ceil(dLen/(dYScale*1.5));
+	//		//		CString strText = pText->textString();
 
-			//		CString strTmp = BC_DICT;
-			//		CString strCur;
+	//		//		CString strTmp = BC_DICT;
+	//		//		CString strCur;
 
-			//		int nLen = strTmp.GetLength();
-			//		strCur = strName.Right(strName.GetLength() - nLen);
-			//		int nCount = MyTransFunc::StringToInt(strCur);
+	//		//		int nLen = strTmp.GetLength();
+	//		//		strCur = strName.Right(strName.GetLength() - nLen);
+	//		//		int nCount = MyTransFunc::StringToInt(strCur);
 
-			//		CBcUtils utils;
-			//		CZdmDataInfo data;
-			//		utils.get(strName, data);				
+	//		//		CBcUtils utils;
+	//		//		CZdmDataInfo data;
+	//		//		utils.get(strName, data);				
 
-			//		double dValue = MyTransFunc::StringToDouble(strText);
-			//		if (nSize == 1)//设计地面高文字
-			//		{
-			//			dValue += 1;
-			//			data.setDesignDmx(dValue);
-			//		}
-			//		else if (nSize == 2)//现状地面高文字
-			//		{
-			//			dValue += 1;
-			//			data.setRealDmx(dValue);
-			//		}
-			//		else if (nSize == 4)//桩号文字
-			//		{
-			//			dValue -= 10;
-			//			data.setcurData(dValue);
-			//		}
-			//		else
-			//		{
-			//			return;
-			//		}
-			//		data.setCount(strCur);
-			//		data.setJiedian(strCur);
-			//		MyEditEntity::EraseEntByGroupName(strName);
+	//		//		double dValue = MyTransFunc::StringToDouble(strText);
+	//		//		if (nSize == 1)//设计地面高文字
+	//		//		{
+	//		//			dValue += 1;
+	//		//			data.setDesignDmx(dValue);
+	//		//		}
+	//		//		else if (nSize == 2)//现状地面高文字
+	//		//		{
+	//		//			dValue += 1;
+	//		//			data.setRealDmx(dValue);
+	//		//		}
+	//		//		else if (nSize == 4)//桩号文字
+	//		//		{
+	//		//			dValue -= 10;
+	//		//			data.setcurData(dValue);
+	//		//		}
+	//		//		else
+	//		//		{
+	//		//			return;
+	//		//		}
+	//		//		data.setCount(strCur);
+	//		//		data.setJiedian(strCur);
+	//		//		MyEditEntity::EraseEntByGroupName(strName);
 
-			//		CDrawZDM zdm;
-			//		zdm.setData(&data);
-			//		bool bRet = zdm.mod(strName);
-			//	}
-			//}
-		}
+	//		//		CDrawZDM zdm;
+	//		//		zdm.setData(&data);
+	//		//		bool bRet = zdm.mod(strName);
+	//		//	}
+	//		//}
+	//	}
 
-		acutDelString(name);
-	}
-	acedSSFree(ssname);
+	//	acutDelString(name);
+	//}
+	//acedSSFree(ssname);
 	//MyBaseUtils::SetVar(_T("dblclkedit"), nCurDbl);
 	acDocManager->unlockDocument(curDoc()); 
 }

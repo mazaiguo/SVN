@@ -95,6 +95,7 @@ bool CDrawFM::del()
 			MyEditEntity::EraseEntByGroupName(strGroupName);
 		}
 	}
+	acedSSFree(ssname);
 	return true;
 }
 
@@ -203,9 +204,9 @@ CString CDrawFM::CurNumPosition( double dValue, bool& bIsExisted)
 	CString strCur = _T("0");
 	double dZhuanghao;
 	CBcUtils bcUtils;
-	map<CString, CZdmDataInfo> data = bcUtils.getAllData();
+	map<int, CZdmDataInfo> data = bcUtils.getAllData();
 
-	for (map<CString, CZdmDataInfo>::iterator iter = data.begin();
+	for (map<int, CZdmDataInfo>::iterator iter = data.begin();
 		iter != data.end();
 		++iter)
 	{
@@ -240,7 +241,7 @@ bool CDrawFM::insert()
 	acutPolar(asDblArray(tmpPt), 3*PI/2, 91, asDblArray(insertPt));
 	CBcUtils bc;
 	CZdmDataInfo zdm;
-	bc.get(strLabel, zdm);
+	bc.get(_tstoi(strCur), zdm);
 	double dRotate = 0.0;
 	double dRadius = (dYScale*zdm.getPipeDiameter())/2000;
 	if (!bIsExisted)//如果没有找到，说明在strCur与strCur+1之间
@@ -251,7 +252,7 @@ bool CDrawFM::insert()
 		nCount--;
 		strCur.Format(_T("%d"), nCount);
 		CString strNext = BC_DICT + strCur;
-		bc.get(strNext, preZdm);
+		bc.get(nCount, preZdm);
 		double dDist1,dDist2,dDist3,dDist4;
 		AcGePoint3d startPt,endPt;
 		acutPolar(asDblArray(basePt), 0, 20 + (preZdm.getcurData() - CDMXUtils::startzh())*dXScale, asDblArray(startPt));

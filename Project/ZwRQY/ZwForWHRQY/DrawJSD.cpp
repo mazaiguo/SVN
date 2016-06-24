@@ -70,6 +70,7 @@ bool CDrawJSD::del()
 			MyEditEntity::EraseEntByGroupName(strGroupName);
 		}
 	}
+	acedSSFree(ssname);
 	return true;
 }
 
@@ -78,9 +79,9 @@ AcGePoint3dArray CDrawJSD::getData()
 	AcGePoint3dArray ptArr;
 	ptArr.removeAll();
 	CBcUtils bc;
-	map<CString, CZdmDataInfo> mapInfo = bc.getAllData();
+	map<int, CZdmDataInfo> mapInfo = bc.getAllData();
 	AcGePoint3d basePt = CDMXUtils::getbasePt();
-	for (map<CString, CZdmDataInfo>::iterator iter = mapInfo.begin();
+	for (map<int, CZdmDataInfo>::iterator iter = mapInfo.begin();
 		iter != mapInfo.end(); ++iter)
 	{
 		CZdmDataInfo zdm = iter->second;
@@ -117,21 +118,12 @@ bool CDrawJSD::drawlineAndText()
 			break;
 		}
 		
-		/*int nRet = acedGetPoint(asDblArray(startPt), _T("\n请指定起点"), asDblArray(midPt));
-		if (nRet != RTNORM)
-		{
-			bIsContinued = false;
-			break;
-		}	
-		acedGrDraw(asDblArray(startPt), asDblArray(midPt), 7, 1);*/
-		
 		nRet = acedGetPoint(asDblArray(startPt), _T("\n请指定终点"), asDblArray(endPt));
 		if (nRet != RTNORM)
 		{
 			bIsContinued = false;
 			break;
 		}
-		acedGrDraw(asDblArray(startPt), asDblArray(endPt), 7, 1);
 
 		AcDbObjectId textId = AcDbObjectId::kNull;
 		AcDbObjectId plineId = AcDbObjectId::kNull;

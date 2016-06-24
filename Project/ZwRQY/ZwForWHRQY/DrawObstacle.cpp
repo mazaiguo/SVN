@@ -13,18 +13,11 @@ AcDbObjectIdArray drawLineAndText(AcGePoint3d startPt, CString strText)
 	objIdArr.removeAll();
 
 	AcGePoint3d midPt,endPt,txtPt, tmpPt;
-	/*int nRet = acedGetPoint(asDblArray(startPt), _T("\n请指定终点"), asDblArray(midPt));
-	if (nRet != RTNORM)
-	{
-		return objIdArr;
-	}	
-	acedGrDraw(asDblArray(startPt), asDblArray(midPt), 7, 1);*/
 	int nRet = acedGetPoint(asDblArray(startPt), _T("\n请指定终点"), asDblArray(endPt));
 	if (nRet != RTNORM)
 	{
 		return objIdArr;
 	}
-	acedGrDraw(asDblArray(startPt), asDblArray(endPt), 7, 1);
 
 	AcDbObjectId textId = AcDbObjectId::kNull;
 	AcDbObjectId plineId = AcDbObjectId::kNull;
@@ -86,9 +79,19 @@ bool CDrawObstacle::doIt()
 	//////////////////////////////////////////////////////////////////////////
 	//处理相交
 	//先判定是否相交
-	if (!verifyIntersect())
+	verifyIntersect();
+	makeGroup();
+	
+	return true;
+}
+
+bool CDrawObstacle::del()
+{
+	map<int, int> info;
+	info = selEnt();
+	if (info.size() > 0)
 	{
-		return true;
+		editData(info);
 	}
 	return true;
 }
@@ -121,9 +124,9 @@ bool CDrawObstacle::getZhuanghao()
 	{
 		return false;
 	}
-	CString strLabel = dm.getLabelName();
+	int nCount = dm.getIndex();
 	CBcUtils bc;
-	bc.get(strLabel, m_zdmdata);
+	bc.get(nCount, m_zdmdata);
 	m_strCount = m_zdmdata.getCount();
 
 	m_dMin = CDMXUtils::getMinElavation();
@@ -150,8 +153,14 @@ bool CDrawObstacle::getZhuanghao()
 	}
 	if (!bRet)
 	{
-		dm.del(strLabel);
-		makeGroup(false);
+		if (!dm.getIsExisted())
+		{
+			dm.del(nCount);
+		}
+		for (int i=0; i<m_idArrs.length(); i++)
+		{
+			MyEditEntity::EraseObj(m_idArrs.at(i));
+		}
 	}
 
 	return bRet;
@@ -332,7 +341,7 @@ bool CDrawObstacle::drawCircle()
 	//drawText();
 	//AcDbObjectIdArray objIdArr = drawLineAndText()
 
-	makeGroup();
+	//makeGroup();
 	return bRet;
 }
 
@@ -351,7 +360,7 @@ bool CDrawObstacle::drawRectangle()
 
 	drawText();
 
-	makeGroup();
+	//makeGroup();
 	return true;
 }
 
@@ -516,44 +525,33 @@ bool CDrawObstacle::drawCirlceOrEllipse()
 	return true;
 }
 
-void CDrawObstacle::makeGroup(bool bIsAdded)
+void CDrawObstacle::makeGroup()
 {
 	if (!m_bIsModGd)
 	{
 		CString strJcNum = CDMXUtils::getJcNum();
 		int nCount = MyTransFunc::StringToInt(strJcNum);
 		CString strGroupName = JC_DICT + strJcNum;
-		if (bIsAdded)
-		{
-			AcDbObjectId groupId = MyDrawEntity::MakeGroup(m_idArrs, false, strGroupName);
-			nCount++;
-			strJcNum.Format(_T("%d"), nCount);
-		}
-		else
-		{
-			nCount--;
-			strJcNum.Format(_T("%d"), nCount);
-			strGroupName = JC_DICT + strJcNum;
-			MyEditEntity::EraseEntByGroupName(strGroupName);
-
-		}
+		
+		AcDbObjectId groupId = MyDrawEntity::MakeGroup(m_idArrs, false, strGroupName);
+		nCount++;
+		strJcNum.Format(_T("%d"), nCount);
+		
 		CDMXUtils::SetJcNum(strJcNum);
 	}
 	else
 	{
-		CString strGroupName = JC_DICT_ZA + m_strCount;
-		if (bIsAdded)
+		int nCount = _tstoi(m_strCount) + 2;
+		CString strCur;
+		strCur.Format(_T("%d"), nCount);
+		CString strGroupName = JC_DICT_ZA + strCur;
+		
+		AcDbObjectId groupId = MyDrawEntity::MakeGroup(m_idArrs, false, strGroupName);
+		if (m_bIsModGd)//如果修改了管道，那么要修改障碍物的名称
 		{
-			AcDbObjectId groupId = MyDrawEntity::MakeGroup(m_idArrs, false, strGroupName);
-			if (m_bIsModGd)//如果修改了管道，那么要修改障碍物的名称
-			{
-				selAllJCGroup();
-			}
+			selAllJCGroup(nCount);
 		}
-		else
-		{
-			MyEditEntity::EraseEntByGroupName(strGroupName);
-		}
+		
 	}
 }
 
@@ -749,14 +747,14 @@ bool CDrawObstacle::verifyIntersect()
 		strCur.Format(_T("%d"), nTmp);
 		CString strLablel = BC_DICT + strCur;
 		CBcUtils bc;
-		bc.get(strLablel, m_preZdm);
+		bc.get(nTmp, m_preZdm);
 		AcGePoint3d preGuandiPt = util.getGuandiPt(m_preZdm);
 		double dLen1 = abs(preGuandiPt.y - m_SpecialPt.y)/m_dYScale;
 
 		nTmp = nCount + 1;
 		strCur.Format(_T("%d"), nTmp);
 		strLablel = BC_DICT + strCur;
-		bc.get(strLablel, m_nextZdm);
+		bc.get(nTmp, m_nextZdm);
 		AcGePoint3d nextGuandiPt = util.getGuandiPt(m_nextZdm);
 		double dLen2 = abs(nextGuandiPt.y - m_SpecialPt.y)/m_dYScale;
 
@@ -777,7 +775,7 @@ bool CDrawObstacle::verifyIntersect()
 
 		dm.Insert(dLeftZh2, false);
 		dm.Insert(dRightZh3,  false, false);
-		MyEditEntity::OpenObjAppendStrToXdata(m_objId, ZDM_JC_ADD, _T("障碍物与管道相交"));
+		MyEditEntity::OpenObjAppendStrToXdata(m_objId, ZDM_JC_ADD, m_zdmdata.getCount());
 		m_bIsModGd = true;
 	}
 	else
@@ -850,7 +848,7 @@ void CDrawObstacle::editGroupName(CString strPreName, CString strGroupName)
 		else
 		{
 			//需要将水面线删除
-			pEnt->erase();
+			//pEnt->erase();
 			pEnt->close();
 		}
 	}
@@ -861,22 +859,21 @@ void CDrawObstacle::editGroupName(CString strPreName, CString strGroupName)
 	MyDrawEntity::MakeGroup(objIdArr, false, strGroupName);
 }
 
-void CDrawObstacle::selAllJCGroup()
+map<int, CString> CDrawObstacle::getAllData(int nCount)
 {
-	int nCount = MyTransFunc::StringToInt(m_strCount);
+	map<int, CString> Info;
+
 	ads_name ssname;
 	ads_name ename;
 	AcDbObjectId objId = AcDbObjectId::kNull;
 	int nRet = acedSSGet(_T("X"), NULL, NULL, NULL, ssname);
 	if (nRet != RTNORM)
 	{
-		return;
+		return Info;
 	}
 	long sslen;
 	acedSSLength(ssname, &sslen);
 	CString strGroupName;
-	map<int, int> Info;
-	CString strCur,strTmp;
 	int nCur = 0;
 	for (int i=0; i<sslen; i++)
 	{
@@ -886,27 +883,190 @@ void CDrawObstacle::selAllJCGroup()
 		int nFind = strGroupName.Find(JC_DICT_ZA);
 		if (nFind >= 0)
 		{
-			nCur = MyParserString::GetPileLength(strGroupName, strTmp);
+			nCur = MyParserString::GetCount(strGroupName);
 			if (nCur > nCount)
 			{
-				Info.insert(std::make_pair(nCur, nCur));
+				Info.insert(std::make_pair(nCur, strGroupName));
 			}
 		}
 	}
-	
-	CString strPreGroupName;
-	for (map<int, int>::reverse_iterator iter = Info.rbegin();
+	acedSSFree(ssname);
+	return Info;
+}
+
+void CDrawObstacle::selAllJCGroup(int nCount, bool bIsCreased)
+{
+	map<int, CString> Info = getAllData(nCount);
+	CString strPreGroupName,strGroupName;
+	CString strCur,strTmp;
+	int nCur = 0;
+	for (map<int, CString>::reverse_iterator iter = Info.rbegin();
 		iter != Info.rend();
 		iter++)
 	{
 		nCount = iter->first;
-		nCur = nCount + 4;
-		strCur.Format(_T("%d"), nCount);
+		if (bIsCreased)
+		{
+			nCur = nCount + 4;
+		}
+		else
+		{
+			nCur = nCount - 4;
+		}
 		strTmp.Format(_T("%d"), nCur);
-		strPreGroupName = JC_DICT_ZA + nCount;
-		strGroupName = JC_DICT_ZA + nCur;
+		strPreGroupName = iter->second;
+		strGroupName = JC_DICT_ZA + strTmp;
 		editGroupName(strPreGroupName, strGroupName);
 	}
+}
+
+map<int, int> CDrawObstacle::selEnt()
+{
+	ads_name ssname;
+	ads_name ename;
+	map<int, int> nVec;
+
+	AcDbObjectId objId = AcDbObjectId::kNull;
+	int nRet = acedSSGet(NULL, NULL, NULL, NULL, ssname);
+	if (nRet != RTNORM)
+	{
+		return nVec;
+	}
+	long sslen;
+	acedSSLength(ssname, &sslen);
+	map<CString, CString> infoMap;
+	CString strGroupName;
+	for (int i=0; i<sslen; i++)
+	{
+		acedSSName(ssname, i, ename);
+		acdbGetObjectId(objId, ename);
+		strGroupName = MyEditEntity::openObjAndGetGroupName(objId);
+		int nFind = strGroupName.Find(JC_DICT);
+		if (nFind >= 0)
+		{
+			int nFind1 = strGroupName.Find(JC_DICT_ZA);
+			if (nFind >=0)
+			{
+				AcDbDictionary *pGroupDict;	
+				AcDbGroup* pGroup = NULL;
+				Acad::ErrorStatus es;
+				es = acdbHostApplicationServices()->workingDatabase()->getGroupDictionary(pGroupDict, AcDb::kForWrite);
+				es = pGroupDict->getAt(strGroupName, (AcDbObject*&)pGroup, AcDb::kForWrite);
+				if (es != Acad::eOk)
+				{
+					pGroupDict->close();
+					continue;
+				}
+
+				AcDbEntity* pEnt = NULL;
+				AcDbObjectId entId;
+				AcDbObjectIdArray objIds;
+				objIds.removeAll();
+				int nLength = 0;
+				nLength = pGroup->allEntityIds(objIds);
+				for (int i=0; i<objIds.length(); i++)
+				{
+					entId = objIds.at(i);
+					es = acdbOpenAcDbEntity((AcDbEntity*&)pEnt, entId, AcDb::kForRead);
+					if (es!= Acad::eOk)
+					{
+						pEnt->close();
+					}
+					else
+					{
+						if (pEnt->isKindOf(AcDbBlockReference::desc()))
+						{
+							pEnt->close();
+							CString strTmp = MyEditEntity::GetObjStrXdata(entId, ZDM_JC_ADD);
+							acutPrintf(_T("\n"));
+							acutPrintf(strTmp);
+							if (!strTmp.IsEmpty())
+							{
+								CString strCur, strTmp;
+								int nCount = MyParserString::GetCount(strGroupName);
+								nVec.insert(make_pair(nCount, nCount));
+							}
+							MyEditEntity::EraseObj(entId);
+						}
+						else
+						{
+							pEnt->upgradeOpen();
+							pEnt->erase();
+							pEnt->close();
+						}
+
+					}
+				}
+				pGroup->erase();
+				pGroup->close();
+
+				pGroupDict->close();
+			}
+			else
+			{
+				MyEditEntity::EraseEntByGroupName(strGroupName);
+			}		
+		}
+	}
+	acedSSFree(ssname);
+	return nVec;
+}
+
+void CDrawObstacle::editData(map<int, int> data)
+{
+	int nCount;
+	CString strCur;
+	map<int, CString> Info = getAllData();
+	int nCur, nCurCount;
+	CString strTmp,strPreGroupName,strGroupName;
+	for (map<int, int>::reverse_iterator iter=data.rbegin();
+		iter!=data.rend();
+		iter++)
+	{
+		nCount = iter->first;
+		for (map<int, CString>::reverse_iterator iter = Info.rbegin();
+			iter != Info.rend();
+			iter++)
+		{
+			nCurCount = iter->first;
+			if (nCurCount > nCount)
+			{
+				nCur = nCurCount - 4;
+				strTmp.Format(_T("%d"), nCur);
+				strPreGroupName = iter->second;
+				strGroupName = JC_DICT_ZA + strTmp;
+				editGroupName(strPreGroupName, strGroupName);
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+	for (map<int, int>::reverse_iterator iter=data.rbegin();
+		iter!=data.rend();
+		++iter)
+	{
+		nCount = iter->first;
+		nCount += 2;
+
+		DrawDMXProcess dm;
+		//删除第一个
+		dm.del(nCount);
+		//删除第二个
+		nCount--;
+		dm.del(nCount);
+		//删除第三个
+		nCount--;
+		nCount--;
+		dm.del(nCount);
+
+		//删除第四个
+		nCount--;
+		dm.del(nCount);
+	}
+	
+
 }
 
 //bool CDrawObstacle::GetBaseHeight()

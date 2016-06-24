@@ -61,6 +61,7 @@ bool CDrawTGAndGG::del()
 			MyEditEntity::EraseEntByGroupName(strGroupName);
 		}
 	}
+	acedSSFree(ssname);
 	return true;
 }
 
@@ -240,9 +241,9 @@ CString CDrawTGAndGG::CurNumPosition( double dValue, bool& bIsExisted)
 	CString strCur = _T("0");
 	double dZhuanghao;
 	CBcUtils bcUtils;
-	map<CString, CZdmDataInfo> data = bcUtils.getAllData();
+	map<int, CZdmDataInfo> data = bcUtils.getAllData();
 
-	for (map<CString, CZdmDataInfo>::iterator iter = data.begin();
+	for (map<int, CZdmDataInfo>::iterator iter = data.begin();
 		iter != data.end();
 		++iter)
 	{
@@ -284,12 +285,12 @@ bool CDrawTGAndGG::getSpecailData()
 	CBcUtils bc;
 	CZdmDataInfo preData,curData;
 	CString strLabel = BC_DICT + strCur1;
-	bc.get(strLabel, curData);
+	bc.get(nCount1, curData);
 	int nTmp = nCount1 - 1;
 	CString strCount;
 	strCount.Format(_T("%d"), nTmp);
 	CString strTmpLabel = BC_DICT + strCount;
-	bc.get(strTmpLabel, preData);
+	bc.get(nTmp, preData);
 
 	double dLen1 = m_dStartZH - preData.getcurData();
 	double dLen2 = curData.getcurData() - preData.getcurData();
@@ -312,7 +313,7 @@ bool CDrawTGAndGG::getSpecailData()
 			nTmp = i;
 			strCount.Format(_T("%d"), nTmp);
 			strLabel = BC_DICT + strCount;
-			bc.get(strLabel, curData);
+			bc.get(nTmp, curData);
 			acutPolar(asDblArray(basePt), 0, 20 + (curData.getcurData() - CDMXUtils::startzh())*CDMXUtils::globalXScale(), asDblArray(tmpPt1));
 			acutPolar(asDblArray(tmpPt1), PI/2, (curData.getGuanDi() - CDMXUtils::getMinElavation())*CDMXUtils::globalYScale() - dRadius, asDblArray(tmpPt1));
 			acutPolar(asDblArray(tmpPt1), PI/2, 4*dRadius, asDblArray(tmpPt2));
@@ -325,9 +326,9 @@ bool CDrawTGAndGG::getSpecailData()
 	nTmp = nCount2 - 1;
 	strCount.Format(_T("%d"), nTmp);
 	strTmpLabel = BC_DICT + strCount;
-	bc.get(strTmpLabel, preData);
+	bc.get(nTmp, preData);
 	strLabel = BC_DICT + strCur2;
-	bc.get(strLabel, curData);
+	bc.get(nCount2, curData);
 
 	dLen1 = m_dEndZH - preData.getcurData();
 	dLen2 = curData.getcurData() - preData.getcurData();

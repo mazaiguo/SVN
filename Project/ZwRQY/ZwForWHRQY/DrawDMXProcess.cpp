@@ -11,11 +11,11 @@ extern CString TransFormStr(double dValue);
 DrawDMXProcess::DrawDMXProcess(void)
 {
 	CString strCount = CDMXUtils::getNumCount();
-	m_nCout = MyTransFunc::StringToInt(strCount);
+	m_nCount = MyTransFunc::StringToInt(strCount);
 	m_bDrawJiedian = CDMXUtils::getcreateJiedian();
 	CString strLabel = BC_DICT + strCount;
 	CBcUtils bcUtils;
-	if (!bcUtils.get(strLabel, m_pZdmInfo))
+	if (!bcUtils.get(m_nCount, m_pZdmInfo))
 	{
 		//m_pZdmInfo = new CZdmDataInfo();
 		m_pZdmInfo.setCount(strCount);
@@ -23,7 +23,7 @@ DrawDMXProcess::DrawDMXProcess(void)
 		m_pZdmInfo.setLabel(strLabel);
 	}
 
-	if (m_nCout == 1)
+	if (m_nCount == 1)
 	{
 		m_dZhuanghao = CDMXUtils::startzh();
 		m_dSJDmHeight = 0.00;
@@ -32,17 +32,18 @@ DrawDMXProcess::DrawDMXProcess(void)
 	else
 	{
 		//如果不为1，需要取上一个存储数据中的数据
-		int nTmp = m_nCout - 1;
+		int nTmp = m_nCount - 1;
 		strCount.Format(_T("%d"), nTmp);
 		CString strTmpLabel = BC_DICT + strCount;
 
-		bcUtils.get(strTmpLabel, m_preZdmInfo);
+		bcUtils.get(nTmp, m_preZdmInfo);
 		m_dZhuanghao = m_preZdmInfo.getcurData();
 		m_dSJDmHeight = m_preZdmInfo.getDesignDmx();
 		m_strSoilType = m_preZdmInfo.getSoilType();
 	}
 	m_dminElavation = CDMXUtils::getMinElavation();
 	m_dmaxElavation = CDMXUtils::getMaxElavation();
+	m_bIsExisted = false;
 }
 
 DrawDMXProcess::~DrawDMXProcess(void)
@@ -122,29 +123,29 @@ bool DrawDMXProcess::Insert(bool bIsObstacle)
 	{
 		return false;
 	}
-	bool bIsExisted = false;
-	CString strCur = CurNumPosition(m_dZhuanghao, bIsExisted);
+	m_bIsExisted = false;
+	CString strCur = CurNumPosition(m_dZhuanghao, m_bIsExisted);
 	if (strCur.CompareNoCase(_T("0")) == 0)
 	{
 		return false;
 	}	
-	int nCount = MyTransFunc::StringToInt(strCur);
-	if (nCount < 1)
+	m_nCount = MyTransFunc::StringToInt(strCur);
+	if (m_nCount < 1)
 	{
 		acutPrintf(_T("不能在此数据插入"));
 		return false;
 	}
 	m_strLabel = BC_DICT + strCur;
-	if (!bIsExisted)
+	if (!m_bIsExisted)
 	{	
 		CBcUtils bc;
-		bc.get(m_strLabel, m_pZdmInfo);
+		bc.get(m_nCount, m_pZdmInfo);
 		int nCurCount = MyTransFunc::StringToInt(CDMXUtils::getCurNum());
-		int nTmp = nCount - 1;
+		int nTmp = m_nCount - 1;
 		CString strCount;
 		strCount.Format(_T("%d"), nTmp);
 		CString strTmpLabel = BC_DICT + strCount;
-		bc.get(strTmpLabel, m_preZdmInfo);
+		bc.get(nTmp, m_preZdmInfo);
 
 		getSpecialInfo();
 		m_pZdmInfo.setLabel(m_strLabel);
@@ -167,7 +168,7 @@ bool DrawDMXProcess::Insert(bool bIsObstacle)
 
 			if (CDMXUtils::getcreateGw())
 			{
-				if (nCount < nCurCount)
+				if (m_nCount < nCurCount)
 				{
 					CDrawGDProcess gd;
 					gd.Insert(strCur);
@@ -212,7 +213,7 @@ bool DrawDMXProcess::Insert(double dValue, bool bIsCalc, bool bIsAdded)
 	if (!bIsExisted)
 	{	
 		CBcUtils bc;
-		bc.get(m_strLabel, m_pZdmInfo);	
+		bc.get(nCount, m_pZdmInfo);	
 		int nCurCount = MyTransFunc::StringToInt(CDMXUtils::getCurNum());
 
 		if (bIsCalc)
@@ -221,7 +222,7 @@ bool DrawDMXProcess::Insert(double dValue, bool bIsCalc, bool bIsAdded)
 			CString strCount;
 			strCount.Format(_T("%d"), nTmp);
 			CString strTmpLabel = BC_DICT + strCount;
-			bc.get(strTmpLabel, m_preZdmInfo);
+			bc.get(nTmp, m_preZdmInfo);
 
 			getSpecialInfo();
 		}
@@ -278,10 +279,11 @@ bool DrawDMXProcess::Del()
 		nFind = strGroupName.Find(BC_DICT);
 		if (nFind >= 0)
 		{
-			bool bRet =	del(strGroupName);
+			int nCount = MyParserString::GetCount(strGroupName);
+			bool bRet =	del(nCount);
 		}
 	}
-	
+	acedSSFree(ssname);
 	return true;
 }
 
@@ -298,7 +300,7 @@ bool DrawDMXProcess::Mod()
 
 	CBcUtils utils;
 	CZdmDataInfo data;
-	utils.get(strGroupName, data);
+	utils.get(nCount, data);
 
 	CDlgEditZhuangHao dlg;
 	dlg.setZDMData(&data);
@@ -327,9 +329,14 @@ bool DrawDMXProcess::Mod()
 	return false;
 }
 
-CString DrawDMXProcess::getLabelName()
+int DrawDMXProcess::getIndex()
 {
-	return m_strLabel;
+	return m_nCount;
+}
+
+bool DrawDMXProcess::getIsExisted()
+{
+	return m_bIsExisted;
 }
 
 bool DrawDMXProcess::modify()
@@ -351,14 +358,14 @@ bool DrawDMXProcess::modify()
 
 	CBcUtils utils;
 	CZdmDataInfo data;
-	utils.get(strGroupName, data);
+	utils.get(nCount, data);
 
 	//////////////////////////////////////////////////////////////////////////
 	int nTmp = nCount - 1;
 	CString strTemp;
 	strTemp.Format(_T("%d"), nTmp);
 	CString strLabel = BC_DICT + strTemp;
-	utils.get(strLabel, m_preZdmInfo);
+	utils.get(nTmp, m_preZdmInfo);
 	int nRet = acedGetReal(_T("\n输入修改后的数值："), &m_dValue);
 	if (nRet == RTNORM)
 	{
@@ -425,7 +432,7 @@ int DrawDMXProcess::GetZhuanghao()
 	{
 		bIsContinued = false;
 		CString strTemp = TransFormStr(m_dZhuanghao);
-		if (m_nCout == 1)
+		if (m_nCount == 1)
 		{
 			strPrompt.Format(_T("\n起始桩号值<m> <%s>:"), strTemp);
 		}
@@ -449,7 +456,7 @@ int DrawDMXProcess::GetZhuanghao()
 		}
 		else if (nResult == RTNONE)
 		{
-			if (m_nCout == 1)
+			if (m_nCount == 1)
 			{
 				m_dZhuanghao = m_dZhuanghao;
 			}
@@ -474,7 +481,7 @@ int DrawDMXProcess::GetZhuanghao()
 	
 	m_pZdmInfo.setcurData(m_dZhuanghao);
 
-	if (m_nCout == 1)
+	if (m_nCount == 1)
 	{
 		CDMXUtils::SetInitZH(m_dZhuanghao);
 	}
@@ -763,7 +770,7 @@ bool DrawDMXProcess::verifyHeight( double dHeight )
 
 bool DrawDMXProcess::doUndo()
 {
-	int nTmp = m_nCout - 1;
+	int nTmp = m_nCount - 1;
 	CString strCount;
 	strCount.Format(_T("%d"), nTmp);
 	CString strTmpLabel = BC_DICT + strCount;
@@ -771,7 +778,7 @@ bool DrawDMXProcess::doUndo()
 	MyEditEntity::EraseEntByGroupName(strTmpLabel);
 
 	CBcUtils utils;
-	utils.del(strTmpLabel);
+	utils.del(nTmp);
 
 	CDMXUtils::setNumCount(strCount);
 	return true;
@@ -782,9 +789,9 @@ CString DrawDMXProcess::CurNumPosition( double dValue, bool& bIsExisted)
 	CString strCur = _T("0");
 	double dZhuanghao;
 	CBcUtils bcUtils;
-	map<CString, CZdmDataInfo> data = bcUtils.getAllData();
+	map<int, CZdmDataInfo> data = bcUtils.getAllData();
 
-	for (map<CString, CZdmDataInfo>::iterator iter = data.begin();
+	for (map<int, CZdmDataInfo>::iterator iter = data.begin();
 		iter != data.end();
 		++iter)
 	{
@@ -858,7 +865,7 @@ bool DrawDMXProcess::EntInteraction()
 	{
 		return false;
 	}
-	if (m_nCout > 1)
+	if (m_nCount > 1)
 	{
 		if (!GetIsPd())
 		{
@@ -1023,10 +1030,11 @@ void DrawDMXProcess::getSpecialInfo()
 	m_pZdmInfo.setJuli(dJuli);
 }
 
-bool DrawDMXProcess::del(CString strGroupName)
+bool DrawDMXProcess::del(int nCount)
 {
-	CString strCur = CurNumPosition(strGroupName);
-	int nCount = MyTransFunc::StringToInt(strCur);
+	CString strCur;
+	strCur.Format(_T("%d"), nCount);
+	CString strGroupName = BC_DICT + strCur;
 	if (nCount == 1)
 	{
 		AfxMessageBox(_T("不能删除第一个桩号"));
@@ -1046,7 +1054,7 @@ bool DrawDMXProcess::del(CString strGroupName)
 	strTmpCur.Format(_T("%d"), nCount);
 	strNextGroupName = BC_DICT + strTmpCur;
 	CZdmDataInfo data;
-	utils.get(strNextGroupName, data);
+	utils.get(nCount, data);
 	data.setLabel(strGroupName);
 	data.setCount(strCur);
 	data.setJiedian(strCur);
@@ -1082,7 +1090,7 @@ CDrawGDProcess::CDrawGDProcess(void)
 	CBcUtils bcUtils;
 
 	CString strLabel = BC_DICT + strCount;
-	bcUtils.get(strLabel, m_pZdmInfo);
+	bcUtils.get(m_nCout, m_pZdmInfo);
 	m_dRealDmx = m_pZdmInfo.getRealDmx();
 	if (m_nCout == 1)
 	{
@@ -1096,7 +1104,7 @@ CDrawGDProcess::CDrawGDProcess(void)
 		int nTmp = m_nCout - 1;
 		strCount.Format(_T("%d"), nTmp);
 		CString strTmpLabel = BC_DICT + strCount;
-		bcUtils.get(strTmpLabel, m_preZdmInfo);
+		bcUtils.get(nTmp, m_preZdmInfo);
 		m_dPipeDiameter = m_preZdmInfo.getPipeDiameter();
 		m_dGuandi = m_preZdmInfo.getGuanDi();
 		m_strPipeType = m_preZdmInfo.getPipeType();
@@ -1145,7 +1153,7 @@ bool CDrawGDProcess::Insert(CString strCur)
 	CBcUtils bcUtils;
 
 	CString strLabel = BC_DICT + strCur;
-	bcUtils.get(strLabel, m_pZdmInfo);
+	bcUtils.get(_tstoi(strCur), m_pZdmInfo);
 	m_dRealDmx = m_pZdmInfo.getRealDmx();
 	if (m_nCout == 1)
 	{
@@ -1158,7 +1166,7 @@ bool CDrawGDProcess::Insert(CString strCur)
 		int nTmp = m_nCout - 1;
 		strCur.Format(_T("%d"), nTmp);
 		CString strTmpLabel = BC_DICT + strCur;
-		bcUtils.get(strTmpLabel, m_preZdmInfo);
+		bcUtils.get(nTmp, m_preZdmInfo);
 		m_dPipeDiameter = m_preZdmInfo.getPipeDiameter();
 		m_dGuandi = m_preZdmInfo.getGuanDi();
 	}
@@ -1482,12 +1490,12 @@ bool CDrawGDProcess::doUndo()
 	MyEditEntity::EraseEntByGroupName(strTmpLabel);
 	CString strLabel = BC_DICT + strCount;
 	CBcUtils bcUtils;
-	bcUtils.get(strLabel, m_pZdmInfo);
+	bcUtils.get(nTmp, m_pZdmInfo);
 
 	nTmp = nCount - 2;
 	strCount.Format(_T("%d"), nTmp);
 	strLabel = BC_DICT + strCount;
-	bcUtils.get(strLabel, m_preZdmInfo);
+	bcUtils.get(nTmp, m_preZdmInfo);
 	CDMXUtils::SetCurNum(strCount);
 	return true;
 }

@@ -120,6 +120,7 @@ bool CDistinguishData::selectEnt()
 		}
 		pEnt->close();
 	}
+	acedSSFree(ssname);
 	return true;
 }
 

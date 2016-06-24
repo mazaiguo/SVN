@@ -66,15 +66,16 @@ AcDbObjectId CDrawZDM::add()
 	}
 	strGroupName = BC_DICT + strCount;
 	groupId = MyDrawEntity::MakeGroup(m_idArrs, false, strGroupName);
+	//将数据添加到图纸中
+	CBcUtils bcUtils;
+	bcUtils.add(nCount, m_pZDM);
 	nCount++;
 	strCount.Format(_T("%d"), nCount);
 	CDMXUtils::setNumCount(strCount);
 	//CDMXUtils::SetCurNum(strCount);
 	CDMXUtils::SetJdNum(strCount);
 	//////////////////////////////////////////////////////////////////////////
-	//将数据添加到图纸中
-	CBcUtils bcUtils;
-	bcUtils.add(strGroupName, m_pZDM);
+	
 	/*}
 	else
 	{
@@ -130,7 +131,7 @@ AcDbObjectId CDrawZDM::insert()
 	//////////////////////////////////////////////////////////////////////////
 	//将数据添加到图纸中
 	CBcUtils bcUtils;
-	bcUtils.insert(strGroupName, m_pZDM);
+	bcUtils.insert(nCount, m_pZDM);
 
 	DrawLine(false);
 
@@ -168,7 +169,7 @@ bool CDrawZDM::del(CString strGroupName)
 	//////////////////////////////////////////////////////////////////////////
 	//将数据添加到图纸中
 	CBcUtils bcUtils;
-	bcUtils.del(strGroupName);
+	bcUtils.del(ncurCount);
 	CString strCount = CDMXUtils::getNumCount();
 	int nCount = MyTransFunc::StringToInt(strCount);
 
@@ -207,7 +208,7 @@ bool CDrawZDM::mod(CString strGroupName)
 	}
 
 	CBcUtils utls;
-	utls.modify(strGroupName, m_pZDM);
+	utls.modify(MyParserString::GetCount(strGroupName), m_pZDM);
 	DrawLine(false);
 	DrawSMXLine(false);
 	DrawDMText();
@@ -255,7 +256,7 @@ bool CDrawZDM::DrawLine(bool bIsDeFault)
 		CString strLabel = BC_DICT + strPreCount;
 
 		CBcUtils utls;
-		utls.get(strLabel, m_preData);
+		utls.get(nCount-1, m_preData);
 	}
 	
 	//绘制横着的线
@@ -291,7 +292,7 @@ bool CDrawZDM::DrawLine(bool bIsDeFault)
 		strNext.Format(_T("%d"), nCount + 1);
 		CString strNextLabel = BC_DICT + strNext;
 		CZdmDataInfo NextData;
-		bool bGetNextData = utls.get(strNextLabel, NextData);
+		bool bGetNextData = utls.get(nCount+1, NextData);
 		if (bGetNextData)
 		{
 			for (int i=0; i<11; i++)
@@ -500,7 +501,7 @@ bool CDrawZDM::DrawNextDMText()
 	strNext.Format(_T("%d"), nCount + 1);
 	CString strNextLabel = BC_DICT + strNext;
 	CZdmDataInfo NextData;
-	bool bGetNextData = utls.get(strNextLabel, NextData);
+	bool bGetNextData = utls.get(nCount+1, NextData);
 	if (bGetNextData)
 	{
 		double dSJDmx = NextData.getDesignDmx();
@@ -663,7 +664,7 @@ bool CDrawZDM::DrawSMXLine(bool bIsDeFault)
 		strNext.Format(_T("%d"), nCount + 1);
 		CString strNextLabel = BC_DICT + strNext;
 		CZdmDataInfo NextData;
-		bool bRet = utls.get(strNextLabel, NextData);
+		bool bRet = utls.get(nCount+1, NextData);
 		if (bRet)
 		{
 			double dNextDesignDmx = (NextData.getDesignDmx() - CDMXUtils::getMinElavation())*m_dYScale;
@@ -1049,7 +1050,7 @@ bool CDrawGd::drawGd()
 		CString strLabel = BC_DICT + strPreCount;
 
 		CBcUtils utls;
-		utls.get(strLabel, m_preData);
+		utls.get(m_nCount-1, m_preData);
 		
 	}
 	drawCirlceOrEllipse();
@@ -1060,7 +1061,7 @@ bool CDrawGd::drawGd()
 	CDMXUtils::SetCurNum(strCount);*/
 	
 	CBcUtils utls;
-	utls.modify(strLabel, m_pZDM);
+	utls.modify(m_nCount, m_pZDM);
 
 	return true;
 }
@@ -1381,7 +1382,7 @@ bool CDrawGd::drawCirlceOrEllipse()
 		CString strNextLabel = BC_DICT + strNext;
 		CString strGdGroup = BC_DICT_GD + strNext;
 		CZdmDataInfo NextData;
-		bool bGetNextData = utls.get(strNextLabel, NextData);
+		bool bGetNextData = utls.get(m_nCount+1, NextData);
 		if (bGetNextData)
 		{
 			//dRadius = (m_dYScale*NextData.getPipeDiameter())/2000;

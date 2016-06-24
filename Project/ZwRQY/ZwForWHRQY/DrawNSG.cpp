@@ -48,6 +48,7 @@ bool CDrawNSG::del()
 			MyEditEntity::EraseEntByGroupName(strGroupName);
 		}
 	}
+	acedSSFree(ssname);
 	return true;
 }
 
@@ -194,7 +195,7 @@ bool CDrawNSG::insert()
 	acutPolar(asDblArray(basePt), 0, 20 + m_dZhuanghao*dXScale, asDblArray(tmpPt));
 	CBcUtils bc;
 	CZdmDataInfo zdm;
-	bIsExisted = bc.get(strLabel, zdm);	
+	bIsExisted = bc.get(_tstoi(strCur), zdm);	
 
 	double dRotate = 0.0;
 	if (!bIsExisted)//如果没有找到，说明在strCur与strCur+1之间
@@ -218,9 +219,9 @@ CString CDrawNSG::CurNumPosition(double dValue, bool& bIsExisted)
 	CString strCur = _T("0");
 	double dZhuanghao;
 	CBcUtils bcUtils;
-	map<CString, CZdmDataInfo> data = bcUtils.getAllData();
+	map<int, CZdmDataInfo> data = bcUtils.getAllData();
 
-	for (map<CString, CZdmDataInfo>::iterator iter = data.begin();
+	for (map<int, CZdmDataInfo>::iterator iter = data.begin();
 		iter != data.end();
 		++iter)
 	{

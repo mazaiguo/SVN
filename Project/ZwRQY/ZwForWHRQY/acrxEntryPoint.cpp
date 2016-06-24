@@ -19,6 +19,7 @@
 #include "DrawJSD.h"
 #include "DrawNSG.h"
 #include "DrawTGAndGG.h"
+#include "DrawObstacle.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("")
 //-----------------------------------------------------------------------------
@@ -248,145 +249,9 @@ public:
 	//************************************
 	static void WRQ_ZDM_DELJC(void)
 	{
-		// Add your code for command WRQ_ZDM._DELJC here
-		/*	AcDbObjectId objId = AcDbObjectId::kNull;
-
-		ads_name ename;
-		AcGePoint3d pt;
-		int nRet = acedEntSel(_T("\n请选择要删除的交管："), ename, asDblArray(pt));
-		if (nRet != RTNORM)
-		{
-			return;
-		}
-		acdbGetObjectId(objId, ename);
-		CString strGroupName = MyEditEntity::openObjAndGetGroupName(objId);
-		if (strGroupName.Find(JC_DICT) != -1)
-		{	
-			MyEditEntity::EraseEntByGroupName(strGroupName);
-
-		}
-		else
-		{
-			AfxMessageBox(_T("请选择交管"));
-		}*/
-		ads_name ssname;
-		ads_name ename;
-		AcDbObjectId objId = AcDbObjectId::kNull;
-		int nRet = acedSSGet(NULL, NULL, NULL, NULL, ssname);
-		if (nRet != RTNORM)
-		{
-			return;
-		}
-		long sslen;
-		acedSSLength(ssname, &sslen);
-		map<CString, CString> infoMap;
-		CString strGroupName;
-		vector<int> nVec;
-		for (int i=0; i<sslen; i++)
-		{
-			acedSSName(ssname, i, ename);
-			acdbGetObjectId(objId, ename);
-			strGroupName = MyEditEntity::openObjAndGetGroupName(objId);
-			int nFind = strGroupName.Find(JC_DICT);
-			if (nFind >= 0)
-			{
-				int nFind1 = strGroupName.Find(JC_DICT_ZA);
-				if (nFind >=0)
-				{
-					AcDbDictionary *pGroupDict;	
-					AcDbGroup* pGroup = NULL;
-					Acad::ErrorStatus es;
-					es = acdbHostApplicationServices()->workingDatabase()->getGroupDictionary(pGroupDict, AcDb::kForWrite);
-					es = pGroupDict->getAt(strGroupName, (AcDbObject*&)pGroup, AcDb::kForWrite);
-					if (es != Acad::eOk)
-					{
-						pGroupDict->close();
-						return;
-					}
-
-					AcDbEntity* pEnt = NULL;
-					AcDbObjectId entId;
-					AcDbObjectIdArray objIds;
-					objIds.removeAll();
-					int nLength = 0;
-					nLength = pGroup->allEntityIds(objIds);
-					for (int i=0; i<objIds.length(); i++)
-					{
-						entId = objIds.at(i);
-						es = acdbOpenAcDbEntity((AcDbEntity*&)pEnt, entId, AcDb::kForRead);
-						if (es!= Acad::eOk)
-						{
-							pEnt->close();
-						}
-						else
-						{
-							if (pEnt->isKindOf(AcDbBlockReference::desc()))
-							{
-								pEnt->close();
-								CString strTmp = MyEditEntity::GetObjStrXdata(entId, ZDM_JC_ADD);
-								acutPrintf(_T("\n"));
-								acutPrintf(strTmp);
-								if (!strTmp.IsEmpty())
-								{
-									CString strCur, strTmp;
-									int nCount = MyParserString::GetPileLength(strGroupName, strTmp);
-									nVec.push_back(nCount);
-								}
-								MyEditEntity::EraseObj(entId);
-							}
-							else
-							{
-								pEnt->upgradeOpen();
-								pEnt->erase();
-								pEnt->close();
-							}
-
-						}
-					}
-					pGroup->erase();
-					pGroup->close();
-
-					pGroupDict->close();
-				}
-				else
-				{
-					MyEditEntity::EraseEntByGroupName(strGroupName);
-				}		
-			}
-		}
-		acedSSFree(ssname);
-		int nCount;
-		CString strCur;
-		for (vector<int>::iterator iter=nVec.begin();
-			iter!=nVec.end();
-			++iter)
-		{
-			nCount = *iter;
-			nCount += 4;
-
-			DrawDMXProcess dm;
-			//删除第一个
-			strCur.Format(_T("%d"), nCount);
-			strGroupName = BC_DICT + strCur;
-			dm.del(strGroupName);
-			//删除第二个
-			nCount--;
-			strCur.Format(_T("%d"), nCount);
-			strGroupName = BC_DICT + strCur;
-			dm.del(strGroupName);
-			//删除第三个
-			nCount--;
-			nCount--;
-			strCur.Format(_T("%d"), nCount);
-			strGroupName = BC_DICT + strCur;
-			dm.del(strGroupName);
-
-			//删除第四个
-			nCount--;
-			strCur.Format(_T("%d"), nCount);
-			strGroupName = BC_DICT + strCur;
-			dm.del(strGroupName);
-		}
+		//
+		CDrawObstacle ob;
+		ob.del();
 	}
 
 	// - WRQ_ZDM._ZJFM command (do not rename)

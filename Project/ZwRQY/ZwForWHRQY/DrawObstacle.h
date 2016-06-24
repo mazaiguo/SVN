@@ -17,6 +17,8 @@ public:
 	bool doIt();
 	
 
+	bool del();
+
 	CString getName();
 	void setName(LPCTSTR strName);
 	
@@ -54,7 +56,7 @@ private:
 	bool insertRef();
 	bool drawText();
 	bool drawCirlceOrEllipse();
-	void makeGroup(bool bIsAdded = true);
+	void makeGroup();
 	bool GetUseBase();
 	bool getHeightOrWidth();
 	bool getRecHeight();
@@ -63,7 +65,10 @@ private:
 	bool verifyIntersect();
 	void modCurZh();
 	void editGroupName(CString strPreName, CString strGroupName);
-	void selAllJCGroup();
+	map<int, CString> getAllData(int nCount = 0);
+	void selAllJCGroup(int index, bool bIsIncreased = true);
+	map<int, int> selEnt();
+	void editData(map<int, int> info);
 	//bool GetBaseHeight();
 	//bool GetBaseWidth();
 	enum type
