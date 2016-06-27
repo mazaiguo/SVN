@@ -13,6 +13,7 @@ public:
 	MyParserString(void);
 	~MyParserString(void);
 
+	static int GetCount(CString strPile);
 	
 	//输入strPile 返回strPile前面的字符及字符后的int型大小
 	static int GetPileLength(CString strPile, CString& strPrefix);

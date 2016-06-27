@@ -11,6 +11,24 @@ MyParserString::~MyParserString(void)
 }
 
 
+int MyParserString::GetCount(CString strPile)
+{
+	int nlen = 0;
+	int nCount = strPile.GetLength();
+	int nNum = 0;
+	for (int i=nCount-1; i>=0; i--)
+	{
+		if(!isdigit(strPile[i]))//主序号是数字的情况
+			break;
+		++nNum;
+	}
+	CString strLast;
+	strLast = strPile.Right(nNum);
+	nlen = _tstoi(strLast);
+
+	return nlen;
+}
+
 int MyParserString::GetPileLength(CString strPile, CString& strPrefix)
 {
 	int nlen = 0;
