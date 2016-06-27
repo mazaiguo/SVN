@@ -69,6 +69,7 @@ private:
 	void selAllJCGroup(int index, bool bIsIncreased = true);
 	map<int, int> selEnt();
 	void editData(map<int, int> info);
+	bool JudgeDir(AcGePoint3d tmpPt, AcGePoint3d minPt, AcGePoint3d maxPt);
 	//bool GetBaseHeight();
 	//bool GetBaseWidth();
 	enum type

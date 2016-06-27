@@ -79,6 +79,9 @@
     <ClCompile Include="MySplite.cpp">
       <Filter>Source Files\对话框\设置\文字设置</Filter>
     </ClCompile>
+    <ClCompile Include="DrawUtility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Arc.h">
@@ -122,6 +125,9 @@
     </ClInclude>
     <ClInclude Include="StdAfx.h">
       <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawUtility.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

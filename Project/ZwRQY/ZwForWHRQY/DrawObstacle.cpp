@@ -707,9 +707,9 @@ bool CDrawObstacle::verifyIntersect()
 
 	AcGeLine3d line(minPt, maxPt);
 	double dDist1,dDist2;
-	bool bo1 = line.isOn(guandiPt, dDist1);
-	bool bo2 = line.isOn(guantopPt, dDist2);
-	if ((dDist1 > GeTol) || (dDist2 > GeTol))//有交集
+	bool bo1 =JudgeDir(guandiPt, minPt, maxPt);
+	bool bo2 =JudgeDir(guantopPt, minPt, maxPt);
+	if (bo1 || bo2)//有交集
 	{
 		CString strPrompt;
 		acedInitGet(0, _T("Up Down"));
@@ -761,15 +761,24 @@ bool CDrawObstacle::verifyIntersect()
 		bc.get(nTmp, m_nextZdm);
 		AcGePoint3d nextGuandiPt = util.getGuandiPt(m_nextZdm);
 		double dLen2 = abs(nextGuandiPt.y - m_SpecialPt.y)/m_dYScale;
+		double dLen;
+		if (dLen1 > dLen2)
+		{
+			dLen = dLen1;
+		}
+		else
+		{
+			dLen = dLen2;
+		}
 
 		//////////////////////////////////////////////////////////////////////////
 		double dLeftZh1,dLeftZh2,dRightZh3,dRightZh4, dCurData;
 		dCurData = m_zdmdata.getcurData();
-		dLeftZh1 = dCurData - (0.15 + m_dFlag + dLen1);
-		dLeftZh2 = dLeftZh1 + dLen1;
+		dLeftZh1 = dCurData - (0.15 + m_dFlag + dLen);
+		dLeftZh2 = dLeftZh1 + dLen;
 
 		dRightZh3 = dCurData + (0.15 + m_dFlag);
-		dRightZh4 = dRightZh3 + dLen2;
+		dRightZh4 = dRightZh3 + dLen;
 		DrawDMXProcess dm;
 		dm.Insert(dLeftZh1, true);
 		dm.Insert(dRightZh4, true);
@@ -1071,6 +1080,22 @@ void CDrawObstacle::editData(map<int, int> data)
 	}
 	
 
+}
+
+bool CDrawObstacle::JudgeDir(AcGePoint3d tmpPt, AcGePoint3d minPt, AcGePoint3d maxPt)
+{
+	AcGeVector3d vec1 = tmpPt - minPt;
+	AcGeVector3d vec2 = maxPt - tmpPt;
+	vec1.normalize();
+	vec2.normalize();
+	if (vec1 == vec2)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 //bool CDrawObstacle::GetBaseHeight()

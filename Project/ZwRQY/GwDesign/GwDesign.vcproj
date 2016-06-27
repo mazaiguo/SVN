@@ -521,6 +521,18 @@
 					</Filter>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="»ù´¡Àà"
+				>
+				<File
+					RelativePath=".\DrawUtility.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DrawUtility.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Include Files"

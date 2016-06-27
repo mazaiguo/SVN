@@ -8,6 +8,7 @@
 #include "SerialNoJig.h"
 #include "CGasPipe.h"
 #include "GWDesingUtils.h"
+#include "DrawUtility.h"
 //#include "DlgBasicSettings.h"
 //#include "DlgTextSettings.h"
 //-----------------------------------------------------------------------------
@@ -278,6 +279,30 @@ public:
 	{
 		// Add your code for command WRQ_GwDesign._Test here
 	}
+
+	// - WRQ_GwDesign._HBDDX command (do not rename)
+	static void WRQ_GwDesign_HBDDX(void)
+	{
+		// Add your code for command WRQ_GwDesign._HBDDX here
+		AcDbObjectId preId = AcDbObjectId::kNull;
+		AcDbObjectId plineId = AcDbObjectId::kNull;
+		ads_name ename;
+		AcGePoint3d pt;
+		int nRet = acedEntSel(_T("\n请选择多段线"), ename, asDblArray(pt));
+		if (nRet != RTNORM)
+		{
+			return;
+		}
+		acdbGetObjectId(preId, ename);
+		nRet = acedEntSel(_T("\n请选择多段线"), ename, asDblArray(pt));
+		if (nRet != RTNORM)
+		{
+			return;
+		}
+		acdbGetObjectId(plineId, ename);
+		CDrawUtility draw;
+		draw.JoinTwoPline(preId, plineId);
+	}
 } ;
 
 //-----------------------------------------------------------------------------
@@ -289,3 +314,4 @@ ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _XH, XH, ACRX_CMD_TRANSPA
 ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _GD, GD, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _CRXH, CRXH, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _Test, Test, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _HBDDX, HBDDX, ACRX_CMD_TRANSPARENT, NULL)

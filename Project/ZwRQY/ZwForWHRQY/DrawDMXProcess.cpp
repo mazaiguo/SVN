@@ -166,14 +166,11 @@ bool DrawDMXProcess::Insert(bool bIsObstacle)
 			zdm.setData(&m_pZdmInfo);
 			AcDbObjectId groupId = zdm.insert();
 
-			if (CDMXUtils::getcreateGw())
+			if (m_nCount < nCurCount)
 			{
-				if (m_nCount < nCurCount)
-				{
-					CDrawGDProcess gd;
-					gd.Insert(strCur);
-				}		
-			}
+				CDrawGDProcess gd;
+				gd.Insert(strCur);
+			}		
 
 			return true;
 		}
@@ -1018,8 +1015,8 @@ void DrawDMXProcess::getSpecialInfo()
 	m_dXzDmHeight = (m_pZdmInfo.getRealDmx() - m_preZdmInfo.getRealDmx())*dRadio + m_preZdmInfo.getRealDmx();
 	m_dSJDmHeight = (m_pZdmInfo.getDesignDmx() - m_preZdmInfo.getDesignDmx())*dRadio + m_preZdmInfo.getDesignDmx();
 	
-	double dWashen = (m_pZdmInfo.getWaShen() - m_preZdmInfo.getWaShen())*dRadio + m_preZdmInfo.getWaShen();
 	double dGuandi = (m_pZdmInfo.getGuanDi() - m_preZdmInfo.getGuanDi())*dRadio + m_preZdmInfo.getGuanDi();
+	double dWashen = m_dXzDmHeight - dGuandi;
 	double dPodu = m_pZdmInfo.getPoDu();
 	double dJuli = m_dZhuanghao - m_preZdmInfo.getcurData();
 	m_pZdmInfo.setRealDmx(m_dXzDmHeight);
@@ -1155,21 +1152,22 @@ bool CDrawGDProcess::Insert(CString strCur)
 	CString strLabel = BC_DICT + strCur;
 	bcUtils.get(_tstoi(strCur), m_pZdmInfo);
 	m_dRealDmx = m_pZdmInfo.getRealDmx();
-	if (m_nCout == 1)
-	{
+	/*int nIndex = MyTransFunc::StringToInt(strCur);
+	if ((m_nCout == 1) || (nIndex != m_nCout))
+	{*/
 		m_dPipeDiameter = m_pZdmInfo.getPipeDiameter();
-		m_dGuandi = m_dminElavation;
-	}
-	else
-	{
-		//如果不为1，需要取上一个存储数据中的数据
-		int nTmp = m_nCout - 1;
-		strCur.Format(_T("%d"), nTmp);
-		CString strTmpLabel = BC_DICT + strCur;
-		bcUtils.get(nTmp, m_preZdmInfo);
-		m_dPipeDiameter = m_preZdmInfo.getPipeDiameter();
-		m_dGuandi = m_preZdmInfo.getGuanDi();
-	}
+		m_dGuandi = m_pZdmInfo.getGuanDi();
+	//}
+	//else
+	//{
+	//	//如果不为1，需要取上一个存储数据中的数据
+	//	int nTmp = m_nCout - 1;
+	//	strCur.Format(_T("%d"), nTmp);
+	//	CString strTmpLabel = BC_DICT + strCur;
+	//	bcUtils.get(nTmp, m_preZdmInfo);
+	//	m_dPipeDiameter = m_preZdmInfo.getPipeDiameter();
+	//	m_dGuandi = m_preZdmInfo.getGuanDi();
+	//}
 	
 	if (!GetPipeDiameter())
 	{

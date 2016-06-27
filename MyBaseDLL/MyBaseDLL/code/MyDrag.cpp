@@ -273,14 +273,14 @@ int MyDrag::DragMove(CString Prompt, ads_name ssname, ads_point bpt, ads_point r
   
   switch ( retVal )
   {
-  case RTNORM:
+  case RTNORM:  
+  case RTNONE:
 	DragFunc(rPoint,CurMatrix);
 	if (ads_xformss(ssname, CurMatrix)!= RTNORM )
       ads_command(RTSTR, _T("MOVE"), RTPICKS, ssname, RTSTR, _T(""), RT3DPOINT, bpt, RT3DPOINT, rPoint, RTNONE);
     ret_tag = RTNORM;
     break;
   case RTCAN:
-  case RTNONE:
 	  ret_tag = retVal;
 	  break;
   case RTSTR:

@@ -198,7 +198,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <AdditionalUsingDirectories>C:\Program Files\AutoCAD 2010\;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;MYBASEDLL_MODULE;NDEBUG;_AFXEXT;_ACRXAPP;ZRX_2014;MYBASEDLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;MYBASEDLL_MODULE;NDEBUG;_AFXEXT;_ACRXAPP;ZRX_2014;MYBASEDLL_EXPORTS;ZRXSDK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>

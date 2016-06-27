@@ -170,9 +170,10 @@
       <WarningLevel>Level1</WarningLevel>
       <DebugInformationFormat>
       </DebugInformationFormat>
+      <AdditionalIncludeDirectories>D:\ZRXSDK\ZRXSDK(20141127)\arxport;E:\GitHub\SVN\MyBaseDLL\MyBaseDLL\code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <OutputFile>$(OutDir)WRQ_Entity.arx</OutputFile>
+      <OutputFile>E:\GitHub\SVN\Project\ZwRQY\ZWRQY_ZWCAD\WRQ_Entity.zrx</OutputFile>
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <ProgramDatabaseFile>
@@ -180,6 +181,8 @@
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>$(OutDir)WRQ_Entity.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalDependencies>MyBaseDLL.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\ZRXSDK\ZRXSDK(20141127)\lib;E:\GitHub\SVN\Project\ZwRQY\lib\zwcad;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
