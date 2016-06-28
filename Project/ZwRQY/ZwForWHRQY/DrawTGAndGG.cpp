@@ -129,12 +129,26 @@ bool CDrawTGAndGG::getEndZH()
 }
 
 
-bool CDrawTGAndGG::drawlineAndText(AcGePoint3d pt)
+bool CDrawTGAndGG::drawlineAndText()
 {
 	AcGePoint3d midPt,endPt;
-	int nRet = acedGetPoint(asDblArray(pt), _T("\n请指定终点"), asDblArray(midPt));
+	AcGePoint3d pt;
+	int nOsmode = 512;
+	MyBaseUtils::GetVar(_T("OSMODE"), &nOsmode);
+	if (nOsmode != 512)
+	{
+		MyBaseUtils::SetVar(_T("OSMODE"), 512);
+	}
+	int nRet = acedGetPoint(NULL, _T("\n请指定插入说明文字的起点"), asDblArray(pt));
 	if (nRet != RTNORM)
 	{
+		MyBaseUtils::SetVar(_T("OSMODE"), nOsmode);
+		return false;
+	}
+	nRet = acedGetPoint(asDblArray(pt), _T("\n请指定终点"), asDblArray(midPt));
+	if (nRet != RTNORM)
+	{
+		MyBaseUtils::SetVar(_T("OSMODE"), nOsmode);
 		return false;
 	}
 	AcDbObjectId textStyleId = CGWDesingUtils::getGlobalTextStyle();
@@ -171,6 +185,7 @@ bool CDrawTGAndGG::drawlineAndText(AcGePoint3d pt)
 	plineId = MyEditEntity::openEntChangeColor(plineId, 2);
 	m_idArrs.append(plineId);
 	m_idArrs.append(textId1);
+	MyBaseUtils::SetVar(_T("OSMODE"), nOsmode);
 	return true;
 }
 
@@ -353,6 +368,6 @@ bool CDrawTGAndGG::getSpecailData()
 	m_idArrs.append(plineId3);
 	m_idArrs.append(plineId4);
 
-	drawlineAndText(upPt);
+	drawlineAndText();
 	return true;
 }

@@ -3,6 +3,7 @@
 #include "ZDMUtils.h"
 #include "BcUtils.h"
 #include "CBiaochiForRQY.h"
+#include "MyBaseUtils.h"
 #include "GWDesingUtils.h"
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
@@ -1361,13 +1362,20 @@ bool CDrawGd::drawCirlceOrEllipse()
 		{
 			m_idArrs.append(objIdArr.at(i));
 		}
-		CString strVolume = getEarthWorkd(m_preData, m_pZDM);
-		AcGePoint3d txtPt;
-		acutPolar(asDblArray(tmpPt), 3*PI/2, 67.5, asDblArray(txtPt));
-		AcDbObjectId textId = MyDrawEntity::DrawText(txtPt, strVolume, 3, CGWDesingUtils::getGlobalTextStyle(), AcDb::kTextCenter);
-		textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
-		textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
-		m_idArrs.append(textId);
+		int nFlag = 0;
+		MyBaseUtils::GetVar(_T("USERI5"), &nFlag);
+		if (nFlag != 0)
+		{
+			CString strVolume = getEarthWorkd(m_preData, m_pZDM);
+			AcGePoint3d txtPt;
+			cenPt = MyTransFunc::MyMidPoint(pretmpPt, tmpPt);
+			acutPolar(asDblArray(cenPt), 3*PI/2, 67.5, asDblArray(txtPt));
+			AcDbObjectId textId = MyDrawEntity::DrawText(txtPt, strVolume, 3, CGWDesingUtils::getGlobalTextStyle(), AcDb::kTextCenter);
+			//textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
+			textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
+			m_idArrs.append(textId);
+		}
+		
 	}
 	objIdArr = drawText(tmpPt);
 	for (int i=0; i<objIdArr.length(); i++)
@@ -1447,13 +1455,18 @@ bool CDrawGd::drawCirlceOrEllipse()
 				{
 					MyEditEntity::AddObjToGroup(strGdGroup, objIdArr.at(i));
 				}
-				CString strVolume = getEarthWorkd(m_pZDM, NextData);
-				AcGePoint3d txtPt;
-				acutPolar(asDblArray(pretmpPt), 3*PI/2, 67.5, asDblArray(txtPt));
-				AcDbObjectId textId = MyDrawEntity::DrawText(txtPt, strVolume, 3, CGWDesingUtils::getGlobalTextStyle(), AcDb::kTextCenter);
-				textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
-				textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
-				MyEditEntity::AddObjToGroup(strGdGroup, textId);
+				int nFlag = 0;
+				MyBaseUtils::GetVar(_T("USERI5"), &nFlag);
+				if (nFlag != 0)
+				{
+					CString strVolume = getEarthWorkd(m_pZDM, NextData);
+					AcGePoint3d txtPt;
+					acutPolar(asDblArray(pretmpPt), 3*PI/2, 67.5, asDblArray(txtPt));
+					AcDbObjectId textId = MyDrawEntity::DrawText(txtPt, strVolume, 3, CGWDesingUtils::getGlobalTextStyle(), AcDb::kTextCenter);
+					textId = MyEditEntity::openEntChangeRotation(textId, PI/2);
+					textId = MyEditEntity::openEntChangeLayer(textId, ZxLayerId);
+					MyEditEntity::AddObjToGroup(strGdGroup, textId);
+				}				
 			}
 			/*objIdArr = drawText(tmpPt);
 			for (int i=0; i<objIdArr.length(); i++)

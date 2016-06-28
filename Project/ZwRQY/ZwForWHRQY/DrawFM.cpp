@@ -237,7 +237,7 @@ bool CDrawFM::insert()
 	double dYScale = 1000/(CDMXUtils::getYScale());
 	AcGePoint3d basePt = CDMXUtils::getbasePt();
 	AcGePoint3d tmpPt,insertPt;
-	acutPolar(asDblArray(basePt), 0, 20 + m_dZhuanghao*dXScale, asDblArray(tmpPt));
+	acutPolar(asDblArray(basePt), 0, 20 + (m_dZhuanghao-CDMXUtils::startzh())*dXScale, asDblArray(tmpPt));
 	acutPolar(asDblArray(tmpPt), 3*PI/2, 91, asDblArray(insertPt));
 	CBcUtils bc;
 	CZdmDataInfo zdm;

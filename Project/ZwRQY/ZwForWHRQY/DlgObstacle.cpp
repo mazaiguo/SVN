@@ -40,8 +40,12 @@ static CString gSpecailPipeName[] = {
 	_T("直埋通信电缆管"),
 	_T("热力管"),
 	_T("热力管沟"),
-	_T("自定义管道名称")
-
+	_T("自定义管道名称"),
+	_T("路灯"),
+	_T("交警信号"),
+	_T("人防"),
+	_T("工业"),
+	_T("综合管廊")
 };
 //-----------------------------------------------------------------------------
 CDlgObstacle::CDlgObstacle (CWnd *pParent /*=NULL*/, HINSTANCE hInstance /*=NULL*/) : CAcUiDialog (CDlgObstacle::IDD, pParent, hInstance) , m_nRadio(0)

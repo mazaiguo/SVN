@@ -52,8 +52,13 @@
 #define IDC_RADIO22                     128
 #define IDC_RADIO23                     129
 #define IDC_RADIO24                     130
-#define IDD_DLGDISPLAYTEXT				131
-#define IDC_EDIT_TEXT					132
+#define IDD_DLGDISPLAYTEXT              131
+#define IDC_RADIO25                     131
+#define IDC_EDIT_TEXT                   132
+#define IDC_RADIO26                     132
+#define IDC_RADIO27                     133
+#define IDC_RADIO28                     134
+#define IDC_RADIO29                     135
 
 // Next default values for new objects
 // 

@@ -15,7 +15,7 @@ private:
 	bool midProcess(); 
 	bool getStartZH();
 	bool getEndZH();
-	bool drawlineAndText(AcGePoint3d pt);
+	bool drawlineAndText();
 	bool getDownText();
 	bool getUpText();
 	CString CurNumPosition( double dValue, bool& bIsExisted);

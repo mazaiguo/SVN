@@ -931,8 +931,8 @@ bool DrawDMXProcess::doXdata(AcDbObjectId objId, CString strTmp, CZdmDataInfo& t
 	}
 	else if (strTmp.CompareNoCase(ZDM_PODU) == 0)
 	{
+		tmpData.setPoDu(m_dValue);	
 		m_dValue /= 1000;
-		tmpData.setPoDu(m_dValue);
 		double dDist = tmpData.getcurData() - m_preZdmInfo.getcurData();
 		double dGuandi = m_preZdmInfo.getGuanDi();
 		dGuandi = dGuandi + m_dValue*dDist;
@@ -1093,6 +1093,8 @@ CDrawGDProcess::CDrawGDProcess(void)
 	{
 		m_dPipeDiameter = m_pZdmInfo.getPipeDiameter();
 		m_dGuandi = m_dminElavation;
+		m_dPodu = m_pZdmInfo.getPoDu();
+		m_dWashen = m_pZdmInfo.getWaShen();
 		m_strPipeType = _T("DN");
 	}
 	else
@@ -1105,6 +1107,8 @@ CDrawGDProcess::CDrawGDProcess(void)
 		m_dPipeDiameter = m_preZdmInfo.getPipeDiameter();
 		m_dGuandi = m_preZdmInfo.getGuanDi();
 		m_strPipeType = m_preZdmInfo.getPipeType();
+		m_dPodu = m_preZdmInfo.getPoDu();
+		m_dWashen = m_preZdmInfo.getWaShen();
 	}
 	
 }
@@ -1157,6 +1161,8 @@ bool CDrawGDProcess::Insert(CString strCur)
 	{*/
 		m_dPipeDiameter = m_pZdmInfo.getPipeDiameter();
 		m_dGuandi = m_pZdmInfo.getGuanDi();
+		m_dPodu = m_pZdmInfo.getPoDu();
+		m_dWashen = m_pZdmInfo.getWaShen();
 	//}
 	//else
 	//{
@@ -1209,12 +1215,12 @@ bool CDrawGDProcess::GetPipeDiameter()
 	CString strPrompt;
 	if (m_nCout == 1)
 	{
-		strPrompt.Format(_T("\n管道管径<m> <%.2f>:"), m_dPipeDiameter);
+		strPrompt.Format(_T("\n管道管径<mm> <%.2f>:"), m_dPipeDiameter);
 	}
 	else
 	{
 		acedInitGet(0, _T("Undo"));
-		strPrompt.Format(_T("\n回退一步(U)/<下一段管道管径> <m> <%.2f>:"), m_dPipeDiameter);
+		strPrompt.Format(_T("\n回退一步(U)/<下一段管道管径> <mm> <%.2f>:"), m_dPipeDiameter);
 	}
 	int nRet = acedGetReal(strPrompt, &m_dPipeDiameter);
 	if (nRet == RTNORM)
@@ -1247,13 +1253,13 @@ bool CDrawGDProcess::GetKeyWord()
 	if (m_nCout == 1)
 	{
 		acedInitGet(0, _T("Di Wa"));
-		strPrompt = _T("\n输入管底标高(D)/输入管底挖深(W)/<管底标高>:");
+		strPrompt = _T("\n输入燃气管底标高(D)/输入管底挖深(W)/<管底标高>:");
 	}
 	else
 	{
 		acedInitGet(0, _T("Di Wa Po Vertical"));
 		//strPrompt = _T("\n输入管底(D)/输入挖深(W)/坡度(P)/垂直间距(V)/<管底>:");
-		strPrompt = _T("\n输入管底标高(D)/输入管底挖深(W)/坡度(P)/<管底标高>:");
+		strPrompt = _T("\n输入燃气管底标高(D)/输入管底挖深(W)/坡度(P)/<管底标高>:");
 	}
 	TCHAR val[512];
 	int nRet = acedGetKword(strPrompt, val);
@@ -1331,7 +1337,7 @@ bool CDrawGDProcess::GetGuanDi()
 		m_dPodu = 1000*(m_dGuandi - dGuandi)/dDist;
 		m_pZdmInfo.setPoDu(m_dPodu);
 	}
-	return true;
+	return bRet;
 }
 
 bool CDrawGDProcess::GetWaShen()
@@ -1379,7 +1385,7 @@ bool CDrawGDProcess::GetWaShen()
 		m_dPodu = 1000*(m_dGuandi - dGuandi)/dDist;
 		m_pZdmInfo.setPoDu(m_dPodu);
 	}
-	return true;
+	return bRet;
 }
 
 bool CDrawGDProcess::GetPodu()
@@ -1399,7 +1405,7 @@ bool CDrawGDProcess::GetPodu()
 			{
 				
 			}*/
-			m_dPodu = m_dPodu/1000;
+			m_dPodu = m_dPodu;
 			bRet = true;
 		}
 		else if (nRet == RTNONE)
@@ -1419,6 +1425,7 @@ bool CDrawGDProcess::GetPodu()
 		}
 	}
 	m_pZdmInfo.setPoDu(m_dPodu);
+	m_dPodu /= 1000;
 	//根据坡度，计算管底，挖深
 	double dDist = m_pZdmInfo.getcurData() - m_preZdmInfo.getcurData();
 	double dGuandi = m_preZdmInfo.getGuanDi();
@@ -1427,7 +1434,7 @@ bool CDrawGDProcess::GetPodu()
 	m_dRealDmx = m_pZdmInfo.getRealDmx();
 	m_dWashen = m_dRealDmx - m_dGuandi;
 	m_pZdmInfo.setWaShen(m_dWashen);
-	return true;
+	return bRet;
 }
 
 bool CDrawGDProcess::GetVertical()

@@ -124,6 +124,7 @@ bool CDrawObstacle::getZhuanghao()
 	{
 		return false;
 	}
+	acutPrintf(_T("\n下面开始障碍物绘制......"));
 	int nCount = dm.getIndex();
 	CBcUtils bc;
 	bc.get(nCount, m_zdmdata);
@@ -145,6 +146,7 @@ bool CDrawObstacle::getZhuanghao()
 	case 17:
 	case 19:
 	case 22:
+	case 28:
 		bRet = drawRectangle();
 		break;
 	default:
@@ -203,7 +205,7 @@ bool CDrawObstacle::getTopOrBottom()
 	bool bRet = true;
 
 	acedInitGet(0, _T("A B"));
-	strPrompt = _T("\n输入管顶标高(A)/管底标高（B）/<管底标高>:");
+	strPrompt = _T("\n输入障碍物管顶标高(A)/管底标高（B）/<管底标高>:");
 
 	TCHAR val[512];
 	int nRet = acedGetKword(strPrompt, val);
@@ -670,21 +672,25 @@ void CDrawObstacle::drawRec(double dHeigth, double dWidth)
 	AcDbObjectId objId = AcDbObjectId::kNull;
 	if (!m_bIsGdingType)//管底
 	{
+		m_guandiPt = tmpPt;
 		acutPolar(asDblArray(tmpPt), PI, m_dXScale*dWidth/2000, asDblArray(minPt));
 		acutPolar(asDblArray(tmpPt), PI/2,m_dYScale*dHeigth/1000, asDblArray(maxPt));
+		m_guandiTopPt = maxPt;
 		acutPolar(asDblArray(maxPt), 0, m_dXScale*dWidth/2000, asDblArray(maxPt));
 		AcGePoint3dArray ptArr = MyTransFunc::OperateTwoPointsAndGetPoints(minPt, maxPt);
-		objId = MyDrawEntity::DrawPlineByPoints(ptArr);
-		m_idArrs.append(objId);
+		m_objId = MyDrawEntity::DrawPlineByPoints(ptArr);
+		m_idArrs.append(m_objId);
 	}
 	else
 	{
+		m_guandiTopPt = tmpPt;
 		acutPolar(asDblArray(tmpPt), 0, m_dXScale*dWidth/2000, asDblArray(maxPt));
 		acutPolar(asDblArray(tmpPt), 3*PI/2,m_dYScale*dHeigth/1000, asDblArray(minPt));
+		m_guandiPt = minPt;
 		acutPolar(asDblArray(minPt), PI, m_dXScale*dWidth/2000, asDblArray(minPt));
 		AcGePoint3dArray ptArr = MyTransFunc::OperateTwoPointsAndGetPoints(minPt, maxPt);
-		objId = MyDrawEntity::DrawPlineByPoints(ptArr);
-		m_idArrs.append(objId);
+		m_objId = MyDrawEntity::DrawPlineByPoints(ptArr);
+		m_idArrs.append(m_objId);
 	}
 	m_dFlag = dWidth/2000;
 }
@@ -987,7 +993,8 @@ map<int, int> CDrawObstacle::selEnt()
 					}
 					else
 					{
-						if (pEnt->isKindOf(AcDbBlockReference::desc()))
+						if (pEnt->isKindOf(AcDbBlockReference::desc())
+							||(pEnt->isKindOf(AcDbPolyline::desc())))
 						{
 							pEnt->close();
 							CString strTmp = MyEditEntity::GetObjStrXdata(entId, ZDM_JC_ADD);

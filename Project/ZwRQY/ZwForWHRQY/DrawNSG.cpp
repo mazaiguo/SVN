@@ -164,16 +164,16 @@ bool CDrawNSG::GetDescription()
 		CString strTmp = tempBuf;
 		if (strTmp.IsEmpty())
 		{
-			m_strNo = _T("DN300钢制凝水缸");
+			m_strNo = _T("DN300凝水缸");
 		}
 		else
 		{
-			m_strNo.Format(_T("%s钢制凝水缸"), strTmp);
+			m_strNo.Format(_T("%s凝水缸"), strTmp);
 		}
 	}
 	else if (nRet == RTNONE)
 	{
-		m_strNo = _T("DN300钢制凝水缸");
+		m_strNo = _T("DN300凝水缸");
 	}
 	else
 	{
@@ -192,7 +192,7 @@ bool CDrawNSG::insert()
 	double dYScale = 1000/(CDMXUtils::getYScale());
 	AcGePoint3d basePt = CDMXUtils::getbasePt();
 	AcGePoint3d tmpPt,insertPt;
-	acutPolar(asDblArray(basePt), 0, 20 + m_dZhuanghao*dXScale, asDblArray(tmpPt));
+	acutPolar(asDblArray(basePt), 0, 20 + (m_dZhuanghao-CDMXUtils::startzh())*dXScale, asDblArray(tmpPt));
 	CBcUtils bc;
 	CZdmDataInfo zdm;
 	bIsExisted = bc.get(_tstoi(strCur), zdm);	
