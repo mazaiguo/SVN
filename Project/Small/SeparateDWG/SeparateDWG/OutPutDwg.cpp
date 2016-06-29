@@ -82,7 +82,7 @@ bool COutPutDwg::doIt()
 
 bool COutPutDwg::sel()
 {
-	struct resbuf*	filter=acutBuildList(-4, _T("<and"), RTDXF0, _T("LWPOLYLINE"), -4, _T("and>"), RTNONE);
+	struct resbuf*	filter=acutBuildList(-4, _T("<and"), RTDXF0, _T("LWPOLYLINE"), 8, _T("外框"), -4, _T("and>"), RTNONE);
 	ads_name ss;
 	int nRet = acedSSGet(NULL, NULL, NULL, filter, ss);
 	if (RTNORM != nRet)
@@ -214,6 +214,7 @@ bool COutPutDwg::OutPutDwg(AcGePoint3d minPt, AcGePoint3d maxPt, CString strDwgF
 	double dAng = vec.angleOnPlane(AcGePlane::kXYPlane);
 	acutPolar(asDblArray(minPt), dAng, 0.01*dlen, asDblArray(minPt));
 	acutPolar(asDblArray(maxPt), PI+dAng, 0.01*dlen, asDblArray(maxPt));
+	ZOOMWINDOW(minPt, maxPt);
 	ads_name ssname;
 	int nRet = acedSSGet(_T("C"), asDblArray(minPt), asDblArray(maxPt), NULL, ssname);
 	if (nRet != RTNORM)
@@ -439,9 +440,9 @@ bool COutPutDwg::getWidthAndHeight(FrameInfo* pInfo)
 
 bool COutPutDwg::GetOutPutPath()
 {
-	struct resbuf *rb = acutNewRb(RTSTR);
+	/*struct resbuf *rb = acutNewRb(RTSTR);
 	TCHAR pathIn[MAX_PATH];
-	if (RTNORM == acedGetFileNavDialog(_T("存储路径"),NULL,NULL, NULL, 2048, &rb)) 
+	if (RTNORM == acedGetFileNavDialog(_T("存储路径"),NULL,NULL, NULL, 1, &rb)) 
 		_tcscpy(pathIn, rb->resval.rstring);
 	else
 	{   
@@ -449,7 +450,23 @@ bool COutPutDwg::GetOutPutPath()
 		return false;	
 	}
 	m_strPath = pathIn;
-	acutRelRb(rb);
+	acutRelRb(rb);*/
+	TCHAR Mycom[_MAX_PATH];  
+	BROWSEINFO Myfold;  
+	Myfold.hwndOwner= adsw_acadMainWnd();// sds_getmainhwnd();
+	Myfold.pidlRoot=NULL;  
+	Myfold.pszDisplayName=Mycom;  
+	Myfold.lpszTitle=_T("请选择工程路径:");  
+	Myfold.ulFlags=0;  
+	Myfold.lpfn=NULL;  
+	Myfold.lParam=NULL;  
+	Myfold.iImage=NULL;  
+
+	Mycom[0]=_T('\0');  
+	SHGetPathFromIDList(SHBrowseForFolder(&Myfold),Mycom);  
+
+	m_strPath.Format(_T("%s"),Mycom);
+	m_strPath += _T("\\");
 	return true;
 }
 
