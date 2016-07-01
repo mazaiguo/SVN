@@ -433,14 +433,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\GDDataStore.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\GDDataStore.h"
-					>
-				</File>
-				<File
 					RelativePath=".\Line.cpp"
 					>
 				</File>
@@ -524,6 +516,14 @@
 			<Filter
 				Name="»ù´¡Àà"
 				>
+				<File
+					RelativePath=".\COperatePL.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\COperatePL.h"
+					>
+				</File>
 				<File
 					RelativePath=".\DrawUtility.cpp"
 					>

@@ -774,6 +774,33 @@ int	 CSerialNo::No() const
 	return nNo;
 }
 
+Acad::ErrorStatus CSerialNo::addObjId(AcDbObjectId objId)
+{
+	assertWriteEnabled();
+	if (m_IdArrs.find(objId) < 0)
+	{
+		m_IdArrs.append(objId);
+	}
+	return Acad::eOk;
+}
+
+int CSerialNo::size()
+{
+	assertReadEnabled();
+	m_nSize = m_IdArrs.length();
+	return m_nSize;
+}
+
+Acad::ErrorStatus CSerialNo::removeId(AcDbObjectId objId)
+{
+	assertWriteEnabled();
+	int nFind = m_IdArrs.find(objId);
+	if (nFind > 0)
+	{
+		m_IdArrs.remove(objId);
+	}
+	return Acad::eOk;
+}
 
 ////创建WipeOut对象
 //Acad::ErrorStatus CSerialNo::CreateWipeout () const

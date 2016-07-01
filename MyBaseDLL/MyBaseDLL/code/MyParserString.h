@@ -29,7 +29,7 @@ public:
 
 	static CString OutPutStringByNumericalDigit(CString strPile, int nWeishu, int nFlag = 0);
 	//将字符转为lineweight
-	static AcDb::LineWeight StrToLineType(CString& str);
+	static AcDb::LineWeight StrToLineWeight(CString& str);
 
 	//解析“、”的字符，将其解析存到一个cstringarray中
 	static void GetCommaFromString(CString strInput, CStringArray& strResult);
@@ -45,5 +45,8 @@ public:
 	static void GetPlusFromString(CString strInput, CStringArray& strResult);
 	//判断字符是否为纯数字
 	static bool JudgeStr(CString str);
+
+	static CString SubString(CString string,CString Split,int index);
+
 
 };

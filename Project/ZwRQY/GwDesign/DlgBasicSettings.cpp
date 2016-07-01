@@ -71,7 +71,8 @@ BOOL CDlgBasicSettings::OnInitDialog()
 
 	// set functionality of list according to column
 	m_ListCtrl.SetColumnType ( (fGetType)_List_Type );	
-	InsertEmpty();
+	//InsertEmpty();
+	iniData();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -110,6 +111,9 @@ void CDlgBasicSettings::InsertEmpty()
 	m_ListCtrl.SetItemText(nItem, 2, m_strLineType);
 	m_ListCtrl.SetItemText(nItem, 3, m_strLineweight);
 }
+
+
+
 void CDlgBasicSettings::OnBnClickedButtonDel()
 {
 	// TODO: Add your control notification handler code here
@@ -131,4 +135,81 @@ void CDlgBasicSettings::OnBnClickedButtonDel()
 		}
 	}
 	GetParent()->SetFocus();
+}
+
+void CDlgBasicSettings::CreateLayerId()
+{
+	int nItem = m_ListCtrl.GetItemCount();
+	for (int i=0; i<nItem; i++)
+	{
+		m_strDescription = m_ListCtrl.GetItemText(i, 0);
+		m_strLayerColor = m_ListCtrl.GetItemText(i, 1);
+		m_strLineType = m_ListCtrl.GetItemText(i, 2);
+		m_strLineweight = m_ListCtrl.GetItemText(i, 3);
+		AcDb::LineWeight lw = MyParserString::StrToLineWeight(m_strLineweight);
+		MySymble::CreateNewLayer(m_strDescription, MyTransFunc::StringToInt(m_strLayerColor), TRUE, m_strLineType, lw);
+	}
+	ReWriteFile();
+}
+
+void CDlgBasicSettings::iniData()
+{
+	CString strApp = MyBaseUtils::GetAppPath();
+	CString strFileName = strApp + _T("design\\basic\\layer.ini");
+	CStdioFile File;
+	if (!File.Open(strFileName, CFile::modeRead | CFile::typeText)) 
+	{
+		return;
+	}
+	CString buffer;
+	int i=0;
+	while (1)
+	{
+		if (!File.ReadString(buffer))
+			break;
+		m_strDescription = MyParserString::SubString(buffer, _T(","), 0);
+		m_strLayerColor = MyParserString::SubString(buffer, _T(","), 1);
+		m_strLineType = MyParserString::SubString(buffer, _T(","), 2);
+		m_strLineweight = MyParserString::SubString(buffer, _T(","), 3);
+		int nItem = m_ListCtrl.GetItemCount();
+		nItem = m_ListCtrl.InsertItem( nItem+1, _T("") );
+		SetInfoToListCtrl(nItem);
+	}
+
+	File.Close();
+}
+
+void CDlgBasicSettings::ReWriteFile()
+{
+	CString strApp = MyBaseUtils::GetAppPath();
+	CString strFileName = strApp + _T("design\\basic\\layer.ini");
+	CStdioFile File;
+	if (!File.Open(strFileName, CFile::modeCreate | CFile::modeReadWrite| CFile::typeText)) 
+	{
+		return;
+	}
+	CString strTmp;
+	int nCursel = m_ListCtrl.GetItemCount();
+	for ( int i=0; i<nCursel; i++)
+	{
+		GetInfoFromListCtrl(i);
+		
+		strTmp.Format(_T("%s,%s,%s,%s\n"), m_strDescription, m_strLayerColor, m_strLineType, m_strLineweight);
+		File.WriteString(strTmp);
+	}
+	File.Close();
+}
+void CDlgBasicSettings::SetInfoToListCtrl(int nItem)
+{
+	m_ListCtrl.SetItemText(nItem, 0, m_strDescription);
+	m_ListCtrl.SetItemText(nItem, 1, m_strLayerColor);
+	m_ListCtrl.SetItemText(nItem, 2, m_strLineType);
+	m_ListCtrl.SetItemText(nItem, 3, m_strLineweight);
+}
+void CDlgBasicSettings::GetInfoFromListCtrl(int i)
+{
+	m_strDescription = m_ListCtrl.GetItemText(i, 0);
+	m_strLayerColor = m_ListCtrl.GetItemText(i, 1);
+	m_strLineType = m_ListCtrl.GetItemText(i, 2);
+	m_strLineweight = m_ListCtrl.GetItemText(i, 3);
 }

@@ -24,33 +24,8 @@ public:
 	static double getGlobalRadius();
 	static double getGlobalTextHeight();
 	static AcDbObjectId getGlobalTextStyle();
-
-
-	/*static void SetJdNum(CString strCount);
-	static CString getJdNum();
-
-	static void SetStartZH(double dStartZH);
-	static double getStartZH();
-
-	static void SetXScale(double dXScale);
-	static double getXScale();
-
-	static void SetYScale(double dYScale);
-	static double getYScale();
-
-	static void SetMinElavation(double dElavation);
-	static double getMinElavation();
-
-	static void SetMaxElavation(double dElavation);
-	static double getMaxElavation();
-
-	static void SetcreateBc(bool bDrawBc);
-	static bool getcreateBc();
-
-	static void SetcreateJiedian(bool bDrawBc);
-	static bool getcreateJiedian();
-
-	static void SetbasePt(AcGePoint3d basePt);
-	static AcGePoint3d getbasePt();*/
+	static AcDbObjectId getGlobalGdLayerId();
+	
+	
 };
 

@@ -26,8 +26,13 @@ public:
 	afx_msg void OnBnClickedButtonAdd();
 	void InsertEmpty();
 	afx_msg void OnBnClickedButtonDel();
+	
+	void CreateLayerId();
 
-
+	void iniData();
+	void ReWriteFile();
+	void SetInfoToListCtrl(int nItem);
+	void GetInfoFromListCtrl(int i);
 	CEditList m_ListCtrl;
 	CString m_strDescription;//ËµÃ÷
 	CString m_strLayerColor;//ÑÕÉ«

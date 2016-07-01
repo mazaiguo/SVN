@@ -22,12 +22,10 @@ ZWFORWHRQAPP
 //-----------------------------------------------------------------------------
 CGasPipe::CGasPipe () : AcDbEntity () 
 {
-	m_startPt.set(0, 0, 0);//插入点
 	m_dRadius = CGWDesingUtils::getGlobalRadius();//圆半径，默认为30
 	m_dTextHeight = CGWDesingUtils::getGlobalTextHeight();//字高，默认为40
 	m_TextId = AcDbObjectId::kNull;//字体样式
 	m_LayerId = AcDbObjectId::kNull;//图层名
-	//m_strText = CGWDesingUtils::getNumCount();//文字	
 }
 
 CGasPipe::~CGasPipe ()
@@ -50,8 +48,19 @@ Acad::ErrorStatus CGasPipe::dwgOutFields (AcDbDwgFiler *pFiler) const
 		return (es) ;
 	//----- Output params
 	//.....
-	es = pFiler->writePoint3d(m_startPt);
-	es = pFiler->writePoint3d(m_endPt);
+	es = pFiler->writeUInt32(m_nSize);
+	for (vector<PlineInfo>::const_iterator iter = m_dataInfo.begin();
+		iter != m_dataInfo.end();
+		++iter)
+	{	
+		PlineInfo pInfo = *iter;
+		pFiler->writeUInt16(pInfo.nIndex);
+		pFiler->writePoint3d(m_ptArr.at(pInfo.nIndex));
+		pFiler->writeDouble(pInfo.dBulge);
+		pFiler->writeDouble(pInfo.dStartWidth);
+		pFiler->writeDouble(pInfo.dEndWidth);
+		pFiler->writeBool(pInfo.bIsClosed);
+	}
 	es = pFiler->writeHardPointerId(m_TextId);
 	es = pFiler->writeHardPointerId(m_LayerId);
 	es = pFiler->writeHardPointerId(m_startId);
@@ -79,8 +88,32 @@ Acad::ErrorStatus CGasPipe::dwgInFields (AcDbDwgFiler *pFiler)
 	//	return (Acad::eMakeMeProxy) ;
 	//----- Read params
 	//.....
-	es = pFiler->readPoint3d(&m_startPt);
-	es = pFiler->readPoint3d(&m_endPt);
+	es = pFiler->readUInt32(&m_nSize);
+	Adesk::UInt16 nIndex;
+	AcGePoint3d insertPt;
+	double dBulge;
+	double dStartWidth;
+	double dEndWidth;
+	bool bIsClosed;	
+	PlineInfo pInfo;
+	m_ptArr.removeAll();
+	for (int i=0; i<m_nSize; i++)
+	{
+		pFiler->readUInt16(&nIndex);
+		pFiler->readPoint3d(&insertPt);
+		pFiler->readDouble(&dBulge);
+		pFiler->readDouble(&dStartWidth);
+		pFiler->readDouble(&dEndWidth);
+		pFiler->readBool(&bIsClosed);
+		pInfo.nIndex = nIndex;
+		pInfo.insertPt = insertPt;
+		pInfo.dBulge = dBulge;
+		pInfo.dStartWidth = dStartWidth;
+		pInfo.dEndWidth = dEndWidth;
+		pInfo.bIsClosed = bIsClosed;
+		m_dataInfo.push_back(pInfo);
+		m_ptArr.append(insertPt);
+	}
 	AcDbHardPointerId tmpId = AcDbHardPointerId::kNull;
 	es = pFiler->readHardPointerId(&tmpId);
 	m_TextId = tmpId;
@@ -322,30 +355,28 @@ void CGasPipe::unappended (const AcDbObject *pDbObj)
 			db = acdbHostApplicationServices()->workingDatabase();
 
 		//CreateWipeout();
-		AcDbLine pline;
-		pline.setDatabaseDefaults(db);
+		AcDbPolyline pLine;
+		pLine.setDatabaseDefaults(db);
 		if (!m_LayerId.isNull())
 		{
-			pline.setLayer(m_LayerId);
+			pLine.setLayer(m_LayerId);
 		}
-		AcGePoint3d startPt,endPt;
-		AcGeVector3d vec = m_endPt - m_startPt;
-		startPt = m_startPt;
-		endPt = m_endPt;
-		double dAng = vec.angleOnPlane(AcGePlane::kXYPlane);
-		if (!m_startId.isNull())
-		{
-			acutPolar(asDblArray(m_startPt), dAng, m_dRadius, asDblArray(startPt));
-		}
-		if (!m_endId.isNull())
-		{
-			acutPolar(asDblArray(m_endPt), dAng + PI, m_dRadius, asDblArray(endPt));
-		}
+
+		int i=0;
+		pLine.setClosed(m_dataInfo.at(0).bIsClosed);
+		AcGePoint3d endPt = m_dataInfo.at(m_dataInfo.size() - 1).insertPt;
 		
-		pline.setStartPoint(startPt);
-		pline.setEndPoint(endPt);
-		pline.worldDraw(mode);
+		for (vector<PlineInfo>::iterator iter = m_dataInfo.begin();
+			iter != m_dataInfo.end();
+			++iter)
+		{
+			PlineInfo info = *iter;
+			pLine.addVertexAt(i, info.insertPt.convert2d(AcGePlane::kXYPlane), info.dBulge, info.dStartWidth, info.dEndWidth);
+			i++;
+		}
+		pLine.worldDraw(mode);
 		
+		//double dDist = 
 		return Adesk::kTrue;
 	}
 
@@ -373,8 +404,21 @@ void CGasPipe::unappended (const AcDbObject *pDbObj)
 		assertWriteEnabled();
 		//Acad::ErrorStatus retCode =AcDbEntity::subTransformBy (xform) ;
 		//return (retCode) ;
-		m_startPt.transformBy(xform);
-		m_endPt.transformBy(xform);
+// 		m_startPt.transformBy(xform);
+// 		m_endPt.transformBy(xform);
+		/*for (vector<PlineInfo>::iterator iter = m_dataInfo.begin();
+			iter != m_dataInfo.end();
+			++iter)
+		{
+			PlineInfo info = *iter;
+			AcGePoint3d pt = info.insertPt;
+			pt = pt.transformBy(xform);
+			info.insertPt = pt;
+		}*/
+		for (int i=0; i<m_nSize; i++)
+		{
+			m_ptArr.at(i).transformBy(xform);
+		}
 		return Acad::eOk;
 	}
 
@@ -391,17 +435,24 @@ void CGasPipe::unappended (const AcDbObject *pDbObj)
 		assertReadEnabled () ;
 		AcGeVector3d viewDir(viewXform(Z, 0), viewXform(Z, 1),
 			viewXform(Z, 2));
-		AcGeLineSeg3d lnsg(m_startPt, m_endPt);
+		//AcGeLineSeg3d lnsg(m_startPt, m_endPt);
+		//AcGePolyline3d 
 		AcGePoint3d pt;
 		if (osnapMode == AcDb::kOsModeEnd)
 		{
-			snapPoints.append(m_startPt);
-			snapPoints.append(m_endPt);
+			for (vector<PlineInfo>::const_iterator iter = m_dataInfo.begin();
+				iter != m_dataInfo.end();
+				++iter)
+			{
+				PlineInfo info = *iter;
+				AcGePoint3d pt = info.insertPt;
+				snapPoints.append(pt);
+			}
 		}
 		else if (osnapMode == AcDb::kOsModeNear)
 		{
-			pt = lnsg.projClosestPointTo(pickPoint, viewDir);
-			snapPoints.append(pt);
+			//pt = lnsg.projClosestPointTo(pickPoint, viewDir);
+			//snapPoints.append(pt);
 		}
 		return (AcDbEntity::subGetOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds)) ;
 	}
@@ -419,17 +470,23 @@ void CGasPipe::unappended (const AcDbObject *pDbObj)
 		assertReadEnabled () ;
 		AcGeVector3d viewDir(viewXform(Z, 0), viewXform(Z, 1),
 			viewXform(Z, 2));
-		AcGeLineSeg3d lnsg(m_startPt, m_endPt);
+		//AcGeLineSeg3d lnsg(m_startPt, m_endPt);
 		AcGePoint3d pt;
 		if (osnapMode == AcDb::kOsModeEnd)
 		{
-			snapPoints.append(m_startPt);
-			snapPoints.append(m_endPt);
+			for (vector<PlineInfo>::const_iterator iter = m_dataInfo.begin();
+				iter != m_dataInfo.end();
+				++iter)
+			{
+				PlineInfo info = *iter;
+				AcGePoint3d pt = info.insertPt;
+				snapPoints.append(pt);
+			}
 		}
 		else if (osnapMode == AcDb::kOsModeNear)
 		{
-			pt = lnsg.projClosestPointTo(pickPoint, viewDir);
-			snapPoints.append(pt);
+			/*pt = lnsg.projClosestPointTo(pickPoint, viewDir);
+			snapPoints.append(pt);*/
 		}
 		return (AcDbEntity::subGetOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds, insertionMat)) ;
 	}
@@ -442,8 +499,16 @@ void CGasPipe::unappended (const AcDbObject *pDbObj)
 		assertReadEnabled () ;
 		//----- This method is never called unless you return eNotImplemented 
 		//----- from the new getGripPoints() method below (which is the default implementation)
-		gripPoints.append(m_startPt);
-		gripPoints.append(m_endPt);
+	/*	gripPoints.append(m_startPt);
+		gripPoints.append(m_endPt);*/
+		for (vector<PlineInfo>::const_iterator iter = m_dataInfo.begin();
+			iter != m_dataInfo.end();
+			++iter)
+		{
+			PlineInfo info = *iter;
+			AcGePoint3d pt = info.insertPt;
+			gripPoints.append(pt);
+		}
 		return Acad::eOk ;
 	}
 
@@ -452,8 +517,17 @@ void CGasPipe::unappended (const AcDbObject *pDbObj)
 		assertWriteEnabled () ;
 		//----- This method is never called unless you return eNotImplemented 
 		//----- from the new moveGripPointsAt() method below (which is the default implementation)
-		m_startPt += offset;
-		m_endPt += offset;
+		/*m_startPt += offset;
+		m_endPt += offset;*/
+		for (vector<PlineInfo>::iterator iter = m_dataInfo.begin();
+			iter != m_dataInfo.end();
+			++iter)
+		{
+			PlineInfo info = *iter;
+			AcGePoint3d pt = info.insertPt;
+			pt += offset;
+			info.insertPt = pt;
+		}
 		return Acad::eOk ;
 	}
 
@@ -499,12 +573,12 @@ void CGasPipe::unappended (const AcDbObject *pDbObj)
 
 
 		Acad::ErrorStatus es;
-		AcDbLine* pLine = new AcDbLine;
+	/*	AcDbLine* pLine = new AcDbLine;
 		pLine->setDatabaseDefaults(db);
 		pLine->setStartPoint(m_startPt);
 		pLine->setEndPoint(m_endPt);
 		pLine->setLayer(m_LayerId);
-		entitySet.append(pLine);
+		entitySet.append(pLine);*/
 		return Acad::eOk ;
 	}
 
@@ -694,18 +768,6 @@ void CGasPipe::unappended (const AcDbObject *pDbObj)
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //函数
-AcGePoint3d CGasPipe::startPt()
-{
-	assertReadEnabled () ;
-	return m_startPt;
-}
-
-AcGePoint3d CGasPipe::endPt()
-{
-	assertReadEnabled();
-	return m_endPt;
-}
-
 AcDbObjectId CGasPipe::textId()
 {
 	assertReadEnabled () ;
@@ -729,18 +791,24 @@ AcDbObjectId CGasPipe::endId()
 	return m_endId;
 }
 
-void CGasPipe::setStartPt(AcGePoint3d basePt)
+vector<PlineInfo> CGasPipe::getData()
 {
-	assertWriteEnabled () ;
-	m_startPt = basePt;
+	assertReadEnabled();
+	return m_dataInfo;
 }
 
-void CGasPipe::setEndPt(AcGePoint3d endPt)
+void CGasPipe::setData(vector<PlineInfo> info)
 {
 	assertWriteEnabled();
-	m_endPt = endPt;
+	m_dataInfo.clear();
+	m_dataInfo.insert(m_dataInfo.end(), info.begin(), info.end());
+	
+	m_nSize = m_dataInfo.size();
+	for (int i=0; i<m_nSize; i++)
+	{
+		m_ptArr.append(m_dataInfo.at(i).insertPt);
+	}
 }
-
 
 void CGasPipe::setTextId(AcDbObjectId textId)
 {
@@ -768,8 +836,12 @@ void CGasPipe::setEndId(AcDbObjectId endId)
 double CGasPipe::length()
 {
 	assertReadEnabled();
-	double dLength = acutDistance(asDblArray(m_startPt), asDblArray(m_endPt))/CGWDesingUtils::getGlobalScale();
-	return dLength;
+	/*double dLength = acutDistance(asDblArray(m_startPt), asDblArray(m_endPt))/CGWDesingUtils::getGlobalScale();
+	return dLength;*/
+	return 0.0;
+	/*AcGePolyline3d pline(m_ptArr);
+	double dLen;
+	pline.endParam();*/
 }
 
 ////创建WipeOut对象
@@ -851,3 +923,4 @@ double CGasPipe::length()
 //
 //}
 //
+

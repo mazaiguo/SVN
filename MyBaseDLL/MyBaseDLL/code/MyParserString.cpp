@@ -175,7 +175,7 @@ int MyParserString::GetPrePileLengthEx(CString strPile, CString& strPrefix, CStr
 	return nlen;
 }
 
-AcDb::LineWeight MyParserString::StrToLineType(CString& str)
+AcDb::LineWeight MyParserString::StrToLineWeight(CString& str)
 {
 	AcDb::LineWeight type;
 	double dLweight = 0.0;
@@ -495,4 +495,36 @@ bool MyParserString::JudgeStr(CString str)
 		}
 	}
 	return bIsShuzi;
+}
+
+CString MyParserString::SubString(CString string,CString Split,int index)
+{
+	int Num=string.Find(Split);
+	if(Num==-1) return _T("");
+	if(index==0)
+		return string.Left(Num);
+	int i=1;
+	CString retStr=_T("");
+	int nCount = 0;
+#ifdef UNICODE
+	nCount = 0;
+#else
+	nCount = 1;
+#endif
+	while(i<index)
+	{
+		Num=string.Find(Split,Num+1+nCount);
+		if(Num==-1) return _T("");
+		i++;
+	}
+	int Num2=string.Find(Split,Num+1+nCount);
+	if(Num2==-1){
+		retStr=string.Mid(Num+1+nCount);
+	}
+	else
+	{
+		retStr=string.Mid(Num+1+nCount,Num2-Num-1-nCount);
+
+	}
+	return retStr;
 }

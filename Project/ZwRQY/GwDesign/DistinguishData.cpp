@@ -1,21 +1,23 @@
 #include "StdAfx.h"
 #include "DistinguishData.h"
-#include "CGasPipe.h"
+//#include "CGasPipe.h"
 #include "SerialNo.h"
+#include "COperatePL.h"
 
 CDistinguishData::CDistinguishData(void)
 {
-	m_pDataStore = new CGDDataStore();
+	m_PlineVec.clear();
+	m_MapInfo.clear();
+	m_MulData.clear();
+	m_dataInfo.clear();
 }
 
 CDistinguishData::~CDistinguishData(void)
 {
-	if (m_pDataStore != NULL)
-	{
-		delete m_pDataStore;
-		m_pDataStore = NULL;
-	}
-	m_lineVec.clear();
+	m_PlineVec.clear();
+	m_MapInfo.clear();
+	m_MulData.clear();
+	m_dataInfo.clear();
 }
 
 bool CDistinguishData::doIt()
@@ -53,7 +55,6 @@ bool CDistinguishData::selectEnt()
 	AcDbEntity* pEnt = NULL;
 	ads_name ename;
 	AcDbObjectId objId = AcDbObjectId::kNull;
-	map<CString, AcDbObjectId> mapInfo;
 	for (int i=0; i<sslen; i++)
 	{
 		acedSSName(ssname, i, ename);
@@ -62,59 +63,43 @@ bool CDistinguishData::selectEnt()
 		{
 			continue;
 		}
-		if (pEnt->isKindOf(AcDbLine::desc()))
-		{
-			AcDbLine* pLine = AcDbLine::cast(pEnt);
-			CLine tmpLine;
-			tmpLine.setStartPt(pLine->startPoint());
-			tmpLine.setEndPt(pLine->endPoint());
-			tmpLine.setObjectId(objId);
-			m_lineVec.push_back(tmpLine);
-			CString strTmp;
-			MyTransFunc::ptToStr(pLine->startPoint(), strTmp);
-			pair<map<CString, AcDbObjectId>::iterator, bool> bRet = mapInfo.insert(make_pair(strTmp, objId));
-			if (!bRet.second)
-			{
-				m_MulData.insert(make_pair(strTmp, strTmp));
-			}
-			MyTransFunc::ptToStr(pLine->endPoint(), strTmp);
-			bRet = mapInfo.insert(make_pair(strTmp, objId));
-			if (!bRet.second)
-			{
-				m_MulData.insert(make_pair(strTmp, strTmp));
-			}
-		}
-		else if (pEnt->isKindOf(AcDbPolyline::desc()))
+		if (pEnt->isKindOf(AcDbPolyline::desc()))
 		{
 			AcDbPolyline* pLine = AcDbPolyline::cast(pEnt);
-			AcDbVoidPtrArray entitySet;
-			pLine->explode(entitySet);
-			for (int j=0; j<entitySet.length(); j++)
+			double dWidth = 0.0;
+			pLine->getConstantWidth(dWidth);
+			AcGePoint3d startPt,endPt;
+			pLine->getStartPoint(startPt);
+			pLine->getEndPoint(endPt);
+			pLine->close();
+
+			if (dWidth > 0)
 			{
-				AcDbEntity* pTmpEnt = (AcDbEntity*)entitySet.at(j);
-				if (pTmpEnt->isKindOf(AcDbLine::desc()))
+				CString strStart,strEnd,strTmp;
+				MyTransFunc::ptToStr(startPt, strStart);
+				MyTransFunc::ptToStr(endPt, strEnd);
+				strTmp = strStart + strEnd;
+				pair<map<CString, AcDbObjectId>::iterator, bool> bRet = m_MapInfo.insert(make_pair(strTmp, objId));
+				if (!bRet.second)
 				{
-					AcDbLine* pTmpLine = AcDbLine::cast(pTmpEnt);
-					AcDbObjectId retId = AcDbObjectId::kNull;
-					MyBaseUtils::AddtoModelSpaceAndClose(pTmpLine, retId);
-					CLine tmpLine;
-					tmpLine.setStartPt(pTmpLine->startPoint());
-					tmpLine.setEndPt(pTmpLine->endPoint());
-					tmpLine.setObjectId(retId);
-					m_pDataStore->getLineData().push_back(tmpLine);
+					m_MulData.insert(make_pair(strTmp, objId));
 				}
-				else if (pTmpEnt->isKindOf(AcDbArc::desc()))
+				m_PlineVec.push_back(objId);
+				
+
+				//////////////////////////////////////////////////////////////////////////
+				vector<AcDbObjectId> plineVec;
+				plineVec.push_back(objId);
+				pair<map<CString, vector<AcDbObjectId> >::iterator, bool> bRe = m_dataInfo.insert(make_pair(strStart, plineVec));
+				if (!bRe.second)
 				{
-					AcDbArc* pTmpArc = AcDbArc::cast(pTmpEnt);
-					AcDbObjectId retId = AcDbObjectId::kNull;
-					MyBaseUtils::AddtoModelSpaceAndClose(pTmpArc, retId);
-					CArc tmpArc;
-					tmpArc.setCenter(pTmpArc->center());
-					tmpArc.setRadius(pTmpArc->radius());
-					tmpArc.setStartAngle(pTmpArc->startAngle());
-					tmpArc.setEndAngle(pTmpArc->endAngle());
-					tmpArc.setObjId(retId);
-					m_pDataStore->getArcData().push_back(tmpArc);
+					bRe.first->second.push_back(objId);
+				}
+
+				bRe = m_dataInfo.insert(make_pair(strEnd, plineVec));
+				if (!bRe.second)
+				{
+					bRe.first->second.push_back(objId);
 				}
 			}
 		}
@@ -126,33 +111,48 @@ bool CDistinguishData::selectEnt()
 
 bool CDistinguishData::collectData()
 {
-	map<CString, CLine> multipleLine;
-	for(vector<CLine>::size_type ix=0; ix<m_lineVec.size(); ++ix)
+	COperatePL pl;
+	for(vector<AcDbObjectId>::size_type ix=0; ix<m_PlineVec.size(); ++ix)
 	{
-		for(vector<CLine>::size_type iy=ix+1; iy<m_lineVec.size(); ++iy)
+		for(vector<AcDbObjectId>::size_type iy=ix+1; iy<m_PlineVec.size(); ++iy)
 		{
-			CLine line1,line2;
-			line1 = m_lineVec.at(ix);
-			line2 = m_lineVec.at(iy);
-			if (CompareTwoEnt(line1, line2))
+			AcDbObjectId line1,line2;
+			line1 = m_PlineVec.at(ix);
+			line2 = m_PlineVec.at(iy);
+			if (pl.CompareTwoPline(line1, line2) == 1)
 			{
-				CString strTmp;
-				strTmp.Format(_T("%f,%f,%f,%f,%f,%f"), line1.startPt().x, line1.startPt().y,line1.startPt().z,line1.endPt().x,line1.endPt().y,line1.endPt().z);
-				multipleLine.insert(std::make_pair(strTmp, line1));
+				CString strStart,strEnd,strTmp;
+				AcGePoint3d startPt,endPt;
+				startPt = pl.startPt(line2);
+				endPt = pl.endPt(line2);
+				MyTransFunc::ptToStr(startPt, strStart);
+				MyTransFunc::ptToStr(endPt, strEnd);
+				strTmp = strStart + strEnd;
+				m_MulData.insert(std::make_pair(strTmp, line2));
+			}
+			else if (pl.CompareTwoPline(line1, line2) == -1)
+			{
+				CString strStart,strEnd,strTmp;
+				AcGePoint3d startPt,endPt;
+				startPt = pl.startPt(line1);
+				endPt = pl.endPt(line1);
+				MyTransFunc::ptToStr(startPt, strStart);
+				MyTransFunc::ptToStr(endPt, strEnd);
+				strTmp = strStart + strEnd;
+				m_MulData.insert(std::make_pair(strTmp, line1));
 			}
 		}
 	}
 
 
-	for (map<CString, CLine>::iterator iter = multipleLine.begin();
-		iter != multipleLine.end();
+	for (map<CString, AcDbObjectId>::iterator iter = m_MulData.begin();
+		iter != m_MulData.end();
 		++iter)
 	{
-		CLine tmpLine = iter->second;
-		AcDbObjectId objId = tmpLine.objId();
+		AcDbObjectId objId = iter->second;
 		MyEditEntity::openEntChangeColor(objId, 1);
 	}
-	if (multipleLine.size() > 0)
+	if (m_MulData.size() > 0)
 	{
 		return false;
 	}
@@ -161,75 +161,21 @@ bool CDistinguishData::collectData()
 
 bool CDistinguishData::doData()
 {
-	AcDbObjectId entId = AcDbObjectId::kNull;
-	AcDbObjectId startId,endId;
-	AcGePoint3d startPt,endPt,tmpPt;
-	CString strTmp;
-	AcDbObjectId layId = MySymble::CreateNewLayer(_T("abcd"), 1);
-	map<CString, AcDbObjectId> xhInfo;
-	for (vector<CLine>::iterator iter = m_lineVec.begin();
-		iter != m_lineVec.end(); ++iter)
+	for (map<CString, vector<AcDbObjectId> >::iterator iter = m_dataInfo.begin();
+		iter != m_dataInfo.end();
+		++iter)
 	{
-		CLine pline = *iter;
-		startPt = pline.startPt();
-		endPt = pline.endPt();
-		MyTransFunc::ptToStr(startPt, strTmp);
-		map<CString, CString>::iterator Itr = m_MulData.find(strTmp);
-		if (Itr != m_MulData.end())
-		{
-			//说明找到了
-			map<CString, AcDbObjectId>::iterator iItr = xhInfo.find(strTmp);
-			if (iItr != xhInfo.end())//说明找到了
-			{
-				startId = iItr->second;
-			}
-			else
-			{
-				startId = drawXh(startPt);
-				xhInfo.insert(make_pair(strTmp, startId));
-			}
-		}
-		else
-		{
-			//没有找到，直接新建序号
-			startId = drawXh(startPt);
-			xhInfo.insert(make_pair(strTmp, startId));
-		}
-
-		MyTransFunc::ptToStr(endPt, strTmp);
-		Itr = m_MulData.find(strTmp);
-		if (Itr != m_MulData.end())
-		{
-			//说明找到了
-			map<CString, AcDbObjectId>::iterator iItr = xhInfo.find(strTmp);
-			if (iItr != xhInfo.end())//说明找到了
-			{
-				endId = iItr->second;
-			}
-			else
-			{
-				endId = drawXh(startPt);
-				xhInfo.insert(make_pair(strTmp, endId));
-			}
-		}
-		else
-		{
-			//没有找到，直接新建序号
-			endId = drawXh(startPt);
-			xhInfo.insert(make_pair(strTmp, endId));
-		}
-
-		drawPipe(startPt, endPt, startId, endId);
-		MyEditEntity::EraseObj(pline.objId());
-		//m_MapInfo.insert(make_pair(tmpPt, entId));
+		CString strTmp = iter->first;
+		AcGePoint3d tmpPt = stringToPt(strTmp);
+		vector<AcDbObjectId> vec = iter->second;
+		drawXh(tmpPt, vec);
 	}
-
 	return true;
 }
 
 AcDbObjectId CDistinguishData::drawPipe(AcGePoint3d startPt, AcGePoint3d endPt, AcDbObjectId startId, AcDbObjectId endId)
 {
-	AcDbObjectId layId = MySymble::CreateNewLayer(_T("abcd"), 1);
+	/*AcDbObjectId layId = MySymble::CreateNewLayer(_T("abcd"), 1);
 	CGasPipe* pPipe = new CGasPipe;
 	pPipe->setStartPt(startPt);
 	pPipe->setStartId(startId);
@@ -237,13 +183,28 @@ AcDbObjectId CDistinguishData::drawPipe(AcGePoint3d startPt, AcGePoint3d endPt, 
 	pPipe->setEndPt(endPt);
 	pPipe->setLayer(layId);
 	MyBaseUtils::addToCurrentSpaceAndClose(pPipe);
-	return pPipe->objectId();
+	return pPipe->objectId();*/
+	return AcDbObjectId::kNull;
 }
 
-AcDbObjectId  CDistinguishData::drawXh(AcGePoint3d basePt)
+
+AcDbObjectId CDistinguishData::drawXh(AcGePoint3d basePt, vector<AcDbObjectId> info)
 {
 	CSerialNo* pNo = new CSerialNo;
 	pNo->setBasePt(basePt);
 	MyBaseUtils::addToCurrentSpaceAndClose(pNo);
 	return pNo->objectId();
+}
+
+AcGePoint3d CDistinguishData::stringToPt(CString strValue)
+{
+	CString strFirst,strMid,strEnd;
+	strFirst = MyParserString::SubString(strValue, _T(","), 0);
+	strMid = MyParserString::SubString(strValue, _T(","), 1);
+	strEnd = MyParserString::SubString(strValue, _T(","), 2);
+	AcGePoint3d pt;
+	pt.x = MyTransFunc::StringToDouble(strFirst);
+	pt.y = MyTransFunc::StringToDouble(strMid);
+	pt.z = MyTransFunc::StringToDouble(strEnd);
+	return pt;
 }

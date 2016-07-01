@@ -61,5 +61,16 @@
 //- Declare it as an extern here so that it becomes available in all modules
 extern AcApDataManager<CDocData> DocVars ;
 
+#define XDT_XG_CSTRING			20000
+#define XDT_XG_INT				20001
+#define XDT_XG_DOUBLE			20002
+#define XDT_XG_HANDLE			20003
+#define XDT_XG_POINT			20004
+
+#define START_ENT				_T("起始序号")
+#define END_ENT					_T("终止序号")
+#define GD_NODE					_T("管道段")
+#define GD_TYPE					_T("管道类型")
+
 #pragma pack (pop)
 

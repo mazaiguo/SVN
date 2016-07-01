@@ -6,9 +6,10 @@
 #include "DistinguishData.h"
 #include "DlgSettings.h"
 #include "SerialNoJig.h"
-#include "CGasPipe.h"
+//#include "CGasPipe.h"
 #include "GWDesingUtils.h"
 #include "DrawUtility.h"
+#include "COperatePL.h"
 //#include "DlgBasicSettings.h"
 //#include "DlgTextSettings.h"
 //-----------------------------------------------------------------------------
@@ -51,45 +52,6 @@ public:
 	static void GwDesign_SBGW(void)
 	{
 		// Add your code for command GwDesign._SBGW here
-		/*resbuf* filter = acutBuildList(-4,_T("<and"),RTDXF0,_T("*POLYLINE,LINE"),-4,_T("and>"),RTNONE);
-		ads_name ssname;
-		int nRet = acedSSGet(NULL, NULL, NULL, filter, ssname);
-		acutRelRb(filter);
-		if (nRet != RTNORM)
-		{
-			return;
-		}
-		long sslen;
-		acedSSLength(ssname, &sslen);
-		if (sslen < 1)
-		{
-			return;
-		}
-
-		AcDbEntity* pEnt = NULL;
-		ads_name ename;
-		AcDbObjectId objId = AcDbObjectId::kNull;
-		for (int i=0; i<sslen; i++)
-		{
-			acedSSName(ssname, i, ename);
-			acdbGetObjectId(objId, ename);
-			if (acdbOpenAcDbEntity(pEnt, objId, AcDb::kForRead) != Acad::eOk)
-			{
-				continue;
-			}
-			if (pEnt->isKindOf(AcDbLine::desc()))
-			{
-				AcDbLine* pLine = AcDbLine::cast(pEnt);
-
-			}
-			else if (pEnt->isKindOf(AcDbPolyline::desc()))
-			{
-				AcDbPolyline* pLine = AcDbPolyline::cast(pEnt);
-				int nSize = pLine->numVerts();
-				bool bIsClosed = pLine->isClosed();
-				
-			}
-		}*/
 		CDistinguishData dData;
 		dData.doIt();
 	}
@@ -107,10 +69,6 @@ public:
 	{
 		// Add your code for command WRQ_GwDesign._SZ here
 		CAcModuleResourceOverride rs;
-		/*CDlgBasicSettings dlg;
-		dlg.DoModal();*/
-		/*CDlgTextSettings dlg;
-		dlg.DoModal();*/
 		CDlgSettings dlg;
 		dlg.DoModal();
 	}
@@ -174,13 +132,13 @@ public:
 		}
 		acdbGetObjectId(endId, ename);
 
-		CGasPipe* pGsPipe = new CGasPipe;
+	/*	CGasPipe* pGsPipe = new CGasPipe;
 		pGsPipe->setLayer(layId);
 		pGsPipe->setStartPt(startPt);
 		pGsPipe->setEndPt(endPt);
 		pGsPipe->setStartId(startId);
 		pGsPipe->setEndId(endId);
-		MyBaseUtils::addToCurrentSpaceAndClose(pGsPipe);
+		MyBaseUtils::addToCurrentSpaceAndClose(pGsPipe);*/
 
 	}
 
@@ -196,95 +154,114 @@ public:
 	static void WRQ_GwDesign_CRXH(void)
 	{
 		// Add your code for command WRQ_GwDesign._CRXH here
-		ads_name ename;
-		AcGePoint3d pt;
-		AcDbObjectId objId = AcDbObjectId::kNull;
-		int nRet = acedEntSel(_T("\n请选择燃气管道："), ename, asDblArray(pt));
-		if (nRet != RTNORM)
-		{
-			return;
-		}
-		acdbGetObjectId(objId, ename);
-		CGasPipe* pGsPipe = NULL;
-		if (acdbOpenAcDbEntity((AcDbEntity*&)pGsPipe, objId, AcDb::kForWrite) != Acad::eOk)
-		{
-			return;
-		}
-		double dLength = pGsPipe->length();
-		if (dLength < 3*CGWDesingUtils::getGlobalRadius())
-		{
-			AfxMessageBox(_T("太短了，不能在此处插入序号"));
-			pGsPipe->close();
-			return;
-		}
-		AcDbObjectId startId,endId;
-		AcGePoint3d startPt,midPt,endPt;
-		startId = pGsPipe->startId();
-		endId = pGsPipe->endId();
-		startPt = pGsPipe->startPt();
-		endPt = pGsPipe->endPt();
-		pGsPipe->close();
-		
-		bool bContinued = true;
-		bool bErase = true;
-		while (bContinued)
-		{
-			bContinued = false;
-			nRet = acedGetPoint(asDblArray(startPt), _T("\n请选择插入点"), asDblArray(midPt));
-			if (nRet != RTNORM)
-			{
-				bErase = false;
-				break;
-			}				
-			
-			if ((acutDistance(asDblArray(startPt), asDblArray(midPt)) < 2*CGWDesingUtils::getGlobalRadius())
-				||(acutDistance(asDblArray(endPt), asDblArray(midPt)) < 2*CGWDesingUtils::getGlobalRadius()))
-			{
-				AfxMessageBox(_T("不能在此处插入序号，离端点太近，序号会重叠"));
-				bContinued = true;
-				bErase = true;
-				continue;
-			}
-		}	
+		//ads_name ename;
+		//AcGePoint3d pt;
+		//AcDbObjectId objId = AcDbObjectId::kNull;
+		//int nRet = acedEntSel(_T("\n请选择燃气管道："), ename, asDblArray(pt));
+		//if (nRet != RTNORM)
+		//{
+		//	return;
+		//}
+		//acdbGetObjectId(objId, ename);
+		//CGasPipe* pGsPipe = NULL;
+		//if (acdbOpenAcDbEntity((AcDbEntity*&)pGsPipe, objId, AcDb::kForWrite) != Acad::eOk)
+		//{
+		//	return;
+		//}
+		//double dLength = pGsPipe->length();
+		//if (dLength < 3*CGWDesingUtils::getGlobalRadius())
+		//{
+		//	AfxMessageBox(_T("太短了，不能在此处插入序号"));
+		//	pGsPipe->close();
+		//	return;
+		//}
+		//AcDbObjectId startId,endId;
+		//AcGePoint3d startPt,midPt,endPt;
+		//startId = pGsPipe->startId();
+		//endId = pGsPipe->endId();
+		////startPt = pGsPipe->startPt();
+		////endPt = pGsPipe->endPt();
+		//pGsPipe->close();
+		//
+		//bool bContinued = true;
+		//bool bErase = true;
+		//while (bContinued)
+		//{
+		//	bContinued = false;
+		//	nRet = acedGetPoint(asDblArray(startPt), _T("\n请选择插入点"), asDblArray(midPt));
+		//	if (nRet != RTNORM)
+		//	{
+		//		bErase = false;
+		//		break;
+		//	}				
+		//	
+		//	if ((acutDistance(asDblArray(startPt), asDblArray(midPt)) < 2*CGWDesingUtils::getGlobalRadius())
+		//		||(acutDistance(asDblArray(endPt), asDblArray(midPt)) < 2*CGWDesingUtils::getGlobalRadius()))
+		//	{
+		//		AfxMessageBox(_T("不能在此处插入序号，离端点太近，序号会重叠"));
+		//		bContinued = true;
+		//		bErase = true;
+		//		continue;
+		//	}
+		//}	
 	
-		
-		if (bErase)
-		{
-			MyEditEntity::EraseObj(pGsPipe->objectId());
-			AcDbObjectId layId = MySymble::CreateNewLayer(_T("abcd"), 1);
-			CSerialNo* pNo = new CSerialNo;
-			MyBaseUtils::addToCurrentSpaceAndClose(pNo);
-			AcDbObjectId midId = pNo->objectId();
-			CGasPipe* pStartPipe = new CGasPipe;
-			pStartPipe->setStartPt(startPt);
-			pStartPipe->setStartId(startId);
-			pStartPipe->setEndId(midId);
-			pStartPipe->setEndPt(midPt);
-			pStartPipe->setLayer(layId);
-			MyBaseUtils::addToCurrentSpaceAndClose(pStartPipe);
+		//
+		//if (bErase)
+		//{
+		//	MyEditEntity::EraseObj(pGsPipe->objectId());
+		//	AcDbObjectId layId = MySymble::CreateNewLayer(_T("abcd"), 1);
+		//	CSerialNo* pNo = new CSerialNo;
+		//	MyBaseUtils::addToCurrentSpaceAndClose(pNo);
+		//	AcDbObjectId midId = pNo->objectId();
+		//	/*CGasPipe* pStartPipe = new CGasPipe;
+		//	pStartPipe->setStartPt(startPt);
+		//	pStartPipe->setStartId(startId);
+		//	pStartPipe->setEndId(midId);
+		//	pStartPipe->setEndPt(midPt);
+		//	pStartPipe->setLayer(layId);
+		//	MyBaseUtils::addToCurrentSpaceAndClose(pStartPipe);
 
-			CGasPipe* pEndPipe = new CGasPipe;
-			pEndPipe->setStartPt(midPt);
-			pEndPipe->setStartId(midId);
-			pEndPipe->setEndId(endId);
-			pEndPipe->setEndPt(endPt);
-			pEndPipe->setLayer(layId);
-			MyBaseUtils::addToCurrentSpaceAndClose(pEndPipe);
-		}
-		
+		//	CGasPipe* pEndPipe = new CGasPipe;
+		//	pEndPipe->setStartPt(midPt);
+		//	pEndPipe->setStartId(midId);
+		//	pEndPipe->setEndId(endId);
+		//	pEndPipe->setEndPt(endPt);
+		//	pEndPipe->setLayer(layId);
+		//	MyBaseUtils::addToCurrentSpaceAndClose(pEndPipe);*/
+		//}
+		//
 	}
 
 	// - WRQ_GwDesign._Test command (do not rename)
 	static void WRQ_GwDesign_Test(void)
 	{
 		// Add your code for command WRQ_GwDesign._Test here
+		ads_name ename;
+		AcGePoint3d pt;
+		int nRet = acedEntSel(_T("\n请选择一条多段线"), ename, asDblArray(pt));
+		if (nRet != RTNORM)
+		{
+			return;
+		}
+		AcDbObjectId objId = AcDbObjectId::kNull;
+		acdbGetObjectId(objId, ename);
+		/*COperatePL pl;
+		vector<PlineInfo> data = pl.getdatabyObjId(objId);
+		CGasPipe* pipe = new CGasPipe;
+		pipe->setData(data);
+		MyBaseUtils::addToCurrentSpace(pipe);
+		pipe->close();*/
+		COperatePL pl;
+		AcDbObjectId entId = AcDbObjectId::kNull;
+		entId = pl.trimendBycircle(objId);
+		entId = pl.trimstartBycircle(entId);
 	}
 
 	// - WRQ_GwDesign._HBDDX command (do not rename)
 	static void WRQ_GwDesign_HBDDX(void)
 	{
 		// Add your code for command WRQ_GwDesign._HBDDX here
-		AcDbObjectId preId = AcDbObjectId::kNull;
+		/*AcDbObjectId preId = AcDbObjectId::kNull;
 		AcDbObjectId plineId = AcDbObjectId::kNull;
 		ads_name ename;
 		AcGePoint3d pt;
@@ -300,8 +277,33 @@ public:
 			return;
 		}
 		acdbGetObjectId(plineId, ename);
-		CDrawUtility draw;
-		draw.JoinTwoPline(preId, plineId);
+		COperatePline draw;
+		draw.drawMergePline(preId, plineId);*/
+
+		ads_name ename;
+		AcGePoint3d pt;
+		int nRet = acedEntSel(_T("\n请选择一条多段线"), ename, asDblArray(pt));
+		if (nRet != RTNORM)
+		{
+			return;
+		}
+		AcGePoint3d startPt,endPt;
+		nRet = acedGetPoint(NULL, _T("\n选择起始点："), asDblArray(startPt));
+		if (nRet != RTNORM)
+		{
+			return;
+		}
+
+		nRet = acedGetPoint(NULL, _T("\n选择终点："), asDblArray(endPt));
+		if (nRet != RTNORM)
+		{
+			return;
+		}
+		AcDbObjectId objId = AcDbObjectId::kNull;
+		acdbGetObjectId(objId, ename);
+		COperatePL pl;
+		AcDbObjectId entId = AcDbObjectId::kNull;
+		entId = pl.restorePolyline(objId, startPt, endPt);
 	}
 } ;
 

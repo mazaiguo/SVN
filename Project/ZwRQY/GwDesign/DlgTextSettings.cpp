@@ -130,7 +130,7 @@ BOOL CDlgTextSettings::OnInitDialog()
 	}
 	m_ListCtrl.m_Map.insert(std::make_pair(2, tmpVec));
 	
-	InsertEmpty();
+	iniData();
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -230,6 +230,21 @@ void CDlgTextSettings::GetWindowFont()
 }
 
 
+void CDlgTextSettings::CreateTextStyleId()
+{
+	int nItem = m_ListCtrl.GetItemCount();
+	for (int i=0; i<nItem; i++)
+	{
+		m_strDescription = m_ListCtrl.GetItemText(i, 0);
+		m_strFont = m_ListCtrl.GetItemText(i, 1);
+		m_strBigFont = m_ListCtrl.GetItemText(i, 2);
+		m_strHeight = m_ListCtrl.GetItemText(i, 3);
+		m_strScale = m_ListCtrl.GetItemText(i, 4);
+		MySymble::CreateTextStyle(m_strDescription, m_strFont, m_strBigFont, MyTransFunc::StringToDouble(m_strScale), MyTransFunc::StringToDouble(m_strHeight), TRUE);
+	}
+	ReWriteFile();
+}
+
 BOOL CDlgTextSettings::PdThenameIsHave(CString name, CStringArray& arr)
 {
 	CString str;
@@ -328,4 +343,70 @@ void CDlgTextSettings::OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult)
 	}*/
 
 	*pResult = 0;
+}
+
+
+void CDlgTextSettings::iniData()
+{
+	CString strApp = MyBaseUtils::GetAppPath();
+	CString strFileName = strApp + _T("design\\basic\\textstyle.ini");
+	CStdioFile File;
+	if (!File.Open(strFileName, CFile::modeRead | CFile::typeText)) 
+	{
+		return;
+	}
+	CString buffer;
+	int i=0;
+	while (1)
+	{
+		if (!File.ReadString(buffer))
+			break;
+		m_strDescription = MyParserString::SubString(buffer, _T(","), 0);
+		m_strFont = MyParserString::SubString(buffer, _T(","), 1);
+		m_strBigFont = MyParserString::SubString(buffer, _T(","), 2);
+		m_strHeight = MyParserString::SubString(buffer, _T(","), 3);
+		m_strScale = MyParserString::SubString(buffer, _T(","), 4);
+		int nItem = m_ListCtrl.GetItemCount();
+		nItem = m_ListCtrl.InsertItem( nItem+1, _T("") );
+		SetInfoToListCtrl(nItem);
+	}
+
+	File.Close();
+}
+
+void CDlgTextSettings::ReWriteFile()
+{
+	CString strApp = MyBaseUtils::GetAppPath();
+	CString strFileName = strApp + _T("design\\basic\\textstyle.ini");
+	CStdioFile File;
+	if (!File.Open(strFileName, CFile::modeCreate | CFile::modeReadWrite| CFile::typeText)) 
+	{
+		return;
+	}
+	CString strTmp;
+	int nCursel = m_ListCtrl.GetItemCount();
+	for ( int i=0; i<nCursel; i++)
+	{
+		GetInfoFromListCtrl(i);
+
+		strTmp.Format(_T("%s,%s,%s,%s,%s\n"), m_strDescription, m_strFont, m_strBigFont, m_strHeight, m_strScale);
+		File.WriteString(strTmp);
+	}
+	File.Close();
+}
+void CDlgTextSettings::SetInfoToListCtrl(int nItem)
+{
+	m_ListCtrl.SetItemText(nItem, 0, m_strDescription);
+	m_ListCtrl.SetItemText(nItem, 1, m_strFont);
+	m_ListCtrl.SetItemText(nItem, 2, m_strBigFont);
+	m_ListCtrl.SetItemText(nItem, 3, m_strHeight);
+	m_ListCtrl.SetItemText(nItem, 4, m_strScale);
+}
+void CDlgTextSettings::GetInfoFromListCtrl(int i)
+{
+	m_strDescription = m_ListCtrl.GetItemText(i, 0);
+	m_strFont = m_ListCtrl.GetItemText(i, 1);
+	m_strBigFont = m_ListCtrl.GetItemText(i, 2);
+	m_strHeight = m_ListCtrl.GetItemText(i, 3);
+	m_strScale = m_ListCtrl.GetItemText(i, 4);
 }

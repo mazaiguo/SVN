@@ -10,7 +10,7 @@
 #include "ZdmDataInfo.h"
 #include "DrawZDM.h"
 #include "DrawDMXProcess.h"
-#include "CGasPipe.h"
+//#include "CGasPipe.h"
 #include "SerialNo.h"
 
 //-----------------------------------------------------------------------------
@@ -178,33 +178,33 @@ void CBaseDbReactor::objectModified(const AcDbDatabase * dwg, const AcDbObject *
 
 	//	}
 	//}
-	if (dbObj->isKindOf(CGasPipe::desc()))
-	{
-		CGasPipe* pGsPipe = CGasPipe::cast(dbObj);
-		AcDbObjectId startId,endId;	
-		AcGePoint3d startPt,endPt;
+	//if (dbObj->isKindOf(CGasPipe::desc()))
+	//{
+	//	CGasPipe* pGsPipe = CGasPipe::cast(dbObj);
+	//	AcDbObjectId startId,endId;	
+	//	AcGePoint3d startPt,endPt;
 
-		startId = pGsPipe->startId();
-		endId = pGsPipe->endId();
-		startPt = pGsPipe->startPt();
-		endPt = pGsPipe->endPt();
+	//	startId = pGsPipe->startId();
+	//	endId = pGsPipe->endId();
+	//	startPt = pGsPipe->startPt();
+	//	endPt = pGsPipe->endPt();
 
-		CSerialNo* pEnt = NULL;
-		if (acdbOpenAcDbEntity((AcDbEntity*&)pEnt, startId, AcDb::kForWrite) != Acad::eOk)
-		{
-			return;
-		}
-		pEnt->setBasePt(startPt);
-		pEnt->close();
+	//	CSerialNo* pEnt = NULL;
+	//	if (acdbOpenAcDbEntity((AcDbEntity*&)pEnt, startId, AcDb::kForWrite) != Acad::eOk)
+	//	{
+	//		return;
+	//	}
+	//	pEnt->setBasePt(startPt);
+	//	pEnt->close();
 
-		if (acdbOpenAcDbEntity((AcDbEntity*&)pEnt, endId, AcDb::kForWrite) != Acad::eOk)
-		{
-			return;
-		}
-		pEnt->setBasePt(endPt);
-		pEnt->close();
+	//	if (acdbOpenAcDbEntity((AcDbEntity*&)pEnt, endId, AcDb::kForWrite) != Acad::eOk)
+	//	{
+	//		return;
+	//	}
+	//	pEnt->setBasePt(endPt);
+	//	pEnt->close();
 
-	}
+	//}
 }
 
 // -----------------------------------------------------------------------------

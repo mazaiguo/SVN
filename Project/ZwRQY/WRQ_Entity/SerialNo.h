@@ -173,18 +173,18 @@ public:
 
 	//返回no
 	int No() const;
-
-	////创建wipeout
-	//Acad::ErrorStatus CreateWipeout () const;
-
-	//void GetPointArr(AcGePoint3dArray& point3d) const;
-
+	
+	Acad::ErrorStatus addObjId(AcDbObjectId objId);
+	int				  size();
+	Acad::ErrorStatus removeId(AcDbObjectId objId);
 private:
 	AcGePoint3d m_basePt;//插入点
 	double m_dRadius;//圆半径，默认为30
 	double m_dTextHeight;//字高，默认为40
 	AcDbObjectId m_TextId;//字体样式
 	AcDbObjectId m_LayerId;//图层名
+	AcDbObjectIdArray m_IdArrs;
+	int m_nSize;//记录id的数量
 	CString	m_strText;//文字
 protected:
 } ;

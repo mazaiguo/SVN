@@ -21,7 +21,7 @@ AcDbObjectId MySymble::GetLayer(CString strlayer)
 	pTable->close();
 	return layerId;
 }
-AcDbObjectId MySymble::CreateNewLayer(CString strLayer,int nColor, BOOL bIsModColor,CString strLineTypeName)
+AcDbObjectId MySymble::CreateNewLayer(CString strLayer, int nColor, BOOL bIsModColor, CString strLineTypeName, AcDb::LineWeight Lweight)
 {
 	AcDbLayerTable* pTable;
 	if (acdbCurDwg()->getLayerTable(pTable,AcDb::kForWrite)	!= Acad::eOk) 
@@ -65,6 +65,7 @@ AcDbObjectId MySymble::CreateNewLayer(CString strLayer,int nColor, BOOL bIsModCo
 			layerColor.setColorIndex(nColor);
 			pRecord->setColor(layerColor);
 		}
+		pRecord->setLineWeight(Lweight);
 		pRecord->close();
 	}
 	else					//这个层没有
@@ -78,7 +79,7 @@ AcDbObjectId MySymble::CreateNewLayer(CString strLayer,int nColor, BOOL bIsModCo
 		pRecord->setIsFrozen(Adesk::kFalse);	//解冻
 		pRecord->setIsLocked(Adesk::kFalse);	//解锁
 		pRecord->setIsOff(Adesk::kFalse);		//on
-
+		pRecord->setLineWeight(Lweight);
 		///////
 		if (strLineTypeName.CompareNoCase(_T("Continuous")) != 0)
 		{

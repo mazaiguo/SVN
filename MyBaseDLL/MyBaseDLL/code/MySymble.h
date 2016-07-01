@@ -24,7 +24,8 @@ public:
 	static AcDbObjectId CreateNewLayer(CString strLayer,
 								int nColor = 7, 
 								BOOL bIsModColor = FALSE, 
-								CString strLineTypeName = _T("Continuous"));
+								CString strLineTypeName = _T("Continuous"),
+								AcDb::LineWeight Lweight = AcDb::kLnWtByLwDefault);
 
 	//@param stylename为字体名称
 	//@param strFont为小字体名

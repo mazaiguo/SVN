@@ -1,11 +1,16 @@
 #pragma once
 //-----------------------------------------------------------------------------
 #include "dbmain.h"
+#include <vector>
+using namespace std;
 #ifdef WRQ_ENTITY_MODULE //在创建产生DLL的工程中先把 MYBASEDLL_EXPORTS 预定义上
 #define WRQ_ENTITY_DLL __declspec(dllexport)
 #else
 #define WRQ_ENTITY_DLL __declspec(dllimport)
 #endif
+
+//绘制基础类
+
 //-----------------------------------------------------------------------------
 class WRQ_ENTITY_DLL CGasPipe : public AcDbEntity {
 
@@ -157,15 +162,13 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
 	//函数
-	AcGePoint3d startPt();
-	AcGePoint3d endPt();
 	AcDbObjectId textId();
 	AcDbObjectId layerId();
 	AcDbObjectId startId();
 	AcDbObjectId endId();
+	vector<PlineInfo> getData();
 
-	void setStartPt(AcGePoint3d basePt);
-	void setEndPt(AcGePoint3d endPt);
+	void setData(vector<PlineInfo> info);
 	void setTextId(AcDbObjectId textId);
 	void setLayerId(AcDbObjectId layerId);	
 	void setStartId(AcDbObjectId startId);
@@ -183,15 +186,16 @@ public:
 	//void GetPointArr(AcGePoint3dArray& point3d) const;
 
 private:
-	AcGePoint3d m_startPt;//插入点
-	AcGePoint3d m_endPt;
+	//AcGePoint3d m_startPt;//插入点
+	//AcGePoint3d m_endPt;
 	double m_dRadius;//圆半径，默认为30
 	double m_dTextHeight;//字高，默认为40
 	AcDbObjectId m_TextId;//字体样式
 	AcDbObjectId m_LayerId;//图层名
 	AcDbObjectId m_startId;//序号
 	AcDbObjectId m_endId;//序号
-	//CString	m_strText;//文字
-protected:
+	vector<PlineInfo> m_dataInfo;
+	AcGePoint3dArray m_ptArr;
+	Adesk::UInt32 m_nSize;//点集
 } ;
 	

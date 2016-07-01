@@ -5,8 +5,8 @@
 //·Ö±æÊý¾Ý
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
-#include "GDDataStore.h"
 #include "Line.h"
+#include "COperatePL.h"
 #include <algorithm>
 #include <vector>
 #include <map>
@@ -49,11 +49,12 @@ private:
 
 
 	AcDbObjectId drawPipe(AcGePoint3d startPt, AcGePoint3d endPt, AcDbObjectId startId, AcDbObjectId endId);
-	AcDbObjectId drawXh(AcGePoint3d basePt);
-private:
-	CGDDataStore* m_pDataStore;
-	vector<CLine> m_lineVec;
-	map<CString, AcDbObjectId> m_MapInfo;
-	map<CString, CString> m_MulData;
+	AcDbObjectId drawXh(AcGePoint3d basePt, vector<AcDbObjectId> info);
 
+	AcGePoint3d stringToPt(CString strValue);
+private:
+	vector<AcDbObjectId> m_PlineVec;
+	map<CString, AcDbObjectId> m_MulData;
+	map<CString, AcDbObjectId> m_MapInfo;
+	map<CString, vector<AcDbObjectId> > m_dataInfo;
 };

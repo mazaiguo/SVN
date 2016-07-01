@@ -29,6 +29,8 @@ public:
 	void InsertEmpty();
 	void GetAcadFont();
 	void GetWindowFont();
+
+	void CreateTextStyleId();
 	BOOL PdThenameIsHave(CString name, CStringArray& arr);
 
 
@@ -43,4 +45,9 @@ public:
 	afx_msg void OnBnClickedButtonAdd();
 	afx_msg void OnBnClickedButtonDel();
 	afx_msg void OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult);
+
+	void iniData();
+	void ReWriteFile();
+	void SetInfoToListCtrl(int nItem);
+	void GetInfoFromListCtrl(int i);
 } ;

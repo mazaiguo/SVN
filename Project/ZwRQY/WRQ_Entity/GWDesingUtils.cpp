@@ -301,6 +301,12 @@ AcDbObjectId CGWDesingUtils::getGlobalTextStyle()
 	return textStyleId;
 }
 
+AcDbObjectId CGWDesingUtils::getGlobalGdLayerId()
+{
+	AcDbObjectId layerId = MySymble::CreateNewLayer(_T("È¼Æø¹ÜµÀ"), 1, TRUE);
+	return layerId;
+}	
+
 //void CGWDesingUtils::SetJdNum(CString nValue)
 //{
 //	AcDbObjectId StyleId;
