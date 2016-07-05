@@ -27,7 +27,7 @@ public:
 	void InsertEmpty();
 	afx_msg void OnBnClickedButtonDel();
 	
-	void CreateLayerId();
+	bool CreateLayerId();
 
 	void iniData();
 	void ReWriteFile();

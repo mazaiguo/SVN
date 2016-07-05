@@ -18,26 +18,26 @@ ZWFORWHRQAPP
 |Company:          ZwSoft
 |WEB Address:      http://www.zwcad.com
 )
-
 //-----------------------------------------------------------------------------
 CSerialNo::CSerialNo () : AcDbEntity () 
 {
 	m_basePt.set(0, 0, 0);//插入点
 	m_dRadius = CGWDesingUtils::getGlobalRadius();//圆半径，默认为30
 	m_dTextHeight = CGWDesingUtils::getGlobalTextHeight();//字高，默认为40
-	m_TextId = AcDbObjectId::kNull;//字体样式
+	m_TextId = CGWDesingUtils::getGlobalTextStyle();//字体样式
 	m_LayerId = AcDbObjectId::kNull;//图层名
-	m_strText = CGWDesingUtils::getNumCount();//文字	
+	m_strText = CGWDesingUtils::getCurNum();//文字	
 	int nCount = MyTransFunc::StringToInt(m_strText);
 	nCount++;
 	CString strTmp;
 	strTmp.Format(_T("%d"), nCount);
-	CGWDesingUtils::setNumCount(strTmp);
+	CGWDesingUtils::SetCurNum(strTmp);
+	m_IdArrs.removeAll();
 }
 
 CSerialNo::~CSerialNo ()
 {
-
+	m_IdArrs.removeAll();
 }
 
 //-----------------------------------------------------------------------------
@@ -62,6 +62,11 @@ Acad::ErrorStatus CSerialNo::dwgOutFields (AcDbDwgFiler *pFiler) const
 	es = pFiler->writeHardPointerId(m_LayerId);
 	pFiler->writeString((AcString)m_strText);
 
+	es = pFiler->writeUInt32(m_nSize);
+	for (int i=0; i<m_nSize; i++)
+	{
+		es = pFiler->writeHardPointerId(m_IdArrs.at(i));
+	}
 	return (pFiler->filerStatus ()) ;
 }
 
@@ -96,7 +101,13 @@ Acad::ErrorStatus CSerialNo::dwgInFields (AcDbDwgFiler *pFiler)
 	pFiler->readString(&pStrTextFirst);
 	m_strText = pStrTextFirst;
 	acutDelString(pStrTextFirst);
-
+	
+	es = pFiler->readUInt32(&m_nSize);
+	for (int i=0; i<m_nSize; i++)
+	{
+		es = pFiler->readHardPointerId(&tmpId);
+		m_IdArrs.append(tmpId);
+	}
 	return (pFiler->filerStatus ()) ;
 }
 
@@ -337,6 +348,7 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 		pCircle.setLayer(m_LayerId);
 		pCircle.setRadius(m_dRadius);
 		pCircle.worldDraw(mode);
+
 		//绘制文字
 		AcDbMText pText;
 		pText.setDatabaseDefaults(db);
@@ -381,6 +393,11 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 		//Acad::ErrorStatus retCode =AcDbEntity::subTransformBy (xform) ;
 		//return (retCode) ;
 		m_basePt.transformBy(xform);
+		if (xform.scale())
+		{
+			m_dRadius *= xform.scale();
+			m_dTextHeight *= xform.scale();
+		}
 		return Acad::eOk;
 	}
 
@@ -395,6 +412,15 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 		AcDbIntArray &   geomIds) const
 	{
 		assertReadEnabled () ;
+		AcGeVector3d viewDir(viewXform(Z, 0), viewXform(Z, 1),
+			viewXform(Z, 2));
+		AcGePoint3d pt;
+		AcGeCircArc3d arc(m_basePt, AcGeVector3d::kZAxis, m_dRadius);
+		if (osnapMode == AcDb::kOsModeNear)
+		{
+			pt = arc.projClosestPointTo(pickPoint, viewDir);
+			snapPoints.append(pt);
+		}
 		snapPoints.append(m_basePt);
 		return (AcDbEntity::subGetOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds)) ;
 	}
@@ -410,6 +436,15 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 		const AcGeMatrix3d& insertionMat) const
 	{
 		assertReadEnabled () ;
+		AcGeVector3d viewDir(viewXform(Z, 0), viewXform(Z, 1),
+			viewXform(Z, 2));
+		AcGePoint3d pt;
+		AcGeCircArc3d arc(m_basePt, AcGeVector3d::kZAxis, m_dRadius);
+		if (osnapMode == AcDb::kOsModeNear)
+		{
+			pt = arc.projClosestPointTo(pickPoint, viewDir);
+			snapPoints.append(pt);
+		}
 		snapPoints.append(m_basePt);
 		return (AcDbEntity::subGetOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds, insertionMat)) ;
 	}
@@ -466,7 +501,12 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 	// -----------------------------------------------------------------------------
 	void CSerialNo::subList(void) const
 	{
-		AcDbEntity::subList () ;
+		assertReadEnabled();
+		acutPrintf(_T("\n-----------------------------------------------------------"));
+		acutPrintf(_T("\n多段线数量为%d"), m_nSize);
+		acutPrintf(_T("\n位置为%f,%f,%f"), m_basePt.x, m_basePt.y, m_basePt.z);
+		acutPrintf(_T("\n序号为%s"), m_strText);
+		acutPrintf(_T("\n-----------------------------------------------------------"));
 	}
 
 	// -----------------------------------------------------------------------------
@@ -767,11 +807,11 @@ void CSerialNo::setstrText(CString strText)
 }
 
 
-int	 CSerialNo::No() const
+CString	 CSerialNo::No() const
 {
 	assertReadEnabled();
-	int nNo = MyTransFunc::StringToInt(m_strText);
-	return nNo;
+	
+	return m_strText;
 }
 
 Acad::ErrorStatus CSerialNo::addObjId(AcDbObjectId objId)
@@ -781,6 +821,7 @@ Acad::ErrorStatus CSerialNo::addObjId(AcDbObjectId objId)
 	{
 		m_IdArrs.append(objId);
 	}
+	m_nSize = m_IdArrs.length();
 	return Acad::eOk;
 }
 
@@ -795,11 +836,46 @@ Acad::ErrorStatus CSerialNo::removeId(AcDbObjectId objId)
 {
 	assertWriteEnabled();
 	int nFind = m_IdArrs.find(objId);
-	if (nFind > 0)
+	if (nFind >= 0)
 	{
 		m_IdArrs.remove(objId);
 	}
+	m_nSize = m_IdArrs.length();
 	return Acad::eOk;
+}
+
+vector<AcDbObjectId> CSerialNo::getAllId()
+{	
+	assertReadEnabled();
+	map<AcDbObjectId, AcDbObjectId> mInfo = getMapId();
+
+	vector<AcDbObjectId> vec;
+	AcDbObjectId objId = AcDbObjectId::kNull;
+	for (map<AcDbObjectId, AcDbObjectId>::iterator iter = mInfo.begin();
+		iter != mInfo.end();
+		++iter)
+	{
+		objId = iter->first;
+		vec.push_back(objId);
+	}
+	//for (int i=0; i<m_IdArrs.length(); i++)
+	//{
+	//	vec.push_back(m_IdArrs.at(i));
+	//}
+	return vec;
+}
+
+map<AcDbObjectId, AcDbObjectId> CSerialNo::getMapId()
+{
+	assertReadEnabled();
+	map<AcDbObjectId, AcDbObjectId> mInfo;
+	AcDbObjectId objId = AcDbObjectId::kNull;
+	for (int i=0; i<m_IdArrs.length(); i++)
+	{
+		objId = m_IdArrs.at(i);
+		mInfo.insert(make_pair(objId, objId));
+	}
+	return mInfo;
 }
 
 ////创建WipeOut对象
@@ -881,3 +957,76 @@ Acad::ErrorStatus CSerialNo::removeId(AcDbObjectId objId)
 //
 //}
 //
+
+
+
+#ifdef ARX
+// -----------------------------------------------------------------------------
+Acad::ErrorStatus CSerialNo::subIntersectWith(const AcDbEntity * ent, AcDb::Intersect intType, AcGePoint3dArray & points, Adesk::GsMarker thisGsMarker, Adesk::GsMarker otherGsMarker) const
+#else
+Acad::ErrorStatus CSerialNo::intersectWith(const AcDbEntity * ent, AcDb::Intersect intType, AcGePoint3dArray & points, Adesk::GsMarker thisGsMarker, Adesk::GsMarker otherGsMarker) const
+#endif
+{
+	assertReadEnabled();
+	Acad::ErrorStatus es = Acad::eOk;
+	if (ent == NULL)
+		return Acad::eNullEntityPointer;
+	AcDbCircle* pCircle = new AcDbCircle;
+	pCircle->setDatabaseDefaults();
+	pCircle->setCenter(m_basePt);
+	pCircle->setRadius(m_dRadius);
+	if ((es = ent->intersectWith(pCircle, intType, points)) != Acad::eOk)
+	{
+		delete pCircle;
+		pCircle = NULL;
+		return es;
+	}
+	delete pCircle;	
+	pCircle = NULL;
+	return es;
+}
+#ifdef ARX
+Acad::ErrorStatus CSerialNo::subIntersectWith(const AcDbEntity* ent,	AcDb::Intersect intType, const AcGePlane& projPlane, AcGePoint3dArray& points, Adesk::GsMarker thisGsMarker, Adesk::GsMarker otherGsMarker) const
+#else
+Acad::ErrorStatus CSerialNo::intersectWith(const AcDbEntity* ent,	AcDb::Intersect intType, const AcGePlane& projPlane, AcGePoint3dArray& points, Adesk::GsMarker thisGsMarker, Adesk::GsMarker otherGsMarker) const
+#endif
+{
+	assertReadEnabled();
+	Acad::ErrorStatus es = Acad::eOk;
+	if (ent == NULL)
+		return Acad::eNullEntityPointer;
+	AcDbCircle* pCircle = new AcDbCircle;
+	pCircle->setDatabaseDefaults();
+	pCircle->setCenter(m_basePt);
+	pCircle->setRadius(m_dRadius);
+	if ((es = ent->intersectWith(pCircle, intType, projPlane, points)) != Acad::eOk)
+	{
+		delete pCircle;
+		pCircle = NULL;
+		return es;
+	}
+	delete pCircle;
+	pCircle = NULL;
+	return es;
+}
+
+#ifdef ARX
+Acad::ErrorStatus CSerialNo::subGetGeomExtents(AcDbExtents& extents) const
+#else
+Acad::ErrorStatus CSerialNo::getGeomExtents(AcDbExtents& extents) const
+#endif
+{
+	assertReadEnabled();
+	
+	Acad::ErrorStatus es;
+	AcDbCircle* pCircle = new AcDbCircle;
+	pCircle->setDatabaseDefaults();
+	pCircle->setCenter(m_basePt);
+	pCircle->setRadius(m_dRadius);
+
+	pCircle->getGeomExtents(extents);
+
+	delete pCircle;
+	pCircle = NULL;
+	return Acad::eOk;
+}

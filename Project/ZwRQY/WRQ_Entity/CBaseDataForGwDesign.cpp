@@ -6,6 +6,7 @@
 #endif
 
 #include "CBaseDataForGwDesign.h"
+#include "Global.h"
 
      // MDI safe statics
 Adesk::Int16    CBaseDataForGwDesign::m_version = 0;
@@ -24,7 +25,7 @@ CBaseDataForGwDesign::CBaseDataForGwDesign()
 	m_bDrawJiedian = false;*/
 	m_strCurNum = _T("1");
 	m_strNumCount = _T("1");
-	m_dGlobalScale = 1.0;
+	m_dGlobalScale = gGlobal.GetIniValue(_T("»ù´¡ÉèÖÃ"), _T("±ÈÀý"), 0);
 	/*m_strJdNum = _T("1");
 	m_dStartZH = 0;*/
 }
@@ -39,8 +40,8 @@ CBaseDataForGwDesign::~CBaseDataForGwDesign()
 	m_bDrawJiedian = false;*/
 	m_strCurNum = _T("1");
 	m_strNumCount = _T("1");
-	/*m_strJdNum = _T("1");
-	m_dStartZH = 0;*/
+	m_strGdNum = _T("1");
+	/*m_dStartZH = 0;*/
 }
 
 
@@ -125,19 +126,19 @@ Acad::ErrorStatus CBaseDataForGwDesign::setGlobalScale(double dHx)
 
 	return Acad::eOk;
 }
-//CString CBaseDataForGwDesign::JdNum()
-//{
-//	assertReadEnabled();
-//	return m_strJdNum;
-//}
-//
-//Acad::ErrorStatus CBaseDataForGwDesign::setJdNum(CString nCount)
-//{
-//	assertWriteEnabled();
-//	m_strJdNum = nCount;
-//
-//	return Acad::eOk;
-//}
+CString CBaseDataForGwDesign::GdNum()
+{
+	assertReadEnabled();
+	return m_strGdNum;
+}
+
+Acad::ErrorStatus CBaseDataForGwDesign::setGdNum(CString nCount)
+{
+	assertWriteEnabled();
+	m_strGdNum = nCount;
+
+	return Acad::eOk;
+}
 //
 //double CBaseDataForGwDesign::startZH() const
 //{
@@ -279,11 +280,11 @@ CBaseDataForGwDesign::dwgInFields(AcDbDwgFiler* filer)
 	acutDelString(tmpStr);
 
 	filer->readItem(&m_dGlobalScale);
-	/*filer->readItem(&tmpStr);
-	m_strJdNum = tmpStr;
+	filer->readItem(&tmpStr);
+	m_strGdNum = tmpStr;
 	acutDelString(tmpStr);
 
-	filer->readItem(&m_dXScale);
+	/*filer->readItem(&m_dXScale);
 	filer->readItem(&m_dYScale);
 	filer->readItem(&m_dminElavation);
 	filer->readItem(&m_dmaxElavation);
@@ -318,8 +319,8 @@ CBaseDataForGwDesign::dwgOutFields(AcDbDwgFiler* filer) const
 	filer->writeItem(static_cast<const TCHAR*>(m_strNumCount));
 	filer->writeItem(static_cast<const TCHAR*>(m_strCurNum));
 	filer->writeItem(m_dGlobalScale);
-	/*filer->writeItem(static_cast<const TCHAR*>(m_strJdNum));
-	filer->writeItem(m_dXScale);
+	filer->writeItem(static_cast<const TCHAR*>(m_strGdNum));
+	/*filer->writeItem(m_dXScale);
 	filer->writeItem(m_dYScale);
 	filer->writeItem(m_dminElavation);
 	filer->writeItem(m_dmaxElavation);
@@ -369,11 +370,11 @@ CBaseDataForGwDesign::dxfInFields(AcDbDxfFiler* filer)
 		{
 			setGlobalScale(rb.resval.rreal);
 		}
-		/*else if (rb.restype == kDxfJdNum)
+		else if (rb.restype == kDxfGdNum)
 		{
-			setJdNum(rb.resval.rstring);
+			setGdNum(rb.resval.rstring);
 		}
-		else if (rb.restype == kDxfXScale)
+		/*else if (rb.restype == kDxfXScale)
 		{
 			setXScale(rb.resval.rreal);
 		}
@@ -450,8 +451,8 @@ CBaseDataForGwDesign::dxfOutFields(AcDbDxfFiler* filer) const
 	filer->writeItem(kDxfNumCount, m_strNumCount);
 	filer->writeItem(kDxfCurNum, m_strCurNum);
 	filer->writeItem(kDxfGlobalScale, m_dGlobalScale);
-	/*filer->writeItem(kDxfJdNum, m_strJdNum);
-	filer->writeItem(kDxfXScale, m_dXScale);
+	filer->writeItem(kDxfGdNum, m_strGdNum);
+	/*filer->writeItem(kDxfXScale, m_dXScale);
 	filer->writeItem(kDxfYScale, m_dYScale);
 	filer->writeItem(kDxfminElavation, m_dminElavation);
 	filer->writeItem(kDxfmaxElavation, m_dmaxElavation);

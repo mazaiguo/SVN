@@ -17,6 +17,9 @@ public:
 	static void SetCurNum(CString strCount);
 	static CString getCurNum();
 
+	static void SetGdNum(CString strCount);
+	static CString getGdNum();
+
 	static void SetGlobalScale(double dStartZH);
 	static double getGlobalScale();
 
@@ -24,7 +27,8 @@ public:
 	static double getGlobalRadius();
 	static double getGlobalTextHeight();
 	static AcDbObjectId getGlobalTextStyle();
-	static AcDbObjectId getGlobalGdLayerId();
+	static AcDbObjectId getGlobalPipeLayerId();
+	static AcDbObjectId getGlobalGdLayerId();//管道文字所用图层
 	
 	
 };

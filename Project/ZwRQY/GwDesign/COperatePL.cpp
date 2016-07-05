@@ -3,6 +3,8 @@
 #include <algorithm>
 #include "GWDesingUtils.h"
 #include <gecomp3d.h>
+#include "SerialNoUtils.h"
+#include "SerialNo.h"
 
 COperatePL::COperatePL(void)
 {
@@ -206,9 +208,21 @@ AcDbObjectId COperatePL::trimendBycircle(AcDbObjectId plineId)
 	Acad::ErrorStatus es;
 	es = pLine->intersectWith(pCircle, AcDb::kOnBothOperands, points);
 	bool bIsErased = false;
-	if (points.length() == 1)//只有一个点的时候处理
-	{
-		AcDbVoidPtrArray curveSegs;
+	//闭合的多段线不考虑
+	if ((points.length() == 1) && (!pLine->isClosed()))//只有一个点的时候处理
+	{	
+		int nNum = pLine->numVerts();
+		AcGePoint3d tmpPt = points.at(0);
+		double dParam = 0;
+		pLine->getParamAtPoint(tmpPt, dParam);
+		int nCount = ceil(dParam);
+		pLine->upgradeOpen();
+		es = pLine->setPointAt(nCount, tmpPt.convert2d(AcGePlane::kXYPlane));
+		for (int i=nCount + 1; i<nNum; i++)
+		{
+			pLine->removeVertexAt(i);
+		}
+		/*AcDbVoidPtrArray curveSegs;
 		curveSegs.removeAll();
 		es = pLine->getSplitCurves(points, curveSegs);
 		if (es == Acad::eOk)
@@ -233,7 +247,7 @@ AcDbObjectId COperatePL::trimendBycircle(AcDbObjectId plineId)
 					bIsErased = true;
 				}
 			}
-		}
+		}*/
 
 	}
 	if (bIsErased)
@@ -269,9 +283,22 @@ AcDbObjectId COperatePL::trimstartBycircle(AcDbObjectId plineId)
 	Acad::ErrorStatus es;
 	es = pLine->intersectWith(pCircle, AcDb::kOnBothOperands, points);
 	bool bIsErased = false;
-	if (points.length() == 1)//只有一个点的时候处理
+	//闭合的多段线不考虑
+
+	if ((points.length() == 1)&&(!pLine->isClosed()))//只有一个点的时候处理
 	{
-		AcDbVoidPtrArray curveSegs;
+		AcGePoint3d tmpPt = points.at(0);
+		double dParam = 0;
+		pLine->getParamAtPoint(tmpPt, dParam);
+		pLine->upgradeOpen();
+		int nCount = floor(dParam);
+		pLine->upgradeOpen();
+		es = pLine->setPointAt(nCount, tmpPt.convert2d(AcGePlane::kXYPlane));
+		for (int i=0; i<nCount; i++)
+		{
+			pLine->removeVertexAt(i);
+		}
+		/*AcDbVoidPtrArray curveSegs;
 		curveSegs.removeAll();
 		es = pLine->getSplitCurves(points, curveSegs);
 		if (es == Acad::eOk)
@@ -295,7 +322,7 @@ AcDbObjectId COperatePL::trimstartBycircle(AcDbObjectId plineId)
 					bIsErased = true;
 				}
 			}
-		}
+		}*/
 
 	}
 	if (bIsErased)
@@ -309,7 +336,7 @@ AcDbObjectId COperatePL::trimstartBycircle(AcDbObjectId plineId)
 	return plineId;
 }
 
-AcDbObjectId COperatePL::restorePolyline(AcDbObjectId plineId, AcGePoint3d startPt, AcGePoint3d endPt)
+AcDbObjectId COperatePL::restorePolyline(AcDbObjectId plineId, AcGePoint3d pt)
 {
 	vector<PlineInfo> dataInfo;
 	dataInfo = getdatabyObjId(plineId);
@@ -324,31 +351,38 @@ AcDbObjectId COperatePL::restorePolyline(AcDbObjectId plineId, AcGePoint3d start
 	AcGePoint3d sPt,ePt;
 	pLine->getStartPoint(sPt);
 	pLine->getEndPoint(ePt);
-	pLine->close();
+	//pLine->close();
 
 	AcDbObjectId objId = plineId;
-	if (!sPt.isEqualTo(startPt))//处理起点
+	double dDist1 = acutDistance(asDblArray(sPt), asDblArray(pt));
+	double dDist2 = acutDistance(asDblArray(ePt), asDblArray(pt));
+	double dRadius = CGWDesingUtils::getGlobalRadius();
+	if (abs(dDist1 - dRadius) < GeTol)
 	{
-		MyEditEntity::EraseObj(plineId);
+		/*MyEditEntity::EraseObj(plineId);
 		PlineInfo info;
 		info = dataInfo.at(0);
-		info.insertPt = startPt;
+		info.insertPt = pt;
 		dataInfo.insert(dataInfo.begin(), info);
-		plineId = drawPlineBydata(dataInfo);
+		plineId = drawPlineBydata(dataInfo);*/
+		pLine->upgradeOpen();
+		pLine->setPointAt(0, pt.convert2d(AcGePlane::kXYPlane));
 	}
-	
-	if (!ePt.isEqualTo(endPt))//处理终点
+
+	if (abs(dDist2 - dRadius) < GeTol)//处理终点
 	{
-		
-		dataInfo = getdatabyObjId(plineId);
+		/*dataInfo = getdatabyObjId(plineId);
 		MyEditEntity::EraseObj(plineId);
 		PlineInfo info;
 		info = dataInfo.at(dataInfo.size()-1);
-		info.insertPt = endPt;
+		info.insertPt = pt;
 		dataInfo.insert(dataInfo.end(), info);
-		plineId = drawPlineBydata(dataInfo);
+		plineId = drawPlineBydata(dataInfo);*/
+		pLine->upgradeOpen();
+		int nNum = pLine->numVerts();
+		pLine->setPointAt(nNum - 1, pt.convert2d(AcGePlane::kXYPlane));
 	}
-
+	pLine->close();
 	return plineId;
 }
 
@@ -399,7 +433,7 @@ AcGeCompositeCurve3d convertDbCurveToGeCurve3d(AcDbObjectId plineId)
 	return pCurve;
 }
 
-int COperatePL::CompareTwoPline(AcDbObjectId preId, AcDbObjectId curId)
+bool COperatePL::CompareTwoPline(AcDbObjectId preId, AcDbObjectId curId)
 {
 	int nFlag = 0;
 	double dLen1,dLen2;
@@ -417,11 +451,11 @@ int COperatePL::CompareTwoPline(AcDbObjectId preId, AcDbObjectId curId)
 	AcDbCurve* pCurCurve = NULL;
 	if (acdbOpenAcDbEntity((AcDbEntity*&)pPreCurve, preId, AcDb::kForRead) != Acad::eOk)
 	{
-		return 0;
+		return false;
 	}
 	if (acdbOpenAcDbEntity((AcDbEntity*&)pCurCurve, preId, AcDb::kForRead) != Acad::eOk)
 	{
-		return 0;
+		return false;
 	}
 	double dDist;
 	if ((pPreCurve->isKindOf(AcDbPolyline::desc()))
@@ -432,18 +466,14 @@ int COperatePL::CompareTwoPline(AcDbObjectId preId, AcDbObjectId curId)
 		AcGeCompositeCurve3d preCurve = convertDbCurveToGeCurve3d(preId);
 		AcGeCompositeCurve3d curCuve = convertDbCurveToGeCurve3d(curId);
 		dDist = preCurve.distanceTo(curCuve);
-		if (dDist < GeTol)
+		if (dDist >= GeTol)
 		{
-			return nFlag;
-		}
-		else	
-		{
-			return 0;
+			return false;
 		}
 	}
 	pPreCurve->close();
 	pCurCurve->close();
-	return 0;
+	return true;
 }
 
 
@@ -451,18 +481,108 @@ bool COperatePL::JudgeTheSame(AcDbObjectId preId, AcDbObjectId curId)
 {
 	set<CString> preData = getMapInfoById(preId);
 	set<CString> curData = getMapInfoById(curId);
+	int nPreSize = preData.size();
+	int nCurSize = curData.size();
 	set<CString> data;
 	data.clear();
 	set_intersection(preData.begin(), preData.end(), curData.begin(), curData.end(), insert_iterator<set<CString> >(data, data.begin()));
 	int nSize = data.size();
 	if (nSize > 0)
 	{
-		return true;
+		if ((nSize == nCurSize) || (nSize == nPreSize))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	else
 	{
 		return false;
 	}
+}
+
+bool COperatePL::HalfPlByPt(AcDbObjectId curId, AcGePoint3d pt)
+{
+	AcDbObjectId preId;
+	AcDbObjectId nexId;
+	CString strStartNo = MyEditEntity::GetObjStrXdata(curId, START_ENT);
+	CString strEndNo = MyEditEntity::GetObjStrXdata(curId, END_ENT);
+	AcDbPolyline* pLine = NULL;
+	AcGePoint3dArray points;
+	points.append(pt);
+
+	if (acdbOpenAcDbEntity((AcDbEntity*&)pLine, curId, AcDb::kForWrite) != Acad::eOk)
+	{
+		return false;
+	}
+
+	AcGePoint3d startPt,endPt;
+	pLine->getStartPoint(startPt);
+	pLine->getEndPoint(endPt);
+	Acad::ErrorStatus es;
+	AcDbVoidPtrArray curveSegs;
+	curveSegs.removeAll();
+	es = pLine->getSplitCurves(points, curveSegs);
+	if (es == Acad::eOk)
+	{
+		AcDbCurve* tmpCurve;
+		for (int i=0; i<curveSegs.length(); i++)
+		{
+			AcGePoint3d tmpPt;
+			double dDist = 0.0;
+			tmpCurve = static_cast<AcDbCurve*>(curveSegs[i]);
+			es = tmpCurve->getStartPoint(tmpPt);
+			if (tmpPt.isEqualTo(startPt))
+			{
+				MyBaseUtils::addToCurrentSpaceAndClose(tmpCurve);
+				preId = tmpCurve->objectId();
+			}
+			else
+			{
+				MyBaseUtils::addToCurrentSpaceAndClose(tmpCurve);
+				nexId = tmpCurve->objectId();
+			}
+		}
+	}
+	else
+	{
+		AfxMessageBox(_T("点不在管道上"));
+		pLine->close();
+		return false;
+	}
+	pLine->erase();
+	pLine->close();
+	
+	//////////////////////////////////////////////////////////////////////////
+	
+	CSerialNoUtils No;
+	AcDbObjectId startId = No.getIdByNo(strStartNo);
+	AcDbObjectId endId = No.getIdByNo(strEndNo);
+
+	preId = trimendBycircle(preId);
+	nexId = trimstartBycircle(nexId);
+	//////////////////////////////////////////////////////////////////////////
+	//绘制序号
+	CSerialNo* pNo = new CSerialNo;
+	pNo->setBasePt(pt);
+	pNo->addObjId(preId);
+	pNo->addObjId(nexId);
+	MyBaseUtils::addToCurrentSpaceAndClose(pNo);
+
+	CString strNo = pNo->strText();
+	MyEditEntity::OpenObjAppendStrToXdata(preId, START_ENT, strStartNo);
+	MyEditEntity::OpenObjAppendStrToXdata(preId, END_ENT, strNo);
+
+	MyEditEntity::OpenObjAppendStrToXdata(nexId, START_ENT, strNo);
+	MyEditEntity::OpenObjAppendStrToXdata(nexId, END_ENT, strEndNo);
+	//////////////////////////////////////////////////////////////////////////
+
+	No.removeId(startId, curId, preId);
+	No.removeId(endId, curId, nexId);
+	return true;
 }
 
 AcGePoint3d COperatePL::startPt(AcDbObjectId curId)

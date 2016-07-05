@@ -2,6 +2,7 @@
 #include "GWDesingUtils.h"
 #include "CBaseDataForGwDesign.h"
 #include "MySymble.h"
+#include "Global.h"
 
 CGWDesingUtils::CGWDesingUtils(void)
 {
@@ -193,6 +194,98 @@ CString CGWDesingUtils::getCurNum()
 	return nBlkRefCount;
 }
 
+
+void CGWDesingUtils::SetGdNum(CString nValue)
+{
+	AcDbObjectId StyleId;
+
+	AcDbDictionary* testDict = MyBaseUtils::openDictionaryForWrite(
+		CBaseDataForGwDesign::dictName(), true,
+		acdbHostApplicationServices()->workingDatabase());
+	if (testDict) 
+	{
+		Acad::ErrorStatus es;
+		if (testDict->getAt(_T("BASE"), StyleId) != Acad::eOk)
+		{
+			CBaseDataForGwDesign* newRec = new CBaseDataForGwDesign;
+			newRec->setGdNum(nValue);
+			es = testDict->setAt(_T("BASE"), newRec, StyleId);
+			if (es == Acad::eOk)
+			{
+				newRec->close();
+			}
+			else
+			{
+				//MyBaseUtils::rxErrorAlert(es);
+				delete newRec;
+				StyleId = AcDbObjectId::kNull;
+			}
+		}
+		else
+		{
+			CBaseDataForGwDesign* newRec = NULL;
+			if (acdbOpenAcDbObject((AcDbObject*&)newRec, StyleId, AcDb::kForWrite) != Acad::eOk)
+			{
+				testDict->close();
+				return;
+			}
+			newRec->setGdNum(nValue);
+			newRec->close();
+		}
+		testDict->close();
+	}
+	else 
+	{
+		return;
+	}
+}
+
+CString CGWDesingUtils::getGdNum()
+{
+	CString nBlkRefCount = _T("1");
+	AcDbObjectId StyleId;
+	AcDbDictionary* testDict = MyBaseUtils::openDictionaryForRead(CBaseDataForGwDesign::dictName(), acdbHostApplicationServices()->workingDatabase());
+	if (testDict)
+	{
+		Acad::ErrorStatus es;
+
+		if (testDict->getAt(_T("BASE"), StyleId) != Acad::eOk)
+		{
+			CBaseDataForGwDesign* newRec = NULL;
+
+			es = testDict->getAt(_T("BASE"), (AcDbObject *&)newRec, AcDb::kForRead);
+			if (es == Acad::eOk) 
+			{
+				nBlkRefCount = newRec->GdNum();
+				newRec->close();
+			}
+			else 
+			{
+				//ArxDbgUtils::rxErrorAlert(es);
+				delete newRec;
+				StyleId = AcDbObjectId::kNull;
+			}
+		}
+		else
+		{
+			CBaseDataForGwDesign* newRec = NULL;
+			if (acdbOpenAcDbObject((AcDbObject*&)newRec, StyleId, AcDb::kForRead) != Acad::eOk)
+			{
+				testDict->close();
+				return nBlkRefCount;
+			}
+			nBlkRefCount = newRec->GdNum();
+			newRec->close();
+		}
+		testDict->close();
+	}
+	else
+	{
+		SetGdNum(_T("1"));
+	}
+	return nBlkRefCount;
+}
+
 void CGWDesingUtils::SetGlobalScale(double dValue)
 {
 	AcDbObjectId StyleId;
@@ -240,7 +333,8 @@ void CGWDesingUtils::SetGlobalScale(double dValue)
 
 double CGWDesingUtils::getGlobalScale()
 {
-	double nBlkRefCount = 1.0;
+	double nBlkRefCount = gGlobal.GetIniValue(_T("基础设置"), _T("比例"), 0);
+
 	AcDbObjectId StyleId;
 	AcDbDictionary* testDict = MyBaseUtils::openDictionaryForRead(CBaseDataForGwDesign::dictName(), acdbHostApplicationServices()->workingDatabase());
 	if (testDict)
@@ -279,7 +373,7 @@ double CGWDesingUtils::getGlobalScale()
 	}
 	else
 	{
-		SetGlobalScale(1.0);
+		SetGlobalScale(nBlkRefCount);
 	}
 	return nBlkRefCount;
 }
@@ -301,11 +395,17 @@ AcDbObjectId CGWDesingUtils::getGlobalTextStyle()
 	return textStyleId;
 }
 
-AcDbObjectId CGWDesingUtils::getGlobalGdLayerId()
+AcDbObjectId CGWDesingUtils::getGlobalPipeLayerId()
 {
 	AcDbObjectId layerId = MySymble::CreateNewLayer(_T("燃气管道"), 1, TRUE);
 	return layerId;
 }	
+
+AcDbObjectId CGWDesingUtils::getGlobalGdLayerId()
+{
+	AcDbObjectId layerId = MySymble::CreateNewLayer(_T("管段文字"), 2, TRUE);
+	return layerId;
+}
 
 //void CGWDesingUtils::SetJdNum(CString nValue)
 //{

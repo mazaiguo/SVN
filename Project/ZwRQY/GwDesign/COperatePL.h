@@ -92,7 +92,7 @@ public:
 
 	//////////////////////////////////////////////////////////////////////////
 	//还原trim的多段线
-	AcDbObjectId restorePolyline(AcDbObjectId plineId, AcGePoint3d startPt, AcGePoint3d endPt);
+	AcDbObjectId restorePolyline(AcDbObjectId plineId, AcGePoint3d pt);
 
 	//////////////////////////////////////////////////////////////////////////
 	//************************************
@@ -104,9 +104,11 @@ public:
 	// Parameter: AcDbObjectId preId
 	// Parameter: AcDbObjectId curId
 	//************************************
-	int CompareTwoPline(AcDbObjectId preId, AcDbObjectId curId);
+	bool CompareTwoPline(AcDbObjectId preId, AcDbObjectId curId);
 	//判定两条多段线重合
 	bool JudgeTheSame(AcDbObjectId preId, AcDbObjectId curId);
+
+	bool HalfPlByPt(AcDbObjectId curId, AcGePoint3d pt);
 
 	AcGePoint3d startPt(AcDbObjectId curId);
 	AcGePoint3d endPt(AcDbObjectId curId);

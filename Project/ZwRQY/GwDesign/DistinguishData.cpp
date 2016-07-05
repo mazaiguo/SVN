@@ -3,6 +3,7 @@
 //#include "CGasPipe.h"
 #include "SerialNo.h"
 #include "COperatePL.h"
+#include "GWDesingUtils.h"
 
 CDistinguishData::CDistinguishData(void)
 {
@@ -38,7 +39,7 @@ bool CDistinguishData::doIt()
 
 bool CDistinguishData::selectEnt()
 {
-	resbuf* filter = acutBuildList(-4,_T("<and"),RTDXF0,_T("*POLYLINE,LINE"),-4,_T("and>"),RTNONE);
+	resbuf* filter = acutBuildList(-4,_T("<and"),RTDXF0,_T("LWPOLYLINE"),-4,_T("and>"),RTNONE);
 	ads_name ssname;
 	int nRet = acedSSGet(NULL, NULL, NULL, filter, ssname);
 	acutRelRb(filter);
@@ -76,9 +77,9 @@ bool CDistinguishData::selectEnt()
 			if (dWidth > 0)
 			{
 				CString strStart,strEnd,strTmp;
-				MyTransFunc::ptToStr(startPt, strStart);
-				MyTransFunc::ptToStr(endPt, strEnd);
-				strTmp = strStart + strEnd;
+				strStart.Format(_T("%f,%f,%f"),  startPt.x, startPt.y, startPt.z);
+				strEnd.Format(_T("%f,%f,%f"), endPt.x, endPt.y, endPt.z);
+				strTmp.Format(_T("%f,%f,%f,%f,%f,%f,%f"), startPt.x, startPt.y, startPt.z, endPt.x, endPt.y, endPt.z);
 				pair<map<CString, AcDbObjectId>::iterator, bool> bRet = m_MapInfo.insert(make_pair(strTmp, objId));
 				if (!bRet.second)
 				{
@@ -119,18 +120,19 @@ bool CDistinguishData::collectData()
 			AcDbObjectId line1,line2;
 			line1 = m_PlineVec.at(ix);
 			line2 = m_PlineVec.at(iy);
-			if (pl.CompareTwoPline(line1, line2) == 1)
+			if (pl.JudgeTheSame(line1, line2))
 			{
 				CString strStart,strEnd,strTmp;
 				AcGePoint3d startPt,endPt;
 				startPt = pl.startPt(line2);
 				endPt = pl.endPt(line2);
-				MyTransFunc::ptToStr(startPt, strStart);
-				MyTransFunc::ptToStr(endPt, strEnd);
-				strTmp = strStart + strEnd;
+				/*strStart.Format(_T("%f,%f,%f"),  startPt.x, startPt.y, startPt.z);
+				strEnd.Format(_T("%f,%f,%f"), endPt.x, endPt.y, endPt.z);*/
+				strTmp.Format(_T("%f,%f,%f,%f,%f,%f,%f"), startPt.x, startPt.y, startPt.z, endPt.x, endPt.y, endPt.z);
+				//strTmp = strStart + strEnd;
 				m_MulData.insert(std::make_pair(strTmp, line2));
 			}
-			else if (pl.CompareTwoPline(line1, line2) == -1)
+			/*else if (pl.CompareTwoPline(line1, line2) == -1)
 			{
 				CString strStart,strEnd,strTmp;
 				AcGePoint3d startPt,endPt;
@@ -140,7 +142,7 @@ bool CDistinguishData::collectData()
 				MyTransFunc::ptToStr(endPt, strEnd);
 				strTmp = strStart + strEnd;
 				m_MulData.insert(std::make_pair(strTmp, line1));
-			}
+			}*/
 		}
 	}
 
@@ -161,6 +163,19 @@ bool CDistinguishData::collectData()
 
 bool CDistinguishData::doData()
 {
+	//int i=1;
+	for (vector<AcDbObjectId>::iterator itr = m_PlineVec.begin();
+	itr != m_PlineVec.end();
+	++itr)
+	{
+		AcDbObjectId objId = *itr;
+		COperatePL pl;
+		objId = pl.trimbycircle(objId);
+		objId = MyEditEntity::openEntChangeLayer(objId, CGWDesingUtils::getGlobalPipeLayerId());
+		/*MyEditEntity::OpenObjAppendIntToXdata(objId, GD_NODE, i);
+		i++;*/
+	}
+
 	for (map<CString, vector<AcDbObjectId> >::iterator iter = m_dataInfo.begin();
 		iter != m_dataInfo.end();
 		++iter)
@@ -170,6 +185,8 @@ bool CDistinguishData::doData()
 		vector<AcDbObjectId> vec = iter->second;
 		drawXh(tmpPt, vec);
 	}
+
+	
 	return true;
 }
 
@@ -190,8 +207,33 @@ AcDbObjectId CDistinguishData::drawPipe(AcGePoint3d startPt, AcGePoint3d endPt, 
 
 AcDbObjectId CDistinguishData::drawXh(AcGePoint3d basePt, vector<AcDbObjectId> info)
 {
+	COperatePL PL;
 	CSerialNo* pNo = new CSerialNo;
 	pNo->setBasePt(basePt);
+	//////////////////////////////////////////////////////////////////////////
+	for (vector<AcDbObjectId>::iterator iter = info.begin();
+		iter != info.end();
+		++iter)
+	{
+		AcDbObjectId objId = *iter;
+		pNo->addObjId(objId);
+
+		AcGePoint3d startPt,endPt;
+		startPt = PL.startPt(objId);
+		endPt = PL.endPt(objId);
+		double dDist1 = acutDistance(asDblArray(startPt), asDblArray(basePt));
+		double dDist2 = acutDistance(asDblArray(endPt), asDblArray(basePt));
+		double dRadius = CGWDesingUtils::getGlobalRadius();
+		CString strNo = pNo->strText();//ÎÄ×Ö
+		if (abs(dDist1 - dRadius) < GeTol)
+		{
+			MyEditEntity::OpenObjAppendStrToXdata(objId, START_ENT, strNo);
+		}
+		else
+		{
+			MyEditEntity::OpenObjAppendStrToXdata(objId, END_ENT, strNo);
+		}
+	}
 	MyBaseUtils::addToCurrentSpaceAndClose(pNo);
 	return pNo->objectId();
 }

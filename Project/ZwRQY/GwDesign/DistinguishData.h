@@ -19,6 +19,9 @@ public:
 	
 	bool doIt();
 
+	//识别完成后获得所有的序号与管道的id
+
+
 private:
 	//************************************
 	// Method:    selectEnt

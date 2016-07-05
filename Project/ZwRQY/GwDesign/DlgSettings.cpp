@@ -89,8 +89,11 @@ void CDlgSettings::OnTcnSelchangeTabSettings(NMHDR *pNMHDR, LRESULT *pResult)
 void CDlgSettings::OnBnClickedOk()
 {
 	// TODO: Add your control notification handler code here
+	if (!m_pBasicSettings.CreateLayerId())
+	{
+		return;
+	}
 	m_pTextSettings.CreateTextStyleId();
-	m_pBasicSettings.CreateLayerId();
 	CDialog::OnOK();
 }
 

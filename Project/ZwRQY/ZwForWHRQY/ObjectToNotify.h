@@ -76,6 +76,3 @@ private:
 	AcDbObjectId m_blkId;//¼ÇÂ¼ÒÇ±íµÄ¿é
 } ;
 
-//#ifdef WRQ_ZDM_MODULE
-//ACDB_REGISTER_OBJECT_ENTRY_AUTO(CObjectToNotify)
-//#endif

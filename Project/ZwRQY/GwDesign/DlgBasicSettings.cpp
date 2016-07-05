@@ -4,6 +4,8 @@
 #include "StdAfx.h"
 #include "resource.h"
 #include "DlgBasicSettings.h"
+#include "GWDesingUtils.h"
+#include "Global.h"
 
 //-----------------------------------------------------------------------------
 IMPLEMENT_DYNAMIC (CDlgBasicSettings, CAcUiDialog)
@@ -17,7 +19,7 @@ END_MESSAGE_MAP()
 //-----------------------------------------------------------------------------
 CDlgBasicSettings::CDlgBasicSettings (CWnd *pParent /*=NULL*/, HINSTANCE hInstance /*=NULL*/) : CAcUiDialog (CDlgBasicSettings::IDD, pParent, hInstance) , m_strScale(_T(""))
 {
-	m_strScale = _T("1.0");
+	m_strScale = gGlobal.GetIniValue(_T("基础设置"), _T("比例"));
 	m_strDescription = _T("燃气管道");
 	m_strLayerColor = _T("1");
 	m_strLineType = _T("ByLayer");
@@ -137,8 +139,19 @@ void CDlgBasicSettings::OnBnClickedButtonDel()
 	GetParent()->SetFocus();
 }
 
-void CDlgBasicSettings::CreateLayerId()
+bool CDlgBasicSettings::CreateLayerId()
 {
+	GetDlgItem(IDC_EDIT_SCALE)->GetWindowText(m_strScale);
+	double dScale = MyTransFunc::StringToDouble(m_strScale);
+	if (dScale < GeTol)
+	{
+		AfxMessageBox(_T("比例要大于0"));
+		return false;
+	}
+	CGWDesingUtils::SetGlobalScale(dScale);
+	gGlobal.SetIniValue(_T("基础设置"), _T("比例"), dScale);
+	gGlobal.WriteIniFile();
+
 	int nItem = m_ListCtrl.GetItemCount();
 	for (int i=0; i<nItem; i++)
 	{
@@ -150,6 +163,7 @@ void CDlgBasicSettings::CreateLayerId()
 		MySymble::CreateNewLayer(m_strDescription, MyTransFunc::StringToInt(m_strLayerColor), TRUE, m_strLineType, lw);
 	}
 	ReWriteFile();
+	return true;
 }
 
 void CDlgBasicSettings::iniData()

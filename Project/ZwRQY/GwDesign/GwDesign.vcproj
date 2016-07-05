@@ -440,6 +440,22 @@
 					RelativePath=".\Line.h"
 					>
 				</File>
+				<File
+					RelativePath=".\PipeUtils.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\PipeUtils.h"
+					>
+				</File>
+				<File
+					RelativePath=".\SerialNoUtils.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SerialNoUtils.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="¶Ô»°¿ò"

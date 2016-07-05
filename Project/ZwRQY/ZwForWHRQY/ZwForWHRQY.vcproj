@@ -479,6 +479,18 @@
 						RelativePath=".\BcUtils.h"
 						>
 					</File>
+					<Filter
+						Name="Ì×¹Ü"
+						>
+						<File
+							RelativePath=".\DrawTGAndGG.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\DrawTGAndGG.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
@@ -642,18 +654,6 @@
 				</File>
 				<File
 					RelativePath=".\DrawNSG.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Ì×¹Ü"
-				>
-				<File
-					RelativePath=".\DrawTGAndGG.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\DrawTGAndGG.h"
 					>
 				</File>
 			</Filter>

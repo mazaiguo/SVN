@@ -99,6 +99,10 @@ public:
 	virtual void subList(void) const;
 	// -----------------------------------------------------------------------------
 	virtual Acad::ErrorStatus subExplode(AcDbVoidPtrArray & entitySet) const;
+	Acad::ErrorStatus subIntersectWith(const AcDbEntity * ent, AcDb::Intersect intType, AcGePoint3dArray & points, Adesk::GsMarker thisGsMarker, Adesk::GsMarker otherGsMarker) const;
+	Acad::ErrorStatus subIntersectWith(const AcDbEntity* ent,	AcDb::Intersect intType, const AcGePlane& projPlane, AcGePoint3dArray& points, Adesk::GsMarker thisGsMarker, Adesk::GsMarker otherGsMarker) const;
+
+	virtual Acad::ErrorStatus subGetGeomExtents(AcDbExtents& extents) const;
 
 #else
 	//----- deepClone
@@ -151,6 +155,20 @@ public:
 	// -----------------------------------------------------------------------------
 	virtual Acad::ErrorStatus explode(AcDbVoidPtrArray & entitySet) const;
 
+
+	Acad::ErrorStatus intersectWith(const AcDbEntity* pEnt,
+		AcDb::Intersect intType, 
+		AcGePoint3dArray& points,
+		Adesk::GsMarker thisGsMarker = 0, 
+		Adesk::GsMarker otherGsMarker = 0) const ;
+
+	Acad::ErrorStatus intersectWith(const AcDbEntity* pEnt,
+		AcDb::Intersect intType, 
+		const AcGePlane& projPlane,
+		AcGePoint3dArray& points, 
+		Adesk::GsMarker thisGsMarker = 0,
+		Adesk::GsMarker otherGsMarker = 0) const;
+	virtual Acad::ErrorStatus getGeomExtents(AcDbExtents& extents) const;
 #endif
 
 	//////////////////////////////////////////////////////////////////////////
@@ -172,11 +190,15 @@ public:
 	void setstrText(CString strText);
 
 	//返回no
-	int No() const;
+	CString No() const;
 	
 	Acad::ErrorStatus addObjId(AcDbObjectId objId);
 	int				  size();
 	Acad::ErrorStatus removeId(AcDbObjectId objId);
+
+	vector<AcDbObjectId> getAllId();
+	map<AcDbObjectId, AcDbObjectId> getMapId();
+	
 private:
 	AcGePoint3d m_basePt;//插入点
 	double m_dRadius;//圆半径，默认为30
@@ -184,8 +206,7 @@ private:
 	AcDbObjectId m_TextId;//字体样式
 	AcDbObjectId m_LayerId;//图层名
 	AcDbObjectIdArray m_IdArrs;
-	int m_nSize;//记录id的数量
+	Adesk::UInt32 m_nSize;//记录id的数量
 	CString	m_strText;//文字
-protected:
 } ;
 	

@@ -31,10 +31,10 @@ public:
 	double				globalScale() const;
 	Acad::ErrorStatus	setGlobalScale(double dHx); 
 
-	/*CString					JdNum();
-	Acad::ErrorStatus	setJdNum(CString nCount);
+	CString					GdNum();
+	Acad::ErrorStatus	setGdNum(CString nCount);
 
-	double				startZH() const;
+	/*double				startZH() const;
 	Acad::ErrorStatus	setStartZH(double dHx); 
 
 	double				XScale() const;
@@ -70,7 +70,7 @@ private:
     CString             m_label;
 	CString				m_strNumCount;//图纸中数字的总数
 	CString				m_strCurNum;//当前图纸的数据
-	//CString             m_strJdNum;//当前图纸的节点数
+	CString             m_strGdNum;//当前图纸的节点数
 
 	double				m_dGlobalScale;//全局比例
 	//double				m_dXScale;//x比例
@@ -92,7 +92,7 @@ private:
         kDxfLabel       	= 1,
 		kDxfNumCount		= 300,//90~99 32位整数值
 		kDxfCurNum			= 301,
-		//kDxfJdNum			= 302,
+		kDxfGdNum			= 302,
 		kDxfGlobalScale		= 40,
 		//kDxfXScale			= 40,//4~59
 		//kDxfYScale			= 41,
