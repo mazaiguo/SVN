@@ -5,6 +5,7 @@
 #include <gecomp3d.h>
 #include "SerialNoUtils.h"
 #include "SerialNo.h"
+#include <iterator>
 
 COperatePL::COperatePL(void)
 {

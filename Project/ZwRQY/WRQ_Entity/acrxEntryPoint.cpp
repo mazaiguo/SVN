@@ -7,6 +7,7 @@
 #include "CBiaochiForRQY.h"
 #include "CBaseDataForGwDesign.h"
 #include "SerialNo.h"
+#include "Global.h"
 //#include "CGasPipe.h"
 //#include "SpecialText.h"
 //-----------------------------------------------------------------------------
@@ -26,6 +27,8 @@ public:
 		AcRx::AppRetCode retCode =AcRxArxApp::On_kInitAppMsg (pkt) ;
 		
 		// TODO: Add your initialization code here
+		gGlobal.SetIni(gGlobal.GetIniPath());
+
 		CBaseDataForZdDwg::rxInit();
 		CBiaochiForRQY::rxInit();
 		CBaseDataForGwDesign::rxInit();

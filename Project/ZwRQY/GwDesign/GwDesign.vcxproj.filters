@@ -82,6 +82,18 @@
     <ClCompile Include="DrawUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PipeUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SerialNoUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COperatePL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgModPipe.cpp">
+      <Filter>Source Files\对话框</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Arc.h">
@@ -128,6 +140,18 @@
     </ClInclude>
     <ClInclude Include="DrawUtility.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PipeUtils.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SerialNoUtils.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COperatePL.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgModPipe.h">
+      <Filter>Source Files\对话框</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

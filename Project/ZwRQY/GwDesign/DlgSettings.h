@@ -9,7 +9,7 @@
 #include "DlgTextSettings.h"
 #include "DlgBasicSettings.h"
 //-----------------------------------------------------------------------------
-class CDlgSettings : public CAcUiDialog {
+class CDlgSettings : public CAcUiTabMainDialog {
 	DECLARE_DYNAMIC (CDlgSettings)
 
 public:
@@ -28,9 +28,9 @@ public:
 	virtual BOOL OnInitDialog();
 
 private:
-	CDlgBasicSettings m_pBasicSettings;
-	CDlgTextSettings m_pTextSettings;
-	CDialog* pDialog[2];  //用来保存对话框对象指针
+	CDlgBasicSettings* m_pBasicSettings;
+	CDlgTextSettings* m_pTextSettings;
+	//CDialog* pDialog[2];  //用来保存对话框对象指针
 	int m_CurSelTab;
 public:
 	afx_msg void OnTcnSelchangeTabSettings(NMHDR *pNMHDR, LRESULT *pResult);

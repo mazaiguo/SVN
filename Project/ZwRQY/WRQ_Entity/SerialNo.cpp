@@ -619,6 +619,11 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 	{
 		assertWriteEnabled();
 		m_basePt.transformBy(xform);
+		if (xform.scale())
+		{
+			m_dRadius *= xform.scale();
+			m_dTextHeight *= xform.scale();
+		}
 		return Acad::eOk ;
 	}
 
@@ -634,6 +639,15 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 	{
 		assertReadEnabled () ;
 		snapPoints.append(m_basePt);
+		AcGeVector3d viewDir(viewXform(Z, 0), viewXform(Z, 1),
+			viewXform(Z, 2));
+		AcGePoint3d pt;
+		AcGeCircArc3d arc(m_basePt, AcGeVector3d::kZAxis, m_dRadius);
+		if (osnapMode == AcDb::kOsModeNear)
+		{
+			pt = arc.projClosestPointTo(pickPoint, viewDir);
+			snapPoints.append(pt);
+		}
 		return (AcDbEntity::getOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds)) ;
 	}
 
@@ -649,6 +663,15 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 	{
 		assertReadEnabled () ;
 		snapPoints.append(m_basePt);
+		AcGeVector3d viewDir(viewXform(Z, 0), viewXform(Z, 1),
+			viewXform(Z, 2));
+		AcGePoint3d pt;
+		AcGeCircArc3d arc(m_basePt, AcGeVector3d::kZAxis, m_dRadius);
+		if (osnapMode == AcDb::kOsModeNear)
+		{
+			pt = arc.projClosestPointTo(pickPoint, viewDir);
+			snapPoints.append(pt);
+		}
 		return (AcDbEntity::getOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds, insertionMat)) ;
 	}
 
@@ -704,7 +727,12 @@ void CSerialNo::unappended (const AcDbObject *pDbObj)
 	// -----------------------------------------------------------------------------
 	void CSerialNo::list(void) const
 	{
-		AcDbEntity::list () ;
+		assertReadEnabled();
+		acutPrintf(_T("\n-----------------------------------------------------------"));
+		acutPrintf(_T("\n多段线数量为%d"), m_nSize);
+		acutPrintf(_T("\n位置为%f,%f,%f"), m_basePt.x, m_basePt.y, m_basePt.z);
+		acutPrintf(_T("\n序号为%s"), m_strText);
+		acutPrintf(_T("\n-----------------------------------------------------------"));
 	}
 
 	// -----------------------------------------------------------------------------

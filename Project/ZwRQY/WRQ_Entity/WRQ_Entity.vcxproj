@@ -216,7 +216,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="acrxEntryPoint.cpp" />
-    <ClCompile Include="CGasPipe.cpp" />
     <ClCompile Include="DocData.cpp" />
     <ClCompile Include="StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -237,7 +236,6 @@
   <ItemGroup>
     <ClInclude Include="CBaseInfoInDwgFile.h" />
     <ClInclude Include="CBiaochiForRQY.h" />
-    <ClInclude Include="CGasPipe.h" />
     <ClInclude Include="GWDesingUtils.h" />
     <ClInclude Include="CBaseDataForGwDesign.h" />
     <ClInclude Include="ZDMUtils.h" />

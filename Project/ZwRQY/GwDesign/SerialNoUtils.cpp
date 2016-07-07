@@ -192,10 +192,13 @@ bool CSerialNoUtils::add(CString strNo)
 bool CSerialNoUtils::removeId(AcDbObjectId noId, AcDbObjectId removeId, AcDbObjectId addId)
 {
 	CSerialNo* pNo = NULL;
-	if (acdbOpenAcDbEntity((AcDbEntity*&)pNo, noId, AcDb::kForWrite) != Acad::eOk)
+	Acad::ErrorStatus es;
+	es = acdbOpenAcDbEntity((AcDbEntity*&)pNo, noId, AcDb::kForRead);
+	if (es != Acad::eOk)
 	{
 		return false;
 	}
+	pNo->upgradeOpen();
 	pNo->removeId(removeId);
 	if (!addId.isNull())
 	{

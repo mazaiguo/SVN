@@ -314,11 +314,20 @@ CString MyEditEntity::GetObjStrXdata(AcDbObjectId objId, CString strAppName)
 			nIndex++;
 		}
 	}
-	MyBaseAppXdata* xdPtr = xdata.at(nIndex);
-	bool bIsOk = xdPtr->getString(XDT_XG_CSTRING, strXdata);
-	if (!bIsOk)
+	int nSize = xdata.entries();
+	if (nIndex > nSize-1)
 	{
-		strXdata = _T("");
+		pObj->close();
+		return strXdata;
+	}
+	MyBaseAppXdata* xdPtr = xdata.at(nIndex);
+	if (xdPtr != NULL)
+	{
+		bool bIsOk = xdPtr->getString(XDT_XG_CSTRING, strXdata);
+		if (!bIsOk)
+		{
+			strXdata = _T("");
+		}
 	}
 	pObj->close();
 	return strXdata;
@@ -356,6 +365,12 @@ double MyEditEntity::GetObjDoubleXdata(AcDbObjectId objId, CString strAppName)
 		{
 			nIndex++;
 		}
+	}
+	int nSize = xdata.entries();
+	if (nIndex > nSize-1)
+	{
+		pObj->close();
+		return dXdata;
 	}
 	MyBaseAppXdata* xdPtr = xdata.at(nIndex);
 	bool bIsOk = xdPtr->getReal(XDT_XG_DOUBLE, dXdata);
@@ -399,6 +414,12 @@ int MyEditEntity::GetObjIntXdata(AcDbObjectId objId, CString strAppName)
 		{
 			nIndex++;
 		}
+	}
+	int nSize = xdata.entries();
+	if (nIndex > nSize-1)
+	{
+		pObj->close();
+		return nXdata;
 	}
 	MyBaseAppXdata* xdPtr = xdata.at(nIndex);
 	bool bIsOk = xdPtr->getInteger(XDT_XG_INT, nXdata);
@@ -444,6 +465,12 @@ AcDbHandle MyEditEntity::GetObjHandleXdata(AcDbObjectId objId, CString strAppNam
 		}
 	}
 	MyBaseAppXdata* xdPtr = xdata.at(nIndex);
+	int nSize = xdata.entries();
+	if (nIndex > nSize-1)
+	{
+		pObj->close();
+		return hXdata;
+	}
 	bool bIsOk = xdPtr->getHandle(XDT_XG_HANDLE, hXdata);
 	/*if (!bIsOk)
 	{

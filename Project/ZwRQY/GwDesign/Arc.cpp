@@ -99,4 +99,5 @@ bool CompareTwoEnt(CArc line1, CArc line2)
 			}
 		}
 	}
+	return true;
 }

@@ -8,7 +8,7 @@
 #include "editlist.h"
 
 //-----------------------------------------------------------------------------
-class CDlgBasicSettings : public CAcUiDialog {
+class CDlgBasicSettings : public CAcUiTabChildDialog {
 	DECLARE_DYNAMIC (CDlgBasicSettings)
 
 public:

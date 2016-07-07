@@ -71,6 +71,9 @@ extern AcApDataManager<CDocData> DocVars ;
 #define END_ENT					_T("终止序号")
 #define GD_NODE					_T("管道段")
 #define GD_TYPE					_T("管道类型")
+#define GD_DIAMETER				_T("管径")
+#define GD_TEXTURE				_T("管道材质")
+#define GD_AMOUNT				_T("管道流量")				
 
 #pragma pack (pop)
 

@@ -7,9 +7,9 @@
 #include "MySplite.H"
 #include <IO.h>
 //-----------------------------------------------------------------------------
-IMPLEMENT_DYNAMIC (CDlgTextSettings, CAcUiDialog)
+IMPLEMENT_DYNAMIC (CDlgTextSettings, CAcUiTabChildDialog)
 
-BEGIN_MESSAGE_MAP(CDlgTextSettings, CAcUiDialog)
+BEGIN_MESSAGE_MAP(CDlgTextSettings, CAcUiTabChildDialog)
 	ON_MESSAGE(WM_ACAD_KEEPFOCUS, OnAcadKeepFocus)
 	ON_BN_CLICKED(IDC_BUTTON_ADD, &CDlgTextSettings::OnBnClickedButtonAdd)
 	ON_BN_CLICKED(IDC_BUTTON_DEL, &CDlgTextSettings::OnBnClickedButtonDel)
@@ -55,7 +55,7 @@ int CALLBACK EnumFontFamExProc(ENUMLOGFONTEX *lpelfe, NEWTEXTMETRICEX *lpntme, D
 	return 1;
 }
 //-----------------------------------------------------------------------------
-CDlgTextSettings::CDlgTextSettings (CWnd *pParent /*=NULL*/, HINSTANCE hInstance /*=NULL*/) : CAcUiDialog (CDlgTextSettings::IDD, pParent, hInstance) {
+CDlgTextSettings::CDlgTextSettings (CWnd *pParent /*=NULL*/, HINSTANCE hInstance /*=NULL*/)/* : CAcUiTabChildDialog (CDlgTextSettings::IDD, pParent, hInstance) */{
 
 	m_strScale = _T("1.0");
 	m_strDescription = _T("È¼Æø¹ÜµÀ");
@@ -66,7 +66,7 @@ CDlgTextSettings::CDlgTextSettings (CWnd *pParent /*=NULL*/, HINSTANCE hInstance
 
 //-----------------------------------------------------------------------------
 void CDlgTextSettings::DoDataExchange (CDataExchange *pDX) {
-	CAcUiDialog::DoDataExchange (pDX) ;
+	CAcUiTabChildDialog::DoDataExchange (pDX) ;
 	DDX_Control(pDX, IDC_LIST1, m_ListCtrl);
 }
 static int Text_List_Type( int col )
@@ -92,7 +92,7 @@ LRESULT CDlgTextSettings::OnAcadKeepFocus (WPARAM, LPARAM) {
 
 BOOL CDlgTextSettings::OnInitDialog()
 {
-	CAcUiDialog::OnInitDialog();
+	CAcUiTabChildDialog::OnInitDialog();
 	CenterWindow(acedGetAcadDwgView());
 
 	// TODO:  Add extra initialization here

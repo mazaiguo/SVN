@@ -2,6 +2,7 @@
 #include "PipeUtils.h"
 #include "COperatePL.h"
 #include "GWDesingUtils.h"
+#include "SerialNoUtils.h"
 
 CPipeUtils::CPipeUtils(void)
 {
@@ -47,6 +48,34 @@ bool CPipeUtils::ShowGuanduanText()
 {
 	bool bRet = doGuandaoXdata(true);
 	return bRet;
+}
+
+bool CPipeUtils::del(AcDbObjectId objId)
+{
+	CString strStart,strEnd;
+	strStart = MyEditEntity::GetObjStrXdata(objId, START_ENT);
+	strEnd = MyEditEntity::GetObjStrXdata(objId, END_ENT);
+
+	CSerialNoUtils cNo;
+	AcDbObjectId startId = cNo.getIdByNo(strStart);
+	cNo.removeId(startId, objId);
+	AcDbObjectId endId = cNo.getIdByNo(strEnd);
+	cNo.removeId(endId, objId);
+	MyEditEntity::EraseObj(objId);
+
+	vector<AcDbObjectId> startVec = cNo.getdataById(strStart);
+	if (startVec.size() < 1)
+	{
+		cNo.del(startId);
+	}
+
+
+	vector<AcDbObjectId> endVec = cNo.getdataById(strEnd);
+	if (endVec.size() < 1)
+	{
+		cNo.del(endId);
+	}		
+	return true;
 }
 
 bool CPipeUtils::doGuandaoXdata(bool bIsShow /*= false*/)

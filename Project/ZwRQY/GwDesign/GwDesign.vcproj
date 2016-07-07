@@ -528,6 +528,18 @@
 						</File>
 					</Filter>
 				</Filter>
+				<Filter
+					Name="修改管道"
+					>
+					<File
+						RelativePath=".\DlgModPipe.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\DlgModPipe.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="基础类"

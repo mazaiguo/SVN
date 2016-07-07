@@ -38,7 +38,6 @@ public:
 		AcRx::AppRetCode retCode =AcRxArxApp::On_kInitAppMsg (pkt) ;
 		
 		// TODO: Add your initialization code here
-		gGlobal.SetIni(gGlobal.GetIniPath());
 
 		CObjectToNotify::rxInit();
 		acrxBuildClassHierarchy();	

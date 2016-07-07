@@ -12,6 +12,7 @@
 #include "COperatePL.h"
 #include "PipeUtils.h"
 #include "SerialNoUtils.h"
+#include "DlgModPipe.h"
 //#include "DlgBasicSettings.h"
 //#include "DlgTextSettings.h"
 //-----------------------------------------------------------------------------
@@ -217,7 +218,7 @@ public:
 	}
 
 	// - WRQ_GwDesign._Test command (do not rename)
-	static void WRQ_GwDesign_Test(void)
+	static void WRQ_GwDesign_HY(void)
 	{
 		// Add your code for command WRQ_GwDesign._Test here
 		CSerialNoUtils no;
@@ -312,29 +313,50 @@ public:
 		}
 		pLine->close();
 
-		CString strStart,strEnd;
-		strStart = MyEditEntity::GetObjStrXdata(objId, START_ENT);
-		strEnd = MyEditEntity::GetObjStrXdata(objId, END_ENT);
-	
-		CSerialNoUtils cNo;
-		AcDbObjectId startId = cNo.getIdByNo(strStart);
-		cNo.removeId(startId, objId);
-		AcDbObjectId endId = cNo.getIdByNo(strEnd);
-		cNo.removeId(endId, objId);
-		MyEditEntity::EraseObj(objId);
+		CPipeUtils pipe;
+		pipe.del(objId);
+	}
 
-		vector<AcDbObjectId> startVec = cNo.getdataById(strStart);
-		if (startVec.size() < 1)
+	// - WRQ_GwDesign._XGGD command (do not rename)
+	static void WRQ_GwDesign_XGGD(void)//修改管道
+	{
+		// Add your code for command WRQ_GwDesign._XGGD here
+		CAcModuleResourceOverride rs;
+		CDlgModPipe mod;
+		mod.DoModal();
+	}
+
+	// - WRQ_GwDesign._LIGD command (do not rename)
+	static void WRQ_GwDesign_LIGD(void)
+	{
+		// Add your code for command WRQ_GwDesign._LIGD here
+		resbuf *rb = acutBuildList( -4,_T("<and"),RTDXF0,_T("LWPOLYLINE"), 8, _T("燃气管道"), -4,_T("and>"), RTNONE);
+		ads_name ssname;
+		int nRet = acedSSGet(NULL, NULL, NULL, rb, ssname);
+		acutRelRb(rb);
+		if (nRet != RTNORM)
 		{
-			cNo.del(startId);
+			return;
+		}
+		AcDbObjectId objId = AcDbObjectId::kNull;
+		ads_name ename;
+		long sslen;
+		acedSSLength(ssname, &sslen);
+		CString strStartNo,strEndNo,strDiameter,strTexture,strAmount;
+		for (int i=0; i<sslen; i++)
+		{
+			acedSSName(ssname, i, ename);
+			acdbGetObjectId(objId, ename);
+			strStartNo = MyEditEntity::GetObjStrXdata(objId, START_ENT);
+			strEndNo = MyEditEntity::GetObjStrXdata(objId, END_ENT);
+			strDiameter = MyEditEntity::GetObjStrXdata(objId, GD_DIAMETER);
+			strTexture = MyEditEntity::GetObjStrXdata(objId, GD_TEXTURE);
+			strAmount = MyEditEntity::GetObjStrXdata(objId, GD_AMOUNT);
+			acutPrintf(_T("\n起始序号:%s \n终止序号：%s \n管径：%s \n材质：%s \n流量：%s"), strStartNo, strEndNo, strDiameter, strTexture, strAmount);
 		}
 
-		
-		vector<AcDbObjectId> endVec = cNo.getdataById(strEnd);
-		if (endVec.size() < 1)
-		{
-			cNo.del(endId);
-		}		
+
+		acedSSFree(ssname);
 	}
 } ;
 
@@ -346,8 +368,10 @@ ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _SZ, SZ, ACRX_CMD_TRANSPA
 ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _XH, XH, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _GD, ZJGD, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _CRXH, CRXH, ACRX_CMD_TRANSPARENT, NULL)
-ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _Test, Test, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _HY, HY, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _HBDDX, HBDDX, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _XSGD, XSGD, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _SCXH, SCXH, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _SCGD, SCGD, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _XGGD, XGGD, ACRX_CMD_TRANSPARENT, NULL)
+ACED_ARXCOMMAND_ENTRY_AUTO(CGwDesignApp, WRQ_GwDesign, _LIGD, LIGD, ACRX_CMD_TRANSPARENT, NULL)

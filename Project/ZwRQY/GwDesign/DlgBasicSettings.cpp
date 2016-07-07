@@ -8,16 +8,16 @@
 #include "Global.h"
 
 //-----------------------------------------------------------------------------
-IMPLEMENT_DYNAMIC (CDlgBasicSettings, CAcUiDialog)
+IMPLEMENT_DYNAMIC (CDlgBasicSettings, CAcUiTabChildDialog)
 
-BEGIN_MESSAGE_MAP(CDlgBasicSettings, CAcUiDialog)
+BEGIN_MESSAGE_MAP(CDlgBasicSettings, CAcUiTabChildDialog)
 	ON_MESSAGE(WM_ACAD_KEEPFOCUS, OnAcadKeepFocus)
 	ON_BN_CLICKED(IDC_BUTTON_ADD, &CDlgBasicSettings::OnBnClickedButtonAdd)
 	ON_BN_CLICKED(IDC_BUTTON_DEL, &CDlgBasicSettings::OnBnClickedButtonDel)
 END_MESSAGE_MAP()
 
 //-----------------------------------------------------------------------------
-CDlgBasicSettings::CDlgBasicSettings (CWnd *pParent /*=NULL*/, HINSTANCE hInstance /*=NULL*/) : CAcUiDialog (CDlgBasicSettings::IDD, pParent, hInstance) , m_strScale(_T(""))
+CDlgBasicSettings::CDlgBasicSettings (CWnd *pParent /*=NULL*/, HINSTANCE hInstance /*=NULL*/) /*: CAcUiTabChildDialog (CDlgBasicSettings::IDD, pParent, hInstance) , m_strScale(_T(""))*/
 {
 	m_strScale = gGlobal.GetIniValue(_T("基础设置"), _T("比例"));
 	m_strDescription = _T("燃气管道");
@@ -28,7 +28,7 @@ CDlgBasicSettings::CDlgBasicSettings (CWnd *pParent /*=NULL*/, HINSTANCE hInstan
 
 //-----------------------------------------------------------------------------
 void CDlgBasicSettings::DoDataExchange (CDataExchange *pDX) {
-	CAcUiDialog::DoDataExchange (pDX) ;
+	CAcUiTabChildDialog::DoDataExchange (pDX) ;
 	DDX_Control(pDX, IDC_LIST_LAYER, m_ListCtrl);
 	DDX_Text(pDX, IDC_EDIT_SCALE, m_strScale);
 }
@@ -55,7 +55,7 @@ static int _List_Type( int col )
 }
 BOOL CDlgBasicSettings::OnInitDialog()
 {
-	CAcUiDialog::OnInitDialog();
+	CAcUiTabChildDialog::OnInitDialog();
 
 	// TODO:  Add extra initialization here
 	CenterWindow(acedGetAcadDwgView());
@@ -67,7 +67,7 @@ BOOL CDlgBasicSettings::OnInitDialog()
 	m_ListCtrl.InsertColumn( 3, _T("线宽"));
 
 	m_ListCtrl.SetColumnWidth( 0, 100);
-	m_ListCtrl.SetColumnWidth( 1, 100);
+	m_ListCtrl.SetColumnWidth( 1, 50);
 	m_ListCtrl.SetColumnWidth( 2, 100);
 	m_ListCtrl.SetColumnWidth( 3, 100);
 
