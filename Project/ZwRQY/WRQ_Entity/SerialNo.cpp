@@ -27,12 +27,8 @@ CSerialNo::CSerialNo () : AcDbEntity ()
 	m_TextId = CGWDesingUtils::getGlobalTextStyle();//字体样式
 	m_LayerId = AcDbObjectId::kNull;//图层名
 	m_strText = CGWDesingUtils::getCurNum();//文字	
-	int nCount = MyTransFunc::StringToInt(m_strText);
-	nCount++;
-	CString strTmp;
-	strTmp.Format(_T("%d"), nCount);
-	CGWDesingUtils::SetCurNum(strTmp);
 	m_IdArrs.removeAll();
+	m_nSize = 0;
 }
 
 CSerialNo::~CSerialNo ()

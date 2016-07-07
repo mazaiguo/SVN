@@ -1,6 +1,7 @@
 //-----------------------------------------------------------------------------
 #include "StdAfx.h"
 #include "SerialNoJig.h"
+#include "GWDesingUtils.h"
 
 //-----------------------------------------------------------------------------
 CSerialNoJig::CSerialNoJig () : AcEdJig (),
@@ -94,6 +95,15 @@ AcEdJig::DragStatus CSerialNoJig::startJig ()
 		//- Clean up
 		delete mpEntity  ;
 
+	if (appendOk)
+	{
+		CString strNo = CGWDesingUtils::getCurNum();
+		int nCount = MyTransFunc::StringToInt(strNo);
+		nCount++;
+		CString strTmp;
+		strTmp.Format(_T("%d"), nCount);
+		CGWDesingUtils::SetCurNum(strTmp);
+	}
 	return (status) ;
 }
 
