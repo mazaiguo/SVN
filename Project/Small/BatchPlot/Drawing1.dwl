@@ -1,3 +1,0 @@
-Administrator
-ADMINISTRATOR 
-2014Äê4ÔÂ24ÈÕ  13:37:58
