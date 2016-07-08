@@ -199,7 +199,7 @@
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>E:\GitHub\SVN\Project\ZwRQY\lib\zwcad\ZwForWHRQY.lib</ImportLibrary>
+      <ImportLibrary>E:\GitHub\SVN\Project\ZwRQY\lib\zwcad\WRQ_ZDM.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>E:\GitHub\SVN\Project\ZwRQY\lib\zwcad;D:\ZRXSDK\ZRXSDK(20141127)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>MyBaseDLL.lib</AdditionalDependencies>

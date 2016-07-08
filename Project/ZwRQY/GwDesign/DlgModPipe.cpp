@@ -14,10 +14,11 @@ BEGIN_MESSAGE_MAP(CDlgModPipe, CAcUiDialog)
 END_MESSAGE_MAP()
 
 //-----------------------------------------------------------------------------
-CDlgModPipe::CDlgModPipe (CWnd *pParent /*=NULL*/, HINSTANCE hInstance /*=NULL*/) : CAcUiDialog (CDlgModPipe::IDD, pParent, hInstance) , m_strDiameter(_T(""))
-, m_strTexture(_T(""))
-, m_strAmount(_T(""))
+CDlgModPipe::CDlgModPipe (CWnd *pParent /*=NULL*/, HINSTANCE hInstance /*=NULL*/) : CAcUiDialog (CDlgModPipe::IDD, pParent, hInstance) 
 {
+	m_strDiameter = gGlobal.GetIniValue(_T("修改管道"), _T("管径数据"));
+	m_strTexture = gGlobal.GetIniValue(_T("修改管道"), _T("材质"));
+	m_strAmount = gGlobal.GetIniValue(_T("修改管道"), _T("流量"));
 }
 
 //-----------------------------------------------------------------------------
@@ -76,5 +77,10 @@ void CDlgModPipe::OnBnClickedOk()
 
 	acedSSFree(ssname);
 	CompleteEditorCommand();
+
+	gGlobal.SetIniValue(_T("修改管道"), _T("管径数据"), m_strDiameter);
+	gGlobal.SetIniValue(_T("修改管道"), _T("材质"), m_strTexture);
+	gGlobal.SetIniValue(_T("修改管道"), _T("流量"), m_strAmount);
+	gGlobal.WriteIniFile();
 	CAcUiDialog::OnOK();
 }

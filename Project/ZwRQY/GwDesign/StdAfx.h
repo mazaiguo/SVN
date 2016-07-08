@@ -67,13 +67,16 @@ extern AcApDataManager<CDocData> DocVars ;
 #define XDT_XG_HANDLE			20003
 #define XDT_XG_POINT			20004
 
+#define GD_HANDLE				_T("句柄")
 #define START_ENT				_T("起始序号")
 #define END_ENT					_T("终止序号")
 #define GD_NODE					_T("管道段")
 #define GD_TYPE					_T("管道类型")
 #define GD_DIAMETER				_T("管径")
 #define GD_TEXTURE				_T("管道材质")
-#define GD_AMOUNT				_T("管道流量")				
+#define GD_AMOUNT				_T("管道流量")	
+#define GD_ST_AMOUNT			_T("管道初始流量")
+#define GD_PRESSURE				_T("管道气压")
 
 #pragma pack (pop)
 

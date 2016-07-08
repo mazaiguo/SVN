@@ -94,6 +94,9 @@
     <ClCompile Include="DlgModPipe.cpp">
       <Filter>Source Files\对话框</Filter>
     </ClCompile>
+    <ClCompile Include="DlgModQYD.cpp">
+      <Filter>Source Files\对话框</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Arc.h">
@@ -151,6 +154,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="DlgModPipe.h">
+      <Filter>Source Files\对话框</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgModQYD.h">
       <Filter>Source Files\对话框</Filter>
     </ClInclude>
   </ItemGroup>

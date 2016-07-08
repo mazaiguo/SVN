@@ -208,6 +208,24 @@ bool CSerialNoUtils::removeId(AcDbObjectId noId, AcDbObjectId removeId, AcDbObje
 	return true;
 }
 
+bool CSerialNoUtils::addId(AcDbObjectId noId, AcDbObjectId addId)
+{
+	CSerialNo* pNo = NULL;
+	Acad::ErrorStatus es;
+	es = acdbOpenAcDbEntity((AcDbEntity*&)pNo, noId, AcDb::kForRead);
+	if (es != Acad::eOk)
+	{
+		return false;
+	}
+	pNo->upgradeOpen();
+	if (!addId.isNull())
+	{
+		pNo->addObjId(addId);
+	}
+	pNo->close();
+	return true;
+}
+
 map<int, AcDbObjectId> CSerialNoUtils::getAllNo()
 {
 	map<int, AcDbObjectId> mapInfo;

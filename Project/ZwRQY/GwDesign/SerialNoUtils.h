@@ -21,6 +21,8 @@ public:
 	
 
 	bool removeId(AcDbObjectId noId, AcDbObjectId removeId, AcDbObjectId addId = AcDbObjectId::kNull);
+
+	bool addId(AcDbObjectId noId, AcDbObjectId addId);
 	AcDbObjectId getIdByNo(CString strNo);
 	vector<AcDbObjectId> getdataById(CString strNo);
 

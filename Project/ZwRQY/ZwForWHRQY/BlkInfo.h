@@ -1,6 +1,10 @@
 #pragma once
-
-class CBlkBaseInFo//块基本信息
+#ifdef WRQ_ZDM_MODULE //在创建产生DLL的工程中先把 
+#define ZDM_DLL_API __declspec(dllexport)
+#else
+#define ZDM_DLL_API __declspec(dllimport)
+#endif
+class ZDM_DLL_API CBlkBaseInFo//块基本信息
 {
 public:
 	CBlkBaseInFo(void);
@@ -31,7 +35,7 @@ private:
 
 
 
-class CBlkInsert//插入块的函数
+class ZDM_DLL_API CBlkInsert//插入块的函数
 {
 public:
 	CBlkInsert(void);
